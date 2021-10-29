@@ -1,0 +1,791 @@
+Terminals which are not used
+
+   STATE
+   IF
+   THEN
+   ELSE
+   EOF
+   LPAREN
+   RPAREN
+   LCURLY
+   RCURLY
+   LBRACK
+   RBRACK
+   FOR
+   PRINT
+   RETURN
+   STRUCT
+   INT
+   SEMICOLON
+   UNION
+   INTERSECTION
+   STRING
+   ARRAY
+   CONTINUE
+   BREAK
+   VOID
+
+
+State 7 conflicts: 11 shift/reduce
+
+
+Grammar
+
+    0 $accept: expr $end
+
+    1 expr: expr PLUS expr
+    2     | expr MINUS expr
+    3     | expr TIMES expr
+    4     | expr DIVIDE expr
+    5     | expr MODULO expr
+    6     | ID INCR expr
+    7     | ID DECR expr
+    8     | NEGATE expr
+    9     | NEGATIVE ID
+   10     | NEGATIVE LITERAL
+   11     | expr LSTHN expr
+   12     | expr LTEQT expr
+   13     | expr GTEQT expr
+   14     | expr GRTRTHN expr
+   15     | expr AND expr
+   16     | expr OR expr
+   17     | ID ASSIGN expr
+   18     | ID
+   19     | LITERAL
+   20     | BOOL
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+PLUS (258) 1
+MINUS (259) 2
+TIMES (260) 3
+DIVIDE (261) 4
+ASSIGN (262) 17
+STATE (263)
+IF (264)
+THEN (265)
+ELSE (266)
+EOF (267)
+MODULO (268) 5
+LSTHN (269) 11
+GRTRTHN (270) 14
+INCR (271) 6
+DECR (272) 7
+NEGATE (273) 8
+AND (274) 15
+OR (275) 16
+GTEQT (276) 13
+LTEQT (277) 12
+LPAREN (278)
+RPAREN (279)
+LCURLY (280)
+RCURLY (281)
+LBRACK (282)
+RBRACK (283)
+FOR (284)
+PRINT (285)
+RETURN (286)
+STRUCT (287)
+INT (288)
+SEMICOLON (289)
+UNION (290)
+INTERSECTION (291)
+STRING (292)
+ARRAY (293)
+CONTINUE (294)
+BREAK (295)
+VOID (296)
+NEGATIVE (297) 9 10
+LITERAL (298) 10 19
+ID (299) 6 7 9 17 18
+BOOL (300) 20
+
+
+Nonterminals, with rules where they appear
+
+$accept (46)
+    on left: 0
+expr (47)
+    on left: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20,
+    on right: 0 1 2 3 4 5 6 7 8 11 12 13 14 15 16 17
+
+
+state 0
+
+    0 $accept: . expr $end
+
+    NEGATE    shift, and go to state 1
+    NEGATIVE  shift, and go to state 2
+    LITERAL   shift, and go to state 3
+    ID        shift, and go to state 4
+    BOOL      shift, and go to state 5
+
+    expr  go to state 6
+
+
+state 1
+
+    8 expr: NEGATE . expr
+
+    NEGATE    shift, and go to state 1
+    NEGATIVE  shift, and go to state 2
+    LITERAL   shift, and go to state 3
+    ID        shift, and go to state 4
+    BOOL      shift, and go to state 5
+
+    expr  go to state 7
+
+
+state 2
+
+    9 expr: NEGATIVE . ID
+   10     | NEGATIVE . LITERAL
+
+    LITERAL  shift, and go to state 8
+    ID       shift, and go to state 9
+
+
+state 3
+
+   19 expr: LITERAL .
+
+    $default  reduce using rule 19 (expr)
+
+
+state 4
+
+    6 expr: ID . INCR expr
+    7     | ID . DECR expr
+   17     | ID . ASSIGN expr
+   18     | ID .
+
+    ASSIGN  shift, and go to state 10
+    INCR    shift, and go to state 11
+    DECR    shift, and go to state 12
+
+    $default  reduce using rule 18 (expr)
+
+
+state 5
+
+   20 expr: BOOL .
+
+    $default  reduce using rule 20 (expr)
+
+
+state 6
+
+    0 $accept: expr . $end
+    1 expr: expr . PLUS expr
+    2     | expr . MINUS expr
+    3     | expr . TIMES expr
+    4     | expr . DIVIDE expr
+    5     | expr . MODULO expr
+   11     | expr . LSTHN expr
+   12     | expr . LTEQT expr
+   13     | expr . GTEQT expr
+   14     | expr . GRTRTHN expr
+   15     | expr . AND expr
+   16     | expr . OR expr
+
+    $end     shift, and go to state 13
+    PLUS     shift, and go to state 14
+    MINUS    shift, and go to state 15
+    TIMES    shift, and go to state 16
+    DIVIDE   shift, and go to state 17
+    MODULO   shift, and go to state 18
+    LSTHN    shift, and go to state 19
+    GRTRTHN  shift, and go to state 20
+    AND      shift, and go to state 21
+    OR       shift, and go to state 22
+    GTEQT    shift, and go to state 23
+    LTEQT    shift, and go to state 24
+
+
+state 7
+
+    1 expr: expr . PLUS expr
+    2     | expr . MINUS expr
+    3     | expr . TIMES expr
+    4     | expr . DIVIDE expr
+    5     | expr . MODULO expr
+    8     | NEGATE expr .
+   11     | expr . LSTHN expr
+   12     | expr . LTEQT expr
+   13     | expr . GTEQT expr
+   14     | expr . GRTRTHN expr
+   15     | expr . AND expr
+   16     | expr . OR expr
+
+    PLUS     shift, and go to state 14
+    MINUS    shift, and go to state 15
+    TIMES    shift, and go to state 16
+    DIVIDE   shift, and go to state 17
+    MODULO   shift, and go to state 18
+    LSTHN    shift, and go to state 19
+    GRTRTHN  shift, and go to state 20
+    AND      shift, and go to state 21
+    OR       shift, and go to state 22
+    GTEQT    shift, and go to state 23
+    LTEQT    shift, and go to state 24
+
+    PLUS      [reduce using rule 8 (expr)]
+    MINUS     [reduce using rule 8 (expr)]
+    TIMES     [reduce using rule 8 (expr)]
+    DIVIDE    [reduce using rule 8 (expr)]
+    MODULO    [reduce using rule 8 (expr)]
+    LSTHN     [reduce using rule 8 (expr)]
+    GRTRTHN   [reduce using rule 8 (expr)]
+    AND       [reduce using rule 8 (expr)]
+    OR        [reduce using rule 8 (expr)]
+    GTEQT     [reduce using rule 8 (expr)]
+    LTEQT     [reduce using rule 8 (expr)]
+    $default  reduce using rule 8 (expr)
+
+
+state 8
+
+   10 expr: NEGATIVE LITERAL .
+
+    $default  reduce using rule 10 (expr)
+
+
+state 9
+
+    9 expr: NEGATIVE ID .
+
+    $default  reduce using rule 9 (expr)
+
+
+state 10
+
+   17 expr: ID ASSIGN . expr
+
+    NEGATE    shift, and go to state 1
+    NEGATIVE  shift, and go to state 2
+    LITERAL   shift, and go to state 3
+    ID        shift, and go to state 4
+    BOOL      shift, and go to state 5
+
+    expr  go to state 25
+
+
+state 11
+
+    6 expr: ID INCR . expr
+
+    NEGATE    shift, and go to state 1
+    NEGATIVE  shift, and go to state 2
+    LITERAL   shift, and go to state 3
+    ID        shift, and go to state 4
+    BOOL      shift, and go to state 5
+
+    expr  go to state 26
+
+
+state 12
+
+    7 expr: ID DECR . expr
+
+    NEGATE    shift, and go to state 1
+    NEGATIVE  shift, and go to state 2
+    LITERAL   shift, and go to state 3
+    ID        shift, and go to state 4
+    BOOL      shift, and go to state 5
+
+    expr  go to state 27
+
+
+state 13
+
+    0 $accept: expr $end .
+
+    $default  accept
+
+
+state 14
+
+    1 expr: expr PLUS . expr
+
+    NEGATE    shift, and go to state 1
+    NEGATIVE  shift, and go to state 2
+    LITERAL   shift, and go to state 3
+    ID        shift, and go to state 4
+    BOOL      shift, and go to state 5
+
+    expr  go to state 28
+
+
+state 15
+
+    2 expr: expr MINUS . expr
+
+    NEGATE    shift, and go to state 1
+    NEGATIVE  shift, and go to state 2
+    LITERAL   shift, and go to state 3
+    ID        shift, and go to state 4
+    BOOL      shift, and go to state 5
+
+    expr  go to state 29
+
+
+state 16
+
+    3 expr: expr TIMES . expr
+
+    NEGATE    shift, and go to state 1
+    NEGATIVE  shift, and go to state 2
+    LITERAL   shift, and go to state 3
+    ID        shift, and go to state 4
+    BOOL      shift, and go to state 5
+
+    expr  go to state 30
+
+
+state 17
+
+    4 expr: expr DIVIDE . expr
+
+    NEGATE    shift, and go to state 1
+    NEGATIVE  shift, and go to state 2
+    LITERAL   shift, and go to state 3
+    ID        shift, and go to state 4
+    BOOL      shift, and go to state 5
+
+    expr  go to state 31
+
+
+state 18
+
+    5 expr: expr MODULO . expr
+
+    NEGATE    shift, and go to state 1
+    NEGATIVE  shift, and go to state 2
+    LITERAL   shift, and go to state 3
+    ID        shift, and go to state 4
+    BOOL      shift, and go to state 5
+
+    expr  go to state 32
+
+
+state 19
+
+   11 expr: expr LSTHN . expr
+
+    NEGATE    shift, and go to state 1
+    NEGATIVE  shift, and go to state 2
+    LITERAL   shift, and go to state 3
+    ID        shift, and go to state 4
+    BOOL      shift, and go to state 5
+
+    expr  go to state 33
+
+
+state 20
+
+   14 expr: expr GRTRTHN . expr
+
+    NEGATE    shift, and go to state 1
+    NEGATIVE  shift, and go to state 2
+    LITERAL   shift, and go to state 3
+    ID        shift, and go to state 4
+    BOOL      shift, and go to state 5
+
+    expr  go to state 34
+
+
+state 21
+
+   15 expr: expr AND . expr
+
+    NEGATE    shift, and go to state 1
+    NEGATIVE  shift, and go to state 2
+    LITERAL   shift, and go to state 3
+    ID        shift, and go to state 4
+    BOOL      shift, and go to state 5
+
+    expr  go to state 35
+
+
+state 22
+
+   16 expr: expr OR . expr
+
+    NEGATE    shift, and go to state 1
+    NEGATIVE  shift, and go to state 2
+    LITERAL   shift, and go to state 3
+    ID        shift, and go to state 4
+    BOOL      shift, and go to state 5
+
+    expr  go to state 36
+
+
+state 23
+
+   13 expr: expr GTEQT . expr
+
+    NEGATE    shift, and go to state 1
+    NEGATIVE  shift, and go to state 2
+    LITERAL   shift, and go to state 3
+    ID        shift, and go to state 4
+    BOOL      shift, and go to state 5
+
+    expr  go to state 37
+
+
+state 24
+
+   12 expr: expr LTEQT . expr
+
+    NEGATE    shift, and go to state 1
+    NEGATIVE  shift, and go to state 2
+    LITERAL   shift, and go to state 3
+    ID        shift, and go to state 4
+    BOOL      shift, and go to state 5
+
+    expr  go to state 38
+
+
+state 25
+
+    1 expr: expr . PLUS expr
+    2     | expr . MINUS expr
+    3     | expr . TIMES expr
+    4     | expr . DIVIDE expr
+    5     | expr . MODULO expr
+   11     | expr . LSTHN expr
+   12     | expr . LTEQT expr
+   13     | expr . GTEQT expr
+   14     | expr . GRTRTHN expr
+   15     | expr . AND expr
+   16     | expr . OR expr
+   17     | ID ASSIGN expr .
+
+    PLUS     shift, and go to state 14
+    MINUS    shift, and go to state 15
+    TIMES    shift, and go to state 16
+    DIVIDE   shift, and go to state 17
+    MODULO   shift, and go to state 18
+    LSTHN    shift, and go to state 19
+    GRTRTHN  shift, and go to state 20
+    GTEQT    shift, and go to state 23
+    LTEQT    shift, and go to state 24
+
+    $default  reduce using rule 17 (expr)
+
+
+state 26
+
+    1 expr: expr . PLUS expr
+    2     | expr . MINUS expr
+    3     | expr . TIMES expr
+    4     | expr . DIVIDE expr
+    5     | expr . MODULO expr
+    6     | ID INCR expr .
+   11     | expr . LSTHN expr
+   12     | expr . LTEQT expr
+   13     | expr . GTEQT expr
+   14     | expr . GRTRTHN expr
+   15     | expr . AND expr
+   16     | expr . OR expr
+
+    TIMES   shift, and go to state 16
+    DIVIDE  shift, and go to state 17
+    MODULO  shift, and go to state 18
+
+    $default  reduce using rule 6 (expr)
+
+
+state 27
+
+    1 expr: expr . PLUS expr
+    2     | expr . MINUS expr
+    3     | expr . TIMES expr
+    4     | expr . DIVIDE expr
+    5     | expr . MODULO expr
+    7     | ID DECR expr .
+   11     | expr . LSTHN expr
+   12     | expr . LTEQT expr
+   13     | expr . GTEQT expr
+   14     | expr . GRTRTHN expr
+   15     | expr . AND expr
+   16     | expr . OR expr
+
+    TIMES   shift, and go to state 16
+    DIVIDE  shift, and go to state 17
+    MODULO  shift, and go to state 18
+
+    $default  reduce using rule 7 (expr)
+
+
+state 28
+
+    1 expr: expr . PLUS expr
+    1     | expr PLUS expr .
+    2     | expr . MINUS expr
+    3     | expr . TIMES expr
+    4     | expr . DIVIDE expr
+    5     | expr . MODULO expr
+   11     | expr . LSTHN expr
+   12     | expr . LTEQT expr
+   13     | expr . GTEQT expr
+   14     | expr . GRTRTHN expr
+   15     | expr . AND expr
+   16     | expr . OR expr
+
+    TIMES   shift, and go to state 16
+    DIVIDE  shift, and go to state 17
+    MODULO  shift, and go to state 18
+
+    $default  reduce using rule 1 (expr)
+
+
+state 29
+
+    1 expr: expr . PLUS expr
+    2     | expr . MINUS expr
+    2     | expr MINUS expr .
+    3     | expr . TIMES expr
+    4     | expr . DIVIDE expr
+    5     | expr . MODULO expr
+   11     | expr . LSTHN expr
+   12     | expr . LTEQT expr
+   13     | expr . GTEQT expr
+   14     | expr . GRTRTHN expr
+   15     | expr . AND expr
+   16     | expr . OR expr
+
+    TIMES   shift, and go to state 16
+    DIVIDE  shift, and go to state 17
+    MODULO  shift, and go to state 18
+
+    $default  reduce using rule 2 (expr)
+
+
+state 30
+
+    1 expr: expr . PLUS expr
+    2     | expr . MINUS expr
+    3     | expr . TIMES expr
+    3     | expr TIMES expr .
+    4     | expr . DIVIDE expr
+    5     | expr . MODULO expr
+   11     | expr . LSTHN expr
+   12     | expr . LTEQT expr
+   13     | expr . GTEQT expr
+   14     | expr . GRTRTHN expr
+   15     | expr . AND expr
+   16     | expr . OR expr
+
+    $default  reduce using rule 3 (expr)
+
+
+state 31
+
+    1 expr: expr . PLUS expr
+    2     | expr . MINUS expr
+    3     | expr . TIMES expr
+    4     | expr . DIVIDE expr
+    4     | expr DIVIDE expr .
+    5     | expr . MODULO expr
+   11     | expr . LSTHN expr
+   12     | expr . LTEQT expr
+   13     | expr . GTEQT expr
+   14     | expr . GRTRTHN expr
+   15     | expr . AND expr
+   16     | expr . OR expr
+
+    $default  reduce using rule 4 (expr)
+
+
+state 32
+
+    1 expr: expr . PLUS expr
+    2     | expr . MINUS expr
+    3     | expr . TIMES expr
+    4     | expr . DIVIDE expr
+    5     | expr . MODULO expr
+    5     | expr MODULO expr .
+   11     | expr . LSTHN expr
+   12     | expr . LTEQT expr
+   13     | expr . GTEQT expr
+   14     | expr . GRTRTHN expr
+   15     | expr . AND expr
+   16     | expr . OR expr
+
+    $default  reduce using rule 5 (expr)
+
+
+state 33
+
+    1 expr: expr . PLUS expr
+    2     | expr . MINUS expr
+    3     | expr . TIMES expr
+    4     | expr . DIVIDE expr
+    5     | expr . MODULO expr
+   11     | expr . LSTHN expr
+   11     | expr LSTHN expr .
+   12     | expr . LTEQT expr
+   13     | expr . GTEQT expr
+   14     | expr . GRTRTHN expr
+   15     | expr . AND expr
+   16     | expr . OR expr
+
+    PLUS     shift, and go to state 14
+    MINUS    shift, and go to state 15
+    TIMES    shift, and go to state 16
+    DIVIDE   shift, and go to state 17
+    MODULO   shift, and go to state 18
+    LSTHN    shift, and go to state 19
+    GRTRTHN  shift, and go to state 20
+    GTEQT    shift, and go to state 23
+    LTEQT    shift, and go to state 24
+
+    $default  reduce using rule 11 (expr)
+
+
+state 34
+
+    1 expr: expr . PLUS expr
+    2     | expr . MINUS expr
+    3     | expr . TIMES expr
+    4     | expr . DIVIDE expr
+    5     | expr . MODULO expr
+   11     | expr . LSTHN expr
+   12     | expr . LTEQT expr
+   13     | expr . GTEQT expr
+   14     | expr . GRTRTHN expr
+   14     | expr GRTRTHN expr .
+   15     | expr . AND expr
+   16     | expr . OR expr
+
+    PLUS     shift, and go to state 14
+    MINUS    shift, and go to state 15
+    TIMES    shift, and go to state 16
+    DIVIDE   shift, and go to state 17
+    MODULO   shift, and go to state 18
+    LSTHN    shift, and go to state 19
+    GRTRTHN  shift, and go to state 20
+    GTEQT    shift, and go to state 23
+    LTEQT    shift, and go to state 24
+
+    $default  reduce using rule 14 (expr)
+
+
+state 35
+
+    1 expr: expr . PLUS expr
+    2     | expr . MINUS expr
+    3     | expr . TIMES expr
+    4     | expr . DIVIDE expr
+    5     | expr . MODULO expr
+   11     | expr . LSTHN expr
+   12     | expr . LTEQT expr
+   13     | expr . GTEQT expr
+   14     | expr . GRTRTHN expr
+   15     | expr . AND expr
+   15     | expr AND expr .
+   16     | expr . OR expr
+
+    PLUS     shift, and go to state 14
+    MINUS    shift, and go to state 15
+    TIMES    shift, and go to state 16
+    DIVIDE   shift, and go to state 17
+    MODULO   shift, and go to state 18
+    LSTHN    shift, and go to state 19
+    GRTRTHN  shift, and go to state 20
+    AND      shift, and go to state 21
+    OR       shift, and go to state 22
+    GTEQT    shift, and go to state 23
+    LTEQT    shift, and go to state 24
+
+    $default  reduce using rule 15 (expr)
+
+
+state 36
+
+    1 expr: expr . PLUS expr
+    2     | expr . MINUS expr
+    3     | expr . TIMES expr
+    4     | expr . DIVIDE expr
+    5     | expr . MODULO expr
+   11     | expr . LSTHN expr
+   12     | expr . LTEQT expr
+   13     | expr . GTEQT expr
+   14     | expr . GRTRTHN expr
+   15     | expr . AND expr
+   16     | expr . OR expr
+   16     | expr OR expr .
+
+    PLUS     shift, and go to state 14
+    MINUS    shift, and go to state 15
+    TIMES    shift, and go to state 16
+    DIVIDE   shift, and go to state 17
+    MODULO   shift, and go to state 18
+    LSTHN    shift, and go to state 19
+    GRTRTHN  shift, and go to state 20
+    AND      shift, and go to state 21
+    OR       shift, and go to state 22
+    GTEQT    shift, and go to state 23
+    LTEQT    shift, and go to state 24
+
+    $default  reduce using rule 16 (expr)
+
+
+state 37
+
+    1 expr: expr . PLUS expr
+    2     | expr . MINUS expr
+    3     | expr . TIMES expr
+    4     | expr . DIVIDE expr
+    5     | expr . MODULO expr
+   11     | expr . LSTHN expr
+   12     | expr . LTEQT expr
+   13     | expr . GTEQT expr
+   13     | expr GTEQT expr .
+   14     | expr . GRTRTHN expr
+   15     | expr . AND expr
+   16     | expr . OR expr
+
+    PLUS     shift, and go to state 14
+    MINUS    shift, and go to state 15
+    TIMES    shift, and go to state 16
+    DIVIDE   shift, and go to state 17
+    MODULO   shift, and go to state 18
+    LSTHN    shift, and go to state 19
+    GRTRTHN  shift, and go to state 20
+    GTEQT    shift, and go to state 23
+    LTEQT    shift, and go to state 24
+
+    $default  reduce using rule 13 (expr)
+
+
+state 38
+
+    1 expr: expr . PLUS expr
+    2     | expr . MINUS expr
+    3     | expr . TIMES expr
+    4     | expr . DIVIDE expr
+    5     | expr . MODULO expr
+   11     | expr . LSTHN expr
+   12     | expr . LTEQT expr
+   12     | expr LTEQT expr .
+   13     | expr . GTEQT expr
+   14     | expr . GRTRTHN expr
+   15     | expr . AND expr
+   16     | expr . OR expr
+
+    PLUS     shift, and go to state 14
+    MINUS    shift, and go to state 15
+    TIMES    shift, and go to state 16
+    DIVIDE   shift, and go to state 17
+    MODULO   shift, and go to state 18
+    LSTHN    shift, and go to state 19
+    GRTRTHN  shift, and go to state 20
+    GTEQT    shift, and go to state 23
+    LTEQT    shift, and go to state 24
+
+    $default  reduce using rule 12 (expr)
