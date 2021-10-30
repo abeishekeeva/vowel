@@ -4,7 +4,7 @@
              LPAREN RPAREN LCURLY RCURLY LBRACK RBRACK FOR PRINT RETURN    
              STRUCT INT SEMICOLON UNION INTERSECTION
              STRING ARRAY CONTINUE BREAK VOID NEGATIVE
-%token <int> LITERAL
+%token <int> INT
 %token <string> ID
 %token <bool> BOOL
 
@@ -31,8 +31,7 @@ expr:
 | ID INCR   expr { Binop($1, Incr, $3)}
 | ID DECR  expr { Binop($1, Decr, $3)}
 | NEGATE expr        {Binop($2, Negate)}
-| NEGATIVE ID    {Binop($2, Negative)}
-| NEGATIVE LITERAL    {Binop($2, Negative)}
+| NEGATIVE expr    {Binop($2, Negative)}
 | expr LSTHN expr {Binop($1, Lsthn, $3)}
 | expr LTEQT expr {Binop ($1, Lteqt, $3)}
 | expr GTEQT expr {Binop($1, Gteqt, $3)}
@@ -43,8 +42,8 @@ expr:
 /* | IF expr THEN expr ELSE expr { Cond(If, $2, Then, $4, Else, $6) } */
 | ID ASSIGN expr { Assignment($1, Ass, $3) } 
 | ID               { Id($1)  }
-| LITERAL          { Lit($1) }
-| BOOL             { Bool($1)}
+| INT              { INT($1)  }
+| BOOL             { Bool($1) }
 
 
 
