@@ -1,0 +1,1383 @@
+   0  $accept : %entry% $end
+
+   1  expr : INT
+   2       | ID
+   3       | BOOL
+   4       | expr PLUS expr
+   5       | expr MINUS expr
+   6       | expr TIMES expr
+   7       | expr DIVIDE expr
+   8       | expr MODULO expr
+   9       | MINUS expr
+  10       | expr COMPEQUAL expr
+  11       | expr COMPNOTEQUAL expr
+  12       | expr LESSTHAN expr
+  13       | expr GREATERTHAN expr
+  14       | expr GTEQT expr
+  15       | expr LTEQT expr
+  16       | expr UNION expr
+  17       | expr INTERSECTION expr
+  18       | LPAREN expr RPAREN
+  19       | LCURLY expr RCURLY
+  20       | LBRACK expr RBRACK
+  21       | ID ASSIGN expr
+  22       | ID INCREMENT expr
+  23       | ID DECREMENT expr
+  24       | expr AND expr
+  25       | expr OR expr
+  26       | NEGATE expr
+
+  27  %entry% : '\001' expr
+
+state 0
+	$accept : . %entry% $end  (0)
+
+	'\001'  shift 1
+	.  error
+
+	%entry%  goto 2
+
+
+state 1
+	%entry% : '\001' . expr  (27)
+
+	INT  shift 3
+	BOOL  shift 4
+	MINUS  shift 5
+	LPAREN  shift 6
+	LCURLY  shift 7
+	LBRACK  shift 8
+	NEGATE  shift 9
+	ID  shift 10
+	.  error
+
+	expr  goto 11
+
+
+state 2
+	$accept : %entry% . $end  (0)
+
+	$end  accept
+
+
+state 3
+	expr : INT .  (1)
+
+	.  reduce 1
+
+
+state 4
+	expr : BOOL .  (3)
+
+	.  reduce 3
+
+
+state 5
+	expr : MINUS . expr  (9)
+
+	INT  shift 3
+	BOOL  shift 4
+	MINUS  shift 5
+	LPAREN  shift 6
+	LCURLY  shift 7
+	LBRACK  shift 8
+	NEGATE  shift 9
+	ID  shift 10
+	.  error
+
+	expr  goto 12
+
+
+state 6
+	expr : LPAREN . expr RPAREN  (18)
+
+	INT  shift 3
+	BOOL  shift 4
+	MINUS  shift 5
+	LPAREN  shift 6
+	LCURLY  shift 7
+	LBRACK  shift 8
+	NEGATE  shift 9
+	ID  shift 10
+	.  error
+
+	expr  goto 13
+
+
+state 7
+	expr : LCURLY . expr RCURLY  (19)
+
+	INT  shift 3
+	BOOL  shift 4
+	MINUS  shift 5
+	LPAREN  shift 6
+	LCURLY  shift 7
+	LBRACK  shift 8
+	NEGATE  shift 9
+	ID  shift 10
+	.  error
+
+	expr  goto 14
+
+
+state 8
+	expr : LBRACK . expr RBRACK  (20)
+
+	INT  shift 3
+	BOOL  shift 4
+	MINUS  shift 5
+	LPAREN  shift 6
+	LCURLY  shift 7
+	LBRACK  shift 8
+	NEGATE  shift 9
+	ID  shift 10
+	.  error
+
+	expr  goto 15
+
+
+state 9
+	expr : NEGATE . expr  (26)
+
+	INT  shift 3
+	BOOL  shift 4
+	MINUS  shift 5
+	LPAREN  shift 6
+	LCURLY  shift 7
+	LBRACK  shift 8
+	NEGATE  shift 9
+	ID  shift 10
+	.  error
+
+	expr  goto 16
+
+
+state 10
+	expr : ID .  (2)
+	expr : ID . ASSIGN expr  (21)
+	expr : ID . INCREMENT expr  (22)
+	expr : ID . DECREMENT expr  (23)
+
+	ASSIGN  shift 17
+	INCREMENT  shift 18
+	DECREMENT  shift 19
+	$end  reduce 2
+	PLUS  reduce 2
+	MINUS  reduce 2
+	TIMES  reduce 2
+	DIVIDE  reduce 2
+	MODULO  reduce 2
+	COMPEQUAL  reduce 2
+	COMPNOTEQUAL  reduce 2
+	LESSTHAN  reduce 2
+	GREATERTHAN  reduce 2
+	GTEQT  reduce 2
+	LTEQT  reduce 2
+	UNION  reduce 2
+	INTERSECTION  reduce 2
+	RPAREN  reduce 2
+	RCURLY  reduce 2
+	RBRACK  reduce 2
+	AND  reduce 2
+	OR  reduce 2
+
+
+state 11
+	expr : expr . PLUS expr  (4)
+	expr : expr . MINUS expr  (5)
+	expr : expr . TIMES expr  (6)
+	expr : expr . DIVIDE expr  (7)
+	expr : expr . MODULO expr  (8)
+	expr : expr . COMPEQUAL expr  (10)
+	expr : expr . COMPNOTEQUAL expr  (11)
+	expr : expr . LESSTHAN expr  (12)
+	expr : expr . GREATERTHAN expr  (13)
+	expr : expr . GTEQT expr  (14)
+	expr : expr . LTEQT expr  (15)
+	expr : expr . UNION expr  (16)
+	expr : expr . INTERSECTION expr  (17)
+	expr : expr . AND expr  (24)
+	expr : expr . OR expr  (25)
+	%entry% : '\001' expr .  (27)
+
+	PLUS  shift 20
+	MINUS  shift 21
+	TIMES  shift 22
+	DIVIDE  shift 23
+	MODULO  shift 24
+	COMPEQUAL  shift 25
+	COMPNOTEQUAL  shift 26
+	LESSTHAN  shift 27
+	GREATERTHAN  shift 28
+	GTEQT  shift 29
+	LTEQT  shift 30
+	UNION  shift 31
+	INTERSECTION  shift 32
+	AND  shift 33
+	OR  shift 34
+	$end  reduce 27
+
+
+state 12
+	expr : expr . PLUS expr  (4)
+	expr : expr . MINUS expr  (5)
+	expr : expr . TIMES expr  (6)
+	expr : expr . DIVIDE expr  (7)
+	expr : expr . MODULO expr  (8)
+	expr : MINUS expr .  (9)
+	expr : expr . COMPEQUAL expr  (10)
+	expr : expr . COMPNOTEQUAL expr  (11)
+	expr : expr . LESSTHAN expr  (12)
+	expr : expr . GREATERTHAN expr  (13)
+	expr : expr . GTEQT expr  (14)
+	expr : expr . LTEQT expr  (15)
+	expr : expr . UNION expr  (16)
+	expr : expr . INTERSECTION expr  (17)
+	expr : expr . AND expr  (24)
+	expr : expr . OR expr  (25)
+
+	UNION  shift 31
+	INTERSECTION  shift 32
+	$end  reduce 9
+	PLUS  reduce 9
+	MINUS  reduce 9
+	TIMES  reduce 9
+	DIVIDE  reduce 9
+	MODULO  reduce 9
+	COMPEQUAL  reduce 9
+	COMPNOTEQUAL  reduce 9
+	LESSTHAN  reduce 9
+	GREATERTHAN  reduce 9
+	GTEQT  reduce 9
+	LTEQT  reduce 9
+	RPAREN  reduce 9
+	RCURLY  reduce 9
+	RBRACK  reduce 9
+	AND  reduce 9
+	OR  reduce 9
+
+
+state 13
+	expr : expr . PLUS expr  (4)
+	expr : expr . MINUS expr  (5)
+	expr : expr . TIMES expr  (6)
+	expr : expr . DIVIDE expr  (7)
+	expr : expr . MODULO expr  (8)
+	expr : expr . COMPEQUAL expr  (10)
+	expr : expr . COMPNOTEQUAL expr  (11)
+	expr : expr . LESSTHAN expr  (12)
+	expr : expr . GREATERTHAN expr  (13)
+	expr : expr . GTEQT expr  (14)
+	expr : expr . LTEQT expr  (15)
+	expr : expr . UNION expr  (16)
+	expr : expr . INTERSECTION expr  (17)
+	expr : LPAREN expr . RPAREN  (18)
+	expr : expr . AND expr  (24)
+	expr : expr . OR expr  (25)
+
+	PLUS  shift 20
+	MINUS  shift 21
+	TIMES  shift 22
+	DIVIDE  shift 23
+	MODULO  shift 24
+	COMPEQUAL  shift 25
+	COMPNOTEQUAL  shift 26
+	LESSTHAN  shift 27
+	GREATERTHAN  shift 28
+	GTEQT  shift 29
+	LTEQT  shift 30
+	UNION  shift 31
+	INTERSECTION  shift 32
+	RPAREN  shift 35
+	AND  shift 33
+	OR  shift 34
+	.  error
+
+
+state 14
+	expr : expr . PLUS expr  (4)
+	expr : expr . MINUS expr  (5)
+	expr : expr . TIMES expr  (6)
+	expr : expr . DIVIDE expr  (7)
+	expr : expr . MODULO expr  (8)
+	expr : expr . COMPEQUAL expr  (10)
+	expr : expr . COMPNOTEQUAL expr  (11)
+	expr : expr . LESSTHAN expr  (12)
+	expr : expr . GREATERTHAN expr  (13)
+	expr : expr . GTEQT expr  (14)
+	expr : expr . LTEQT expr  (15)
+	expr : expr . UNION expr  (16)
+	expr : expr . INTERSECTION expr  (17)
+	expr : LCURLY expr . RCURLY  (19)
+	expr : expr . AND expr  (24)
+	expr : expr . OR expr  (25)
+
+	PLUS  shift 20
+	MINUS  shift 21
+	TIMES  shift 22
+	DIVIDE  shift 23
+	MODULO  shift 24
+	COMPEQUAL  shift 25
+	COMPNOTEQUAL  shift 26
+	LESSTHAN  shift 27
+	GREATERTHAN  shift 28
+	GTEQT  shift 29
+	LTEQT  shift 30
+	UNION  shift 31
+	INTERSECTION  shift 32
+	RCURLY  shift 36
+	AND  shift 33
+	OR  shift 34
+	.  error
+
+
+state 15
+	expr : expr . PLUS expr  (4)
+	expr : expr . MINUS expr  (5)
+	expr : expr . TIMES expr  (6)
+	expr : expr . DIVIDE expr  (7)
+	expr : expr . MODULO expr  (8)
+	expr : expr . COMPEQUAL expr  (10)
+	expr : expr . COMPNOTEQUAL expr  (11)
+	expr : expr . LESSTHAN expr  (12)
+	expr : expr . GREATERTHAN expr  (13)
+	expr : expr . GTEQT expr  (14)
+	expr : expr . LTEQT expr  (15)
+	expr : expr . UNION expr  (16)
+	expr : expr . INTERSECTION expr  (17)
+	expr : LBRACK expr . RBRACK  (20)
+	expr : expr . AND expr  (24)
+	expr : expr . OR expr  (25)
+
+	PLUS  shift 20
+	MINUS  shift 21
+	TIMES  shift 22
+	DIVIDE  shift 23
+	MODULO  shift 24
+	COMPEQUAL  shift 25
+	COMPNOTEQUAL  shift 26
+	LESSTHAN  shift 27
+	GREATERTHAN  shift 28
+	GTEQT  shift 29
+	LTEQT  shift 30
+	UNION  shift 31
+	INTERSECTION  shift 32
+	RBRACK  shift 37
+	AND  shift 33
+	OR  shift 34
+	.  error
+
+
+state 16
+	expr : expr . PLUS expr  (4)
+	expr : expr . MINUS expr  (5)
+	expr : expr . TIMES expr  (6)
+	expr : expr . DIVIDE expr  (7)
+	expr : expr . MODULO expr  (8)
+	expr : expr . COMPEQUAL expr  (10)
+	expr : expr . COMPNOTEQUAL expr  (11)
+	expr : expr . LESSTHAN expr  (12)
+	expr : expr . GREATERTHAN expr  (13)
+	expr : expr . GTEQT expr  (14)
+	expr : expr . LTEQT expr  (15)
+	expr : expr . UNION expr  (16)
+	expr : expr . INTERSECTION expr  (17)
+	expr : expr . AND expr  (24)
+	expr : expr . OR expr  (25)
+	expr : NEGATE expr .  (26)
+
+	PLUS  shift 20
+	MINUS  shift 21
+	TIMES  shift 22
+	DIVIDE  shift 23
+	MODULO  shift 24
+	COMPEQUAL  shift 25
+	COMPNOTEQUAL  shift 26
+	LESSTHAN  shift 27
+	GREATERTHAN  shift 28
+	GTEQT  shift 29
+	LTEQT  shift 30
+	UNION  shift 31
+	INTERSECTION  shift 32
+	$end  reduce 26
+	RPAREN  reduce 26
+	RCURLY  reduce 26
+	RBRACK  reduce 26
+	AND  reduce 26
+	OR  reduce 26
+
+
+state 17
+	expr : ID ASSIGN . expr  (21)
+
+	INT  shift 3
+	BOOL  shift 4
+	MINUS  shift 5
+	LPAREN  shift 6
+	LCURLY  shift 7
+	LBRACK  shift 8
+	NEGATE  shift 9
+	ID  shift 10
+	.  error
+
+	expr  goto 38
+
+
+state 18
+	expr : ID INCREMENT . expr  (22)
+
+	INT  shift 3
+	BOOL  shift 4
+	MINUS  shift 5
+	LPAREN  shift 6
+	LCURLY  shift 7
+	LBRACK  shift 8
+	NEGATE  shift 9
+	ID  shift 10
+	.  error
+
+	expr  goto 39
+
+
+state 19
+	expr : ID DECREMENT . expr  (23)
+
+	INT  shift 3
+	BOOL  shift 4
+	MINUS  shift 5
+	LPAREN  shift 6
+	LCURLY  shift 7
+	LBRACK  shift 8
+	NEGATE  shift 9
+	ID  shift 10
+	.  error
+
+	expr  goto 40
+
+
+state 20
+	expr : expr PLUS . expr  (4)
+
+	INT  shift 3
+	BOOL  shift 4
+	MINUS  shift 5
+	LPAREN  shift 6
+	LCURLY  shift 7
+	LBRACK  shift 8
+	NEGATE  shift 9
+	ID  shift 10
+	.  error
+
+	expr  goto 41
+
+
+state 21
+	expr : expr MINUS . expr  (5)
+
+	INT  shift 3
+	BOOL  shift 4
+	MINUS  shift 5
+	LPAREN  shift 6
+	LCURLY  shift 7
+	LBRACK  shift 8
+	NEGATE  shift 9
+	ID  shift 10
+	.  error
+
+	expr  goto 42
+
+
+state 22
+	expr : expr TIMES . expr  (6)
+
+	INT  shift 3
+	BOOL  shift 4
+	MINUS  shift 5
+	LPAREN  shift 6
+	LCURLY  shift 7
+	LBRACK  shift 8
+	NEGATE  shift 9
+	ID  shift 10
+	.  error
+
+	expr  goto 43
+
+
+state 23
+	expr : expr DIVIDE . expr  (7)
+
+	INT  shift 3
+	BOOL  shift 4
+	MINUS  shift 5
+	LPAREN  shift 6
+	LCURLY  shift 7
+	LBRACK  shift 8
+	NEGATE  shift 9
+	ID  shift 10
+	.  error
+
+	expr  goto 44
+
+
+state 24
+	expr : expr MODULO . expr  (8)
+
+	INT  shift 3
+	BOOL  shift 4
+	MINUS  shift 5
+	LPAREN  shift 6
+	LCURLY  shift 7
+	LBRACK  shift 8
+	NEGATE  shift 9
+	ID  shift 10
+	.  error
+
+	expr  goto 45
+
+
+state 25
+	expr : expr COMPEQUAL . expr  (10)
+
+	INT  shift 3
+	BOOL  shift 4
+	MINUS  shift 5
+	LPAREN  shift 6
+	LCURLY  shift 7
+	LBRACK  shift 8
+	NEGATE  shift 9
+	ID  shift 10
+	.  error
+
+	expr  goto 46
+
+
+state 26
+	expr : expr COMPNOTEQUAL . expr  (11)
+
+	INT  shift 3
+	BOOL  shift 4
+	MINUS  shift 5
+	LPAREN  shift 6
+	LCURLY  shift 7
+	LBRACK  shift 8
+	NEGATE  shift 9
+	ID  shift 10
+	.  error
+
+	expr  goto 47
+
+
+state 27
+	expr : expr LESSTHAN . expr  (12)
+
+	INT  shift 3
+	BOOL  shift 4
+	MINUS  shift 5
+	LPAREN  shift 6
+	LCURLY  shift 7
+	LBRACK  shift 8
+	NEGATE  shift 9
+	ID  shift 10
+	.  error
+
+	expr  goto 48
+
+
+state 28
+	expr : expr GREATERTHAN . expr  (13)
+
+	INT  shift 3
+	BOOL  shift 4
+	MINUS  shift 5
+	LPAREN  shift 6
+	LCURLY  shift 7
+	LBRACK  shift 8
+	NEGATE  shift 9
+	ID  shift 10
+	.  error
+
+	expr  goto 49
+
+
+state 29
+	expr : expr GTEQT . expr  (14)
+
+	INT  shift 3
+	BOOL  shift 4
+	MINUS  shift 5
+	LPAREN  shift 6
+	LCURLY  shift 7
+	LBRACK  shift 8
+	NEGATE  shift 9
+	ID  shift 10
+	.  error
+
+	expr  goto 50
+
+
+state 30
+	expr : expr LTEQT . expr  (15)
+
+	INT  shift 3
+	BOOL  shift 4
+	MINUS  shift 5
+	LPAREN  shift 6
+	LCURLY  shift 7
+	LBRACK  shift 8
+	NEGATE  shift 9
+	ID  shift 10
+	.  error
+
+	expr  goto 51
+
+
+state 31
+	expr : expr UNION . expr  (16)
+
+	INT  shift 3
+	BOOL  shift 4
+	MINUS  shift 5
+	LPAREN  shift 6
+	LCURLY  shift 7
+	LBRACK  shift 8
+	NEGATE  shift 9
+	ID  shift 10
+	.  error
+
+	expr  goto 52
+
+
+state 32
+	expr : expr INTERSECTION . expr  (17)
+
+	INT  shift 3
+	BOOL  shift 4
+	MINUS  shift 5
+	LPAREN  shift 6
+	LCURLY  shift 7
+	LBRACK  shift 8
+	NEGATE  shift 9
+	ID  shift 10
+	.  error
+
+	expr  goto 53
+
+
+state 33
+	expr : expr AND . expr  (24)
+
+	INT  shift 3
+	BOOL  shift 4
+	MINUS  shift 5
+	LPAREN  shift 6
+	LCURLY  shift 7
+	LBRACK  shift 8
+	NEGATE  shift 9
+	ID  shift 10
+	.  error
+
+	expr  goto 54
+
+
+state 34
+	expr : expr OR . expr  (25)
+
+	INT  shift 3
+	BOOL  shift 4
+	MINUS  shift 5
+	LPAREN  shift 6
+	LCURLY  shift 7
+	LBRACK  shift 8
+	NEGATE  shift 9
+	ID  shift 10
+	.  error
+
+	expr  goto 55
+
+
+state 35
+	expr : LPAREN expr RPAREN .  (18)
+
+	.  reduce 18
+
+
+state 36
+	expr : LCURLY expr RCURLY .  (19)
+
+	.  reduce 19
+
+
+state 37
+	expr : LBRACK expr RBRACK .  (20)
+
+	.  reduce 20
+
+
+state 38
+	expr : expr . PLUS expr  (4)
+	expr : expr . MINUS expr  (5)
+	expr : expr . TIMES expr  (6)
+	expr : expr . DIVIDE expr  (7)
+	expr : expr . MODULO expr  (8)
+	expr : expr . COMPEQUAL expr  (10)
+	expr : expr . COMPNOTEQUAL expr  (11)
+	expr : expr . LESSTHAN expr  (12)
+	expr : expr . GREATERTHAN expr  (13)
+	expr : expr . GTEQT expr  (14)
+	expr : expr . LTEQT expr  (15)
+	expr : expr . UNION expr  (16)
+	expr : expr . INTERSECTION expr  (17)
+	expr : ID ASSIGN expr .  (21)
+	expr : expr . AND expr  (24)
+	expr : expr . OR expr  (25)
+
+	PLUS  shift 20
+	MINUS  shift 21
+	TIMES  shift 22
+	DIVIDE  shift 23
+	MODULO  shift 24
+	COMPEQUAL  shift 25
+	COMPNOTEQUAL  shift 26
+	LESSTHAN  shift 27
+	GREATERTHAN  shift 28
+	GTEQT  shift 29
+	LTEQT  shift 30
+	UNION  shift 31
+	INTERSECTION  shift 32
+	AND  shift 33
+	OR  shift 34
+	$end  reduce 21
+	RPAREN  reduce 21
+	RCURLY  reduce 21
+	RBRACK  reduce 21
+
+
+state 39
+	expr : expr . PLUS expr  (4)
+	expr : expr . MINUS expr  (5)
+	expr : expr . TIMES expr  (6)
+	expr : expr . DIVIDE expr  (7)
+	expr : expr . MODULO expr  (8)
+	expr : expr . COMPEQUAL expr  (10)
+	expr : expr . COMPNOTEQUAL expr  (11)
+	expr : expr . LESSTHAN expr  (12)
+	expr : expr . GREATERTHAN expr  (13)
+	expr : expr . GTEQT expr  (14)
+	expr : expr . LTEQT expr  (15)
+	expr : expr . UNION expr  (16)
+	expr : expr . INTERSECTION expr  (17)
+	expr : ID INCREMENT expr .  (22)
+	expr : expr . AND expr  (24)
+	expr : expr . OR expr  (25)
+
+	PLUS  shift 20
+	MINUS  shift 21
+	TIMES  shift 22
+	DIVIDE  shift 23
+	MODULO  shift 24
+	COMPEQUAL  shift 25
+	COMPNOTEQUAL  shift 26
+	LESSTHAN  shift 27
+	GREATERTHAN  shift 28
+	GTEQT  shift 29
+	LTEQT  shift 30
+	UNION  shift 31
+	INTERSECTION  shift 32
+	AND  shift 33
+	OR  shift 34
+	$end  reduce 22
+	RPAREN  reduce 22
+	RCURLY  reduce 22
+	RBRACK  reduce 22
+
+
+state 40
+	expr : expr . PLUS expr  (4)
+	expr : expr . MINUS expr  (5)
+	expr : expr . TIMES expr  (6)
+	expr : expr . DIVIDE expr  (7)
+	expr : expr . MODULO expr  (8)
+	expr : expr . COMPEQUAL expr  (10)
+	expr : expr . COMPNOTEQUAL expr  (11)
+	expr : expr . LESSTHAN expr  (12)
+	expr : expr . GREATERTHAN expr  (13)
+	expr : expr . GTEQT expr  (14)
+	expr : expr . LTEQT expr  (15)
+	expr : expr . UNION expr  (16)
+	expr : expr . INTERSECTION expr  (17)
+	expr : ID DECREMENT expr .  (23)
+	expr : expr . AND expr  (24)
+	expr : expr . OR expr  (25)
+
+	PLUS  shift 20
+	MINUS  shift 21
+	TIMES  shift 22
+	DIVIDE  shift 23
+	MODULO  shift 24
+	COMPEQUAL  shift 25
+	COMPNOTEQUAL  shift 26
+	LESSTHAN  shift 27
+	GREATERTHAN  shift 28
+	GTEQT  shift 29
+	LTEQT  shift 30
+	UNION  shift 31
+	INTERSECTION  shift 32
+	AND  shift 33
+	OR  shift 34
+	$end  reduce 23
+	RPAREN  reduce 23
+	RCURLY  reduce 23
+	RBRACK  reduce 23
+
+
+state 41
+	expr : expr . PLUS expr  (4)
+	expr : expr PLUS expr .  (4)
+	expr : expr . MINUS expr  (5)
+	expr : expr . TIMES expr  (6)
+	expr : expr . DIVIDE expr  (7)
+	expr : expr . MODULO expr  (8)
+	expr : expr . COMPEQUAL expr  (10)
+	expr : expr . COMPNOTEQUAL expr  (11)
+	expr : expr . LESSTHAN expr  (12)
+	expr : expr . GREATERTHAN expr  (13)
+	expr : expr . GTEQT expr  (14)
+	expr : expr . LTEQT expr  (15)
+	expr : expr . UNION expr  (16)
+	expr : expr . INTERSECTION expr  (17)
+	expr : expr . AND expr  (24)
+	expr : expr . OR expr  (25)
+
+	TIMES  shift 22
+	DIVIDE  shift 23
+	MODULO  shift 24
+	UNION  shift 31
+	INTERSECTION  shift 32
+	$end  reduce 4
+	PLUS  reduce 4
+	MINUS  reduce 4
+	COMPEQUAL  reduce 4
+	COMPNOTEQUAL  reduce 4
+	LESSTHAN  reduce 4
+	GREATERTHAN  reduce 4
+	GTEQT  reduce 4
+	LTEQT  reduce 4
+	RPAREN  reduce 4
+	RCURLY  reduce 4
+	RBRACK  reduce 4
+	AND  reduce 4
+	OR  reduce 4
+
+
+state 42
+	expr : expr . PLUS expr  (4)
+	expr : expr . MINUS expr  (5)
+	expr : expr MINUS expr .  (5)
+	expr : expr . TIMES expr  (6)
+	expr : expr . DIVIDE expr  (7)
+	expr : expr . MODULO expr  (8)
+	expr : expr . COMPEQUAL expr  (10)
+	expr : expr . COMPNOTEQUAL expr  (11)
+	expr : expr . LESSTHAN expr  (12)
+	expr : expr . GREATERTHAN expr  (13)
+	expr : expr . GTEQT expr  (14)
+	expr : expr . LTEQT expr  (15)
+	expr : expr . UNION expr  (16)
+	expr : expr . INTERSECTION expr  (17)
+	expr : expr . AND expr  (24)
+	expr : expr . OR expr  (25)
+
+	TIMES  shift 22
+	DIVIDE  shift 23
+	MODULO  shift 24
+	UNION  shift 31
+	INTERSECTION  shift 32
+	$end  reduce 5
+	PLUS  reduce 5
+	MINUS  reduce 5
+	COMPEQUAL  reduce 5
+	COMPNOTEQUAL  reduce 5
+	LESSTHAN  reduce 5
+	GREATERTHAN  reduce 5
+	GTEQT  reduce 5
+	LTEQT  reduce 5
+	RPAREN  reduce 5
+	RCURLY  reduce 5
+	RBRACK  reduce 5
+	AND  reduce 5
+	OR  reduce 5
+
+
+state 43
+	expr : expr . PLUS expr  (4)
+	expr : expr . MINUS expr  (5)
+	expr : expr . TIMES expr  (6)
+	expr : expr TIMES expr .  (6)
+	expr : expr . DIVIDE expr  (7)
+	expr : expr . MODULO expr  (8)
+	expr : expr . COMPEQUAL expr  (10)
+	expr : expr . COMPNOTEQUAL expr  (11)
+	expr : expr . LESSTHAN expr  (12)
+	expr : expr . GREATERTHAN expr  (13)
+	expr : expr . GTEQT expr  (14)
+	expr : expr . LTEQT expr  (15)
+	expr : expr . UNION expr  (16)
+	expr : expr . INTERSECTION expr  (17)
+	expr : expr . AND expr  (24)
+	expr : expr . OR expr  (25)
+
+	UNION  shift 31
+	INTERSECTION  shift 32
+	$end  reduce 6
+	PLUS  reduce 6
+	MINUS  reduce 6
+	TIMES  reduce 6
+	DIVIDE  reduce 6
+	MODULO  reduce 6
+	COMPEQUAL  reduce 6
+	COMPNOTEQUAL  reduce 6
+	LESSTHAN  reduce 6
+	GREATERTHAN  reduce 6
+	GTEQT  reduce 6
+	LTEQT  reduce 6
+	RPAREN  reduce 6
+	RCURLY  reduce 6
+	RBRACK  reduce 6
+	AND  reduce 6
+	OR  reduce 6
+
+
+state 44
+	expr : expr . PLUS expr  (4)
+	expr : expr . MINUS expr  (5)
+	expr : expr . TIMES expr  (6)
+	expr : expr . DIVIDE expr  (7)
+	expr : expr DIVIDE expr .  (7)
+	expr : expr . MODULO expr  (8)
+	expr : expr . COMPEQUAL expr  (10)
+	expr : expr . COMPNOTEQUAL expr  (11)
+	expr : expr . LESSTHAN expr  (12)
+	expr : expr . GREATERTHAN expr  (13)
+	expr : expr . GTEQT expr  (14)
+	expr : expr . LTEQT expr  (15)
+	expr : expr . UNION expr  (16)
+	expr : expr . INTERSECTION expr  (17)
+	expr : expr . AND expr  (24)
+	expr : expr . OR expr  (25)
+
+	UNION  shift 31
+	INTERSECTION  shift 32
+	$end  reduce 7
+	PLUS  reduce 7
+	MINUS  reduce 7
+	TIMES  reduce 7
+	DIVIDE  reduce 7
+	MODULO  reduce 7
+	COMPEQUAL  reduce 7
+	COMPNOTEQUAL  reduce 7
+	LESSTHAN  reduce 7
+	GREATERTHAN  reduce 7
+	GTEQT  reduce 7
+	LTEQT  reduce 7
+	RPAREN  reduce 7
+	RCURLY  reduce 7
+	RBRACK  reduce 7
+	AND  reduce 7
+	OR  reduce 7
+
+
+state 45
+	expr : expr . PLUS expr  (4)
+	expr : expr . MINUS expr  (5)
+	expr : expr . TIMES expr  (6)
+	expr : expr . DIVIDE expr  (7)
+	expr : expr . MODULO expr  (8)
+	expr : expr MODULO expr .  (8)
+	expr : expr . COMPEQUAL expr  (10)
+	expr : expr . COMPNOTEQUAL expr  (11)
+	expr : expr . LESSTHAN expr  (12)
+	expr : expr . GREATERTHAN expr  (13)
+	expr : expr . GTEQT expr  (14)
+	expr : expr . LTEQT expr  (15)
+	expr : expr . UNION expr  (16)
+	expr : expr . INTERSECTION expr  (17)
+	expr : expr . AND expr  (24)
+	expr : expr . OR expr  (25)
+
+	UNION  shift 31
+	INTERSECTION  shift 32
+	$end  reduce 8
+	PLUS  reduce 8
+	MINUS  reduce 8
+	TIMES  reduce 8
+	DIVIDE  reduce 8
+	MODULO  reduce 8
+	COMPEQUAL  reduce 8
+	COMPNOTEQUAL  reduce 8
+	LESSTHAN  reduce 8
+	GREATERTHAN  reduce 8
+	GTEQT  reduce 8
+	LTEQT  reduce 8
+	RPAREN  reduce 8
+	RCURLY  reduce 8
+	RBRACK  reduce 8
+	AND  reduce 8
+	OR  reduce 8
+
+
+state 46
+	expr : expr . PLUS expr  (4)
+	expr : expr . MINUS expr  (5)
+	expr : expr . TIMES expr  (6)
+	expr : expr . DIVIDE expr  (7)
+	expr : expr . MODULO expr  (8)
+	expr : expr . COMPEQUAL expr  (10)
+	expr : expr COMPEQUAL expr .  (10)
+	expr : expr . COMPNOTEQUAL expr  (11)
+	expr : expr . LESSTHAN expr  (12)
+	expr : expr . GREATERTHAN expr  (13)
+	expr : expr . GTEQT expr  (14)
+	expr : expr . LTEQT expr  (15)
+	expr : expr . UNION expr  (16)
+	expr : expr . INTERSECTION expr  (17)
+	expr : expr . AND expr  (24)
+	expr : expr . OR expr  (25)
+
+	PLUS  shift 20
+	MINUS  shift 21
+	TIMES  shift 22
+	DIVIDE  shift 23
+	MODULO  shift 24
+	LESSTHAN  shift 27
+	GREATERTHAN  shift 28
+	GTEQT  shift 29
+	LTEQT  shift 30
+	UNION  shift 31
+	INTERSECTION  shift 32
+	$end  reduce 10
+	COMPEQUAL  reduce 10
+	COMPNOTEQUAL  reduce 10
+	RPAREN  reduce 10
+	RCURLY  reduce 10
+	RBRACK  reduce 10
+	AND  reduce 10
+	OR  reduce 10
+
+
+state 47
+	expr : expr . PLUS expr  (4)
+	expr : expr . MINUS expr  (5)
+	expr : expr . TIMES expr  (6)
+	expr : expr . DIVIDE expr  (7)
+	expr : expr . MODULO expr  (8)
+	expr : expr . COMPEQUAL expr  (10)
+	expr : expr . COMPNOTEQUAL expr  (11)
+	expr : expr COMPNOTEQUAL expr .  (11)
+	expr : expr . LESSTHAN expr  (12)
+	expr : expr . GREATERTHAN expr  (13)
+	expr : expr . GTEQT expr  (14)
+	expr : expr . LTEQT expr  (15)
+	expr : expr . UNION expr  (16)
+	expr : expr . INTERSECTION expr  (17)
+	expr : expr . AND expr  (24)
+	expr : expr . OR expr  (25)
+
+	PLUS  shift 20
+	MINUS  shift 21
+	TIMES  shift 22
+	DIVIDE  shift 23
+	MODULO  shift 24
+	LESSTHAN  shift 27
+	GREATERTHAN  shift 28
+	GTEQT  shift 29
+	LTEQT  shift 30
+	UNION  shift 31
+	INTERSECTION  shift 32
+	$end  reduce 11
+	COMPEQUAL  reduce 11
+	COMPNOTEQUAL  reduce 11
+	RPAREN  reduce 11
+	RCURLY  reduce 11
+	RBRACK  reduce 11
+	AND  reduce 11
+	OR  reduce 11
+
+
+state 48
+	expr : expr . PLUS expr  (4)
+	expr : expr . MINUS expr  (5)
+	expr : expr . TIMES expr  (6)
+	expr : expr . DIVIDE expr  (7)
+	expr : expr . MODULO expr  (8)
+	expr : expr . COMPEQUAL expr  (10)
+	expr : expr . COMPNOTEQUAL expr  (11)
+	expr : expr . LESSTHAN expr  (12)
+	expr : expr LESSTHAN expr .  (12)
+	expr : expr . GREATERTHAN expr  (13)
+	expr : expr . GTEQT expr  (14)
+	expr : expr . LTEQT expr  (15)
+	expr : expr . UNION expr  (16)
+	expr : expr . INTERSECTION expr  (17)
+	expr : expr . AND expr  (24)
+	expr : expr . OR expr  (25)
+
+	PLUS  shift 20
+	MINUS  shift 21
+	TIMES  shift 22
+	DIVIDE  shift 23
+	MODULO  shift 24
+	UNION  shift 31
+	INTERSECTION  shift 32
+	$end  reduce 12
+	COMPEQUAL  reduce 12
+	COMPNOTEQUAL  reduce 12
+	LESSTHAN  reduce 12
+	GREATERTHAN  reduce 12
+	GTEQT  reduce 12
+	LTEQT  reduce 12
+	RPAREN  reduce 12
+	RCURLY  reduce 12
+	RBRACK  reduce 12
+	AND  reduce 12
+	OR  reduce 12
+
+
+state 49
+	expr : expr . PLUS expr  (4)
+	expr : expr . MINUS expr  (5)
+	expr : expr . TIMES expr  (6)
+	expr : expr . DIVIDE expr  (7)
+	expr : expr . MODULO expr  (8)
+	expr : expr . COMPEQUAL expr  (10)
+	expr : expr . COMPNOTEQUAL expr  (11)
+	expr : expr . LESSTHAN expr  (12)
+	expr : expr . GREATERTHAN expr  (13)
+	expr : expr GREATERTHAN expr .  (13)
+	expr : expr . GTEQT expr  (14)
+	expr : expr . LTEQT expr  (15)
+	expr : expr . UNION expr  (16)
+	expr : expr . INTERSECTION expr  (17)
+	expr : expr . AND expr  (24)
+	expr : expr . OR expr  (25)
+
+	PLUS  shift 20
+	MINUS  shift 21
+	TIMES  shift 22
+	DIVIDE  shift 23
+	MODULO  shift 24
+	UNION  shift 31
+	INTERSECTION  shift 32
+	$end  reduce 13
+	COMPEQUAL  reduce 13
+	COMPNOTEQUAL  reduce 13
+	LESSTHAN  reduce 13
+	GREATERTHAN  reduce 13
+	GTEQT  reduce 13
+	LTEQT  reduce 13
+	RPAREN  reduce 13
+	RCURLY  reduce 13
+	RBRACK  reduce 13
+	AND  reduce 13
+	OR  reduce 13
+
+
+state 50
+	expr : expr . PLUS expr  (4)
+	expr : expr . MINUS expr  (5)
+	expr : expr . TIMES expr  (6)
+	expr : expr . DIVIDE expr  (7)
+	expr : expr . MODULO expr  (8)
+	expr : expr . COMPEQUAL expr  (10)
+	expr : expr . COMPNOTEQUAL expr  (11)
+	expr : expr . LESSTHAN expr  (12)
+	expr : expr . GREATERTHAN expr  (13)
+	expr : expr . GTEQT expr  (14)
+	expr : expr GTEQT expr .  (14)
+	expr : expr . LTEQT expr  (15)
+	expr : expr . UNION expr  (16)
+	expr : expr . INTERSECTION expr  (17)
+	expr : expr . AND expr  (24)
+	expr : expr . OR expr  (25)
+
+	PLUS  shift 20
+	MINUS  shift 21
+	TIMES  shift 22
+	DIVIDE  shift 23
+	MODULO  shift 24
+	UNION  shift 31
+	INTERSECTION  shift 32
+	$end  reduce 14
+	COMPEQUAL  reduce 14
+	COMPNOTEQUAL  reduce 14
+	LESSTHAN  reduce 14
+	GREATERTHAN  reduce 14
+	GTEQT  reduce 14
+	LTEQT  reduce 14
+	RPAREN  reduce 14
+	RCURLY  reduce 14
+	RBRACK  reduce 14
+	AND  reduce 14
+	OR  reduce 14
+
+
+state 51
+	expr : expr . PLUS expr  (4)
+	expr : expr . MINUS expr  (5)
+	expr : expr . TIMES expr  (6)
+	expr : expr . DIVIDE expr  (7)
+	expr : expr . MODULO expr  (8)
+	expr : expr . COMPEQUAL expr  (10)
+	expr : expr . COMPNOTEQUAL expr  (11)
+	expr : expr . LESSTHAN expr  (12)
+	expr : expr . GREATERTHAN expr  (13)
+	expr : expr . GTEQT expr  (14)
+	expr : expr . LTEQT expr  (15)
+	expr : expr LTEQT expr .  (15)
+	expr : expr . UNION expr  (16)
+	expr : expr . INTERSECTION expr  (17)
+	expr : expr . AND expr  (24)
+	expr : expr . OR expr  (25)
+
+	PLUS  shift 20
+	MINUS  shift 21
+	TIMES  shift 22
+	DIVIDE  shift 23
+	MODULO  shift 24
+	UNION  shift 31
+	INTERSECTION  shift 32
+	$end  reduce 15
+	COMPEQUAL  reduce 15
+	COMPNOTEQUAL  reduce 15
+	LESSTHAN  reduce 15
+	GREATERTHAN  reduce 15
+	GTEQT  reduce 15
+	LTEQT  reduce 15
+	RPAREN  reduce 15
+	RCURLY  reduce 15
+	RBRACK  reduce 15
+	AND  reduce 15
+	OR  reduce 15
+
+
+state 52
+	expr : expr . PLUS expr  (4)
+	expr : expr . MINUS expr  (5)
+	expr : expr . TIMES expr  (6)
+	expr : expr . DIVIDE expr  (7)
+	expr : expr . MODULO expr  (8)
+	expr : expr . COMPEQUAL expr  (10)
+	expr : expr . COMPNOTEQUAL expr  (11)
+	expr : expr . LESSTHAN expr  (12)
+	expr : expr . GREATERTHAN expr  (13)
+	expr : expr . GTEQT expr  (14)
+	expr : expr . LTEQT expr  (15)
+	expr : expr . UNION expr  (16)
+	expr : expr UNION expr .  (16)
+	expr : expr . INTERSECTION expr  (17)
+	expr : expr . AND expr  (24)
+	expr : expr . OR expr  (25)
+
+	.  reduce 16
+
+
+state 53
+	expr : expr . PLUS expr  (4)
+	expr : expr . MINUS expr  (5)
+	expr : expr . TIMES expr  (6)
+	expr : expr . DIVIDE expr  (7)
+	expr : expr . MODULO expr  (8)
+	expr : expr . COMPEQUAL expr  (10)
+	expr : expr . COMPNOTEQUAL expr  (11)
+	expr : expr . LESSTHAN expr  (12)
+	expr : expr . GREATERTHAN expr  (13)
+	expr : expr . GTEQT expr  (14)
+	expr : expr . LTEQT expr  (15)
+	expr : expr . UNION expr  (16)
+	expr : expr . INTERSECTION expr  (17)
+	expr : expr INTERSECTION expr .  (17)
+	expr : expr . AND expr  (24)
+	expr : expr . OR expr  (25)
+
+	.  reduce 17
+
+
+state 54
+	expr : expr . PLUS expr  (4)
+	expr : expr . MINUS expr  (5)
+	expr : expr . TIMES expr  (6)
+	expr : expr . DIVIDE expr  (7)
+	expr : expr . MODULO expr  (8)
+	expr : expr . COMPEQUAL expr  (10)
+	expr : expr . COMPNOTEQUAL expr  (11)
+	expr : expr . LESSTHAN expr  (12)
+	expr : expr . GREATERTHAN expr  (13)
+	expr : expr . GTEQT expr  (14)
+	expr : expr . LTEQT expr  (15)
+	expr : expr . UNION expr  (16)
+	expr : expr . INTERSECTION expr  (17)
+	expr : expr . AND expr  (24)
+	expr : expr AND expr .  (24)
+	expr : expr . OR expr  (25)
+
+	PLUS  shift 20
+	MINUS  shift 21
+	TIMES  shift 22
+	DIVIDE  shift 23
+	MODULO  shift 24
+	COMPEQUAL  shift 25
+	COMPNOTEQUAL  shift 26
+	LESSTHAN  shift 27
+	GREATERTHAN  shift 28
+	GTEQT  shift 29
+	LTEQT  shift 30
+	UNION  shift 31
+	INTERSECTION  shift 32
+	$end  reduce 24
+	RPAREN  reduce 24
+	RCURLY  reduce 24
+	RBRACK  reduce 24
+	AND  reduce 24
+	OR  reduce 24
+
+
+state 55
+	expr : expr . PLUS expr  (4)
+	expr : expr . MINUS expr  (5)
+	expr : expr . TIMES expr  (6)
+	expr : expr . DIVIDE expr  (7)
+	expr : expr . MODULO expr  (8)
+	expr : expr . COMPEQUAL expr  (10)
+	expr : expr . COMPNOTEQUAL expr  (11)
+	expr : expr . LESSTHAN expr  (12)
+	expr : expr . GREATERTHAN expr  (13)
+	expr : expr . GTEQT expr  (14)
+	expr : expr . LTEQT expr  (15)
+	expr : expr . UNION expr  (16)
+	expr : expr . INTERSECTION expr  (17)
+	expr : expr . AND expr  (24)
+	expr : expr . OR expr  (25)
+	expr : expr OR expr .  (25)
+
+	PLUS  shift 20
+	MINUS  shift 21
+	TIMES  shift 22
+	DIVIDE  shift 23
+	MODULO  shift 24
+	COMPEQUAL  shift 25
+	COMPNOTEQUAL  shift 26
+	LESSTHAN  shift 27
+	GREATERTHAN  shift 28
+	GTEQT  shift 29
+	LTEQT  shift 30
+	UNION  shift 31
+	INTERSECTION  shift 32
+	AND  shift 33
+	$end  reduce 25
+	RPAREN  reduce 25
+	RCURLY  reduce 25
+	RBRACK  reduce 25
+	OR  reduce 25
+
+
+45 terminals, 3 nonterminals
+28 grammar rules, 56 states
