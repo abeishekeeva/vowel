@@ -1,5 +1,5 @@
 
-%token      INT STRING BOOL VOID ARRAY                                  /* literals         */
+%token      INT STRING BOOL VOID ARRAY CHAR                             /* literals         */
             PLUS MINUS TIMES DIVIDE MODULO                              /* arithmetic ops   */
             COMPEQUAL COMPNOTEQUAL LESSTHAN GREATERTHAN GTEQT LTEQT     /* comparison ops   */
             UNION INTERSECTION                                          /* set ops          */
@@ -12,6 +12,8 @@
 %token <int> INTL
 %token <string> IDL
 %token <bool> BOOLL
+%token <char> CHARL
+
 
 %left SEMICOLON
 %right ASSIGN INCREMENT DECREMENT
@@ -35,6 +37,7 @@ typ:
     |INT {Int}
     |STRING {String}
     |typ LBRACK RBRACK {Array($1)}
+    |CHAR {Char}
 
 make_arrayL:
     {[]}
@@ -47,6 +50,7 @@ expr:
     INTL                      { Int($1)            }   
     | IDL                     { Id($1)         }
     | BOOLL                  { Bool($1)           }
+    | CHARL                   {Char($1) }
     /* Arithmetic Operators                     */
     | expr PLUS   expr       { Binop($1, Add, $3) }
     | expr MINUS  expr       { Binop($1, Sub, $3) }
@@ -83,4 +87,3 @@ expr:
 args:
     expr {[$1]}
     |args COMMA expr {$3 :: $1}
-
