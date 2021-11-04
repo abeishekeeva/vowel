@@ -7,11 +7,11 @@
             LPAREN RPAREN LCURLY RCURLY LBRACK RBRACK                   /* parens, brackets */
             ASSIGN INCREMENT DECREMENT                                  /* assignment ops   */
             AND OR NEGATE                                               /* boolean ops      */
-            PRINT                                                       /* misc             */   
-             
-%token <int> INT
-%token <string> ID
-%token <bool> BOOL
+            PRINT COMMA                                                 /* misc             */   
+%token NEW            
+%token <int> INTL
+%token <string> IDL
+%token <bool> BOOLL
 
 %left SEMICOLON
 %right ASSIGN INCREMENT DECREMENT
@@ -30,12 +30,23 @@
 %type <Ast.expr> expr
 
 %%
+typ:
+    VOID {Void}
+    |INT {Int}
+    |STRING {String}
+    |typ LBRACK RBRACK {Array($1)}
+
+make_arrayL:
+    {[]}
+    |LCURLY args RCURLY {List.rev $2}
+
+
 
 expr:
     /* Literals                             */
-    INT                      { Int($1)            }   
-    | ID                     { Id($1)         }
-    | BOOL                   { Bool($1)           }
+    INTL                      { Int($1)            }   
+    | IDL                     { Id($1)         }
+    | BOOLL                  { Bool($1)           }
     /* Arithmetic Operators                     */
     | expr PLUS   expr       { Binop($1, Add, $3) }
     | expr MINUS  expr       { Binop($1, Sub, $3) }
@@ -58,12 +69,18 @@ expr:
     | LCURLY expr RCURLY     { $2 }
     | LBRACK expr RBRACK     {$2}
     /* Assignment Operators   */
-    | ID ASSIGN expr         { Assign($1, $3) }
-    | ID INCREMENT expr      { Increment($1, $3) }
-    | ID DECREMENT expr      { Decrement($1, $3) }
+    | IDL ASSIGN expr         { Assign($1, $3) }
+    | IDL INCREMENT expr      { Increment($1, $3) }
+    | IDL DECREMENT expr      { Decrement($1, $3) }
     /* Boolean Operators  */
     | expr AND expr          { Bool($1, And, $3) }
     | expr OR expr           { Bool($1, Or, $3) }
     | NEGATE expr            {  Unop(Negate, $2)   } 
+    /* Arrays */
+    |NEW typ LBRACK expr RBRACK make_arrayL {ArrayL($2,$4,$6)}
 
+
+args:
+    expr {[$1]}
+    |args COMMA expr {$3 :: $1}
 
