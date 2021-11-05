@@ -7,7 +7,7 @@
             LPAREN RPAREN LCURLY RCURLY LBRACK RBRACK                   /* parens, brackets */
             ASSIGN INCREMENT DECREMENT                                  /* assignment ops   */
             AND OR NEGATE                                               /* boolean ops      */
-            PRINT                                                       /* misc             */   
+            DEF PRINT COMMA                                                  /* misc             */   
              
 %token <int> INT
 %token <string> ID
@@ -66,4 +66,40 @@ expr:
     | expr OR expr           { Bool($1, Or, $3) }
     | NEGATE expr            {  Unop(Negate, $2)   } 
 
+typ:
+    INT    { Int    }
+  | BOOL   { Bool   }
+  | STRING { String }
+  | VOID   { Void   }
+  | ARRAY LSQUARE typ RSQUARE { Array($3) }
 
+declare_statements:
+  /* nothing */ { ([], []) }
+  | decls vdecl { (($2 :: fst $1), snd $1) }
+  | decls fdecl { (fst $1, ($2 :: snd $1)) }
+
+fdecl: 
+  | typ ID LPAREN formals_opt RPAREN LBRACE vdecl_list stmt_list RBRACE {
+        { 
+          typ = $1; 
+          fname = $2; 
+          formals = List.rev $4;
+          locals = List.rev $7; 
+          body = List.rev $8 
+        } 
+    }
+
+formals_opt: 
+  /* nothing */ { [] }
+  | formal_list { $1 }
+
+formal_list: 
+  typ ID { [($1,$2)] }
+  | formal_list COMMA typ ID { ($3,$4) :: $1 }
+
+vdecl_list: 
+  /* nothing */ { [] }
+  | vdecl_list vdecl { $2 :: $1 }
+
+vdecl: 
+  typ ID SEMI { ($1, $2) }
