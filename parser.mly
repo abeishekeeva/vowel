@@ -1,5 +1,5 @@
 
-%token      INT STRING BOOL VOID ARRAY CHAR                             /* literals         */
+%token      INT STRING BOOL VOID ARRAY CHAR STRUCT                         /* literals         */
             PLUS MINUS TIMES DIVIDE MODULO                              /* arithmetic ops   */
             COMPEQUAL COMPNOTEQUAL LESSTHAN GREATERTHAN GTEQT LTEQT     /* comparison ops   */
             UNION INTERSECTION                                          /* set ops          */
@@ -38,6 +38,7 @@ typ:
   | STRING  { String}
   | BOOL    { Bool   }
   | typ LBRACK RBRACK {Array($1)}
+  | STRUCT ID { Struct($2) }
 
 
 make_arrayL:
@@ -77,6 +78,9 @@ vdecl_list:
 vdecl: 
   typ ID SEMICOLON { ($1, $2) }
 
+sdecl:
+    STRUCT ID LCURLY vdecl_list RCURLY SEMICOLON {{struct_name = $2; members = List.rev $4}}
+
 expr:
     /* Literals                             */
     INTL                      { Int($1)            }   
@@ -112,8 +116,11 @@ expr:
     | expr AND expr          { Bool($1, And, $3) }
     | expr OR expr           { Bool($1, Or, $3) }
     | NEGATE expr            {  Unop(Negate, $2)   } 
+    /*Struct 177*/
+    |NEW STRUCT ID            { NewStruct($3) }
     /* Arrays */
     |NEW typ LBRACK expr RBRACK make_arrayL {ArrayL($2,$4,$6)}
+    
 
 
 args:
