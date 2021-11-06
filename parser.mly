@@ -112,6 +112,8 @@ expr:
     | ID ASSIGN expr         { Assign($1, $3) }
     | ID INCREMENT expr      { Increment($1, $3) }
     | ID DECREMENT expr      { Decrement($1, $3) }
+    /* Slicing */
+    | expr LPAREN expr RPAREN     { $1, $3 }
     /* Boolean Operators  */
     | expr AND expr          { Bool($1, And, $3) }
     | expr OR expr           { Bool($1, Or, $3) }
