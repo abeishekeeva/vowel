@@ -10,7 +10,7 @@
             PRINT COMMA                                                 /* misc             */   
 %token NEW            
 %token <int> INTL
-%token <string> IDL
+%token <string> ID
 %token <bool> BOOLL
 %token <char> CHARL
 
@@ -44,10 +44,43 @@ make_arrayL:
     {[]}
     |LCURLY args RCURLY {List.rev $2}
 
+declare_statements:
+  /* nothing */ { ([], []) }
+  | declare_statements vdecl { (($2 :: fst $1), snd $1) }
+  | declare_statements fdecl { (fst $1, ($2 :: snd $1)) }
+
+fdecl: 
+  | typ ID LPAREN formals_opt RPAREN LCURLY vdecl_list stmt_list RCURLY {
+        { 
+          typ = $1; 
+          fname = $2; 
+          formals = List.rev $4;
+          locals = List.rev $7; 
+          body = List.rev $8 
+        } 
+    }
+
+
+
+formals_opt: 
+  /* nothing */ { [] }
+  | formal_list { $1 }
+
+formal_list: 
+  typ ID { [($1,$2)] }
+  | formal_list COMMA typ ID { ($3,$4) :: $1 }
+
+vdecl_list: 
+  /* nothing */ { [] }
+  | vdecl_list vdecl { $2 :: $1 }
+
+vdecl: 
+  typ ID SEMICOLON { ($1, $2) }
+
 expr:
     /* Literals                             */
     INTL                      { Int($1)            }   
-    | IDL                     { Id($1)         }
+    | ID                     { Id($1)         }
     | BOOLL                  { Bool($1)           }
     | CHARL                   {Char($1) }
     /* Arithmetic Operators                     */
@@ -72,9 +105,9 @@ expr:
     | LCURLY expr RCURLY     { $2 }
     | LBRACK expr RBRACK     {$2}
     /* Assignment Operators   */
-    | IDL ASSIGN expr         { Assign($1, $3) }
-    | IDL INCREMENT expr      { Increment($1, $3) }
-    | IDL DECREMENT expr      { Decrement($1, $3) }
+    | ID ASSIGN expr         { Assign($1, $3) }
+    | ID INCREMENT expr      { Increment($1, $3) }
+    | ID DECREMENT expr      { Decrement($1, $3) }
     /* Boolean Operators  */
     | expr AND expr          { Bool($1, And, $3) }
     | expr OR expr           { Bool($1, Or, $3) }
@@ -87,33 +120,5 @@ args:
     expr {[$1]}
     |args COMMA expr {$3 :: $1}
 
-declare_statements:
-  /* nothing */ { ([], []) }
-  | decls vdecl { (($2 :: fst $1), snd $1) }
-  | decls fdecl { (fst $1, ($2 :: snd $1)) }
 
-fdecl: 
-  | typ ID LPAREN formals_opt RPAREN LBRACE vdecl_list stmt_list RBRACE {
-        { 
-          typ = $1; 
-          fname = $2; 
-          formals = List.rev $4;
-          locals = List.rev $7; 
-          body = List.rev $8 
-        } 
-    }
 
-formals_opt: 
-  /* nothing */ { [] }
-  | formal_list { $1 }
-
-formal_list: 
-  typ ID { [($1,$2)] }
-  | formal_list COMMA typ ID { ($3,$4) :: $1 }
-
-vdecl_list: 
-  /* nothing */ { [] }
-  | vdecl_list vdecl { $2 :: $1 }
-
-vdecl: 
-  typ ID SEMI { ($1, $2) }
