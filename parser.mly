@@ -62,7 +62,6 @@ fdecl:
     }
 
 
-
 formals_opt: 
   /* nothing */ { [] }
   | formal_list { $1 }
@@ -94,7 +93,7 @@ expr:
     | expr DIVIDE expr       { Binop($1, Div, $3) }
     | expr MODULO expr       { Binop($1, Mod, $3) }
     | MINUS expr %prec TIMES { Unop(Negative, $2) }
-    /* Comparison Operators                 */
+      /* Comparison Operators                 */
     | expr COMPEQUAL expr    { Binop($1, Compeq, $3) }
     | expr COMPNOTEQUAL expr { Binop($1, Compnoteq, $3) }
     | expr LESSTHAN expr     { Binop($1, Lessthan, $3) }
@@ -109,8 +108,6 @@ expr:
     | LCURLY expr RCURLY     { $2 }
     | LBRACK expr RBRACK     {$2}
     /* Assignment Operators   */
-    | ID ASSIGN expr         { Assign($1, $3) }
-    | ID INCREMENT expr      { Increment($1, $3) }
     | ID DECREMENT expr      { Decrement($1, $3) }
     /* Slicing */
     | expr LPAREN expr RPAREN     { $1, $3 }
@@ -122,12 +119,21 @@ expr:
     |NEW STRUCT ID            { NewStruct($3) }
     /* Arrays */
     |NEW typ LBRACK expr RBRACK make_arrayL {ArrayL($2,$4,$6)}
+    /* Conditional */
+    | IF LPAREN expr RPAREN LCURLY expr RCURLY                         {Conditional($3, $6)}
+    | IF LPAREN expr RPAREN LCURLY expr RCURLY ELSE LCURLY expr RCURLY {ConditionalEl($3, $6, $10)};
+    /* Loops */
+    | WHILE LPAREN expr RPAREN LCURLY expr RCURLY                      {WLoop($3, $6)}
+    | FOR LPAREN for_loop_init RPAREN LCURLY expr RCURLY               {FLoop($3, $6)}
     
-
+increment: 
+    ID INCREMENT expr      { Increment($1, $3) }
 
 args:
     expr {[$1]}
     |args COMMA expr {$3 :: $1}
 
+for_loop_init:
+      vdecl SEMICOLON comparison SEMICOLON increment {FLoop_init($1, $3, $5)}
 
 
