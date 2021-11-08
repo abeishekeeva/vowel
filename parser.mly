@@ -11,11 +11,13 @@
 %token <int> INTL
 %token <string> ID
 %token <bool> BOOLL
+%token EOF
 
-
+%nonassoc NOELSE
+%nonassoc ELSE
 %left SEMICOLON
 %right ASSIGN INCREMENT DECREMENT
-%right IF THEN ELSE
+%right IF THEN 
 %left OR
 %left AND
 %right NEGATE
@@ -35,7 +37,6 @@ typ:
   | INT     { Int}
   | STRING  { String}
   | BOOL    { Bool   }
-  | typ LBRACK RBRACK {Array($1)}
   | STRUCT ID { Struct($2) }
 
 
@@ -77,6 +78,25 @@ vdecl:
 
 sdecl:
     STRUCT ID LCURLY vdecl_list RCURLY SEMICOLON {{struct_name = $2; members = List.rev $4}}
+
+stmt_list:
+    /* nothing */  { [] }
+  | stmt_list stmt { $2 :: $1 }
+
+stmt:
+    expr SEMICOLON                               { Expr $1               }
+  | RETURN expr_opt SEMICOLON                    { Return $2             }
+  | LCURLY stmt_list RCURLY                 { Block(List.rev $2)    }
+  | IF LPAREN expr RPAREN stmt %prec NOELSE { If($3, $5, Block([])) }
+  | IF LPAREN expr RPAREN stmt ELSE stmt    { If($3, $5, $7)        }
+  | FOR LPAREN expr_opt SEMICOLON expr SEMICOLON expr_opt RPAREN stmt
+                                            { For($3, $5, $7, $9)   }
+  | WHILE LPAREN expr RPAREN stmt           { While($3, $5)         }
+
+expr_opt:
+    /* nothing */ { Noexpr }
+  | expr          { $1 }
+
 
 expr:
     /* Literals                             */
