@@ -29,10 +29,15 @@
 %left UNION INTERSECTION
 %left LPAREN RPAREN LCURLY RCURLY LBRACK RBRACK
 
-%start expr
-%type <Ast.expr> expr
+/* %start expr
+%type <Ast.expr> expr */
+
+%start program
+%type <Ast.program> program
 
 %%
+program: declare_statements EOF { $1 }
+
 typ:
   VOID {Void}
   | INT     { Int}
@@ -49,6 +54,7 @@ declare_statements:
   /* nothing */ { ([], []) }
   | declare_statements vdecl { (($2 :: fst $1), snd $1) }
   | declare_statements fdecl { (fst $1, ($2 :: snd $1)) }
+  | declare_statements sdecl { (fst $1, ($2 :: snd $1)) }  /* TODO: Fix the */
 
 fdecl: 
   | typ ID LPAREN formals_opt RPAREN LCURLY vdecl_list stmt_list RCURLY {
@@ -75,18 +81,23 @@ vdecl_list:
   | vdecl_list vdecl { $2 :: $1 }
 
 vdecl: 
-  typ ID SEMICOLON { ($1, $2) }
+  typ ID ASSIGN expr SEMICOLON { Assign($1, $2, $4) }
+   /* typ ID SEMICOLON { ($1, $2) } */
+
+sdecl_list: 
+  /* nothing */ { [] } 
+  | sdecl_list sdecl { $2 :: $1 }
 
 sdecl:
-    STRUCT ID LCURLY vdecl_list RCURLY SEMICOLON {{struct_name = $2; members = List.rev $4}}
+    STRUCT ID LCURLY sdecl_list RCURLY SEMICOLON {{struct_name = $2; members = List.rev $4}} 
 
 stmt_list:
     /* nothing */  { [] }
   | stmt_list stmt { $2 :: $1 }
 
 stmt:
-    expr SEMICOLON                               { Expr $1               }
-  | RETURN expr_opt SEMICOLON                    { Return $2             }
+    expr SEMICOLON                          { Expr $1               }
+  | RETURN expr_opt SEMICOLON               { Return $2             }
   | LCURLY stmt_list RCURLY                 { Block(List.rev $2)    }
   | IF LPAREN expr RPAREN stmt %prec NOELSE { If($3, $5, Block([])) }
   | IF LPAREN expr RPAREN stmt ELSE stmt    { If($3, $5, $7)        }
@@ -94,15 +105,14 @@ stmt:
                                             { For($3, $5, $7, $9)   }
   | WHILE LPAREN expr RPAREN stmt           { While($3, $5)         }
 
-expr_opt:
+expr_opt:   
     /* nothing */ { Noexpr }
   | expr          { $1 }
 
-
 expr:
     /* Literals                             */
-    INTL                      { Int($1)            }   
-    | ID                     { Id($1)         }
+      INTL                   { Int($1)            }   
+    | ID                     { Id($1)             }
     | BOOLL                  { Bool($1)           }
     /* Arithmetic Operators                     */
     | expr PLUS   expr       { Binop($1, Add, $3) }
@@ -123,10 +133,11 @@ expr:
     | expr INTERSECTION expr { Binop($1, Intersect, $3) }
     /* Parens and brackets */
     | LPAREN expr RPAREN     { $2 }
-    | LCURLY expr RCURLY     { $2 }
-    | LBRACK expr RBRACK     {$2}
+    /*| LCURLY expr RCURLY     { $2 }
+    | LBRACK expr RBRACK     { $2 } */
     /* Assignment Operators   */
     | ID DECREMENT expr      { Decrement($1, $3) }
+    | ID INCREMENT expr      { Increment($1, $3) }
     /* Slicing */
     | expr LPAREN expr RPAREN     { $1, $3 }
     /* Boolean Operators  */
@@ -134,24 +145,14 @@ expr:
     | expr OR expr           { Bool($1, Or, $3) }
     | NEGATE expr            {  Unop(Negate, $2)   } 
     /*Struct 177*/
-    |STRUCT ID            { NewStruct($2) }
+    | STRUCT ID              { NewStruct($2) }
     /* Arrays */
     |typ LBRACK expr RBRACK make_arrayL {ArrayL($1,$3,$5)}
-    /* Conditional */
-    | IF LPAREN expr RPAREN LCURLY expr RCURLY                         {Conditional($3, $6)}
-    | IF LPAREN expr RPAREN LCURLY expr RCURLY ELSE LCURLY expr RCURLY {ConditionalEl($3, $6, $10)};
-    /* Loops */
-    | WHILE LPAREN expr RPAREN LCURLY expr RCURLY                      {WLoop($3, $6)}
-    | FOR LPAREN for_loop_init RPAREN LCURLY expr RCURLY               {FLoop($3, $6)}
     
-increment: 
-    ID INCREMENT expr      { Increment($1, $3) }
-
 args:
     expr {[$1]}
     |args COMMA expr {$3 :: $1}
 
-for_loop_init:
-      vdecl SEMICOLON comparison SEMICOLON increment {FLoop_init($1, $3, $5)}
+
 
 
