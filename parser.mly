@@ -1,5 +1,5 @@
 
-%token      INT STRING BOOL VOID ARRAY CHAR STRUCT                         /* literals         */
+%token      INT STRING BOOL VOID ARRAY STRUCT                         /* literals         */
             PLUS MINUS TIMES DIVIDE MODULO                              /* arithmetic ops   */
             COMPEQUAL COMPNOTEQUAL LESSTHAN GREATERTHAN GTEQT LTEQT     /* comparison ops   */
             UNION INTERSECTION                                          /* set ops          */
@@ -7,18 +7,18 @@
             LPAREN RPAREN LCURLY RCURLY LBRACK RBRACK                   /* parens, brackets */
             ASSIGN INCREMENT DECREMENT                                  /* assignment ops   */
             AND OR NEGATE                                               /* boolean ops      */
-            PRINT COMMA                                                 /* misc             */   
-%token NEW            
+            PRINT COMMA                                                 /* misc             */             
 %token <int> INTL
 %token <string> ID
 %token <bool> BOOLL
 %token <string> STRING
-%token <char> CHARL
+%token EOF
 
-
+%nonassoc NOELSE
+%nonassoc ELSE
 %left SEMICOLON
 %right ASSIGN INCREMENT DECREMENT
-%right IF THEN ELSE
+%right IF THEN 
 %left OR
 %left AND
 %right NEGATE
@@ -38,7 +38,6 @@ typ:
   | INT     { Int}
   | STRING  { String}
   | BOOL    { Bool   }
-  | typ LBRACK RBRACK {Array($1)}
   | STRUCT ID { Struct($2) }
 
 
@@ -81,12 +80,30 @@ vdecl:
 sdecl:
     STRUCT ID LCURLY vdecl_list RCURLY SEMICOLON {{struct_name = $2; members = List.rev $4}}
 
+stmt_list:
+    /* nothing */  { [] }
+  | stmt_list stmt { $2 :: $1 }
+
+stmt:
+    expr SEMICOLON                               { Expr $1               }
+  | RETURN expr_opt SEMICOLON                    { Return $2             }
+  | LCURLY stmt_list RCURLY                 { Block(List.rev $2)    }
+  | IF LPAREN expr RPAREN stmt %prec NOELSE { If($3, $5, Block([])) }
+  | IF LPAREN expr RPAREN stmt ELSE stmt    { If($3, $5, $7)        }
+  | FOR LPAREN expr_opt SEMICOLON expr SEMICOLON expr_opt RPAREN stmt
+                                            { For($3, $5, $7, $9)   }
+  | WHILE LPAREN expr RPAREN stmt           { While($3, $5)         }
+
+expr_opt:
+    /* nothing */ { Noexpr }
+  | expr          { $1 }
+
+
 expr:
     /* Literals                             */
     INTL                      { Int($1)            }   
     | ID                     { Id($1)         }
     | BOOLL                  { Bool($1)           }
-    | CHARL                   {Char($1) }
     /* Arithmetic Operators                     */
     | expr PLUS   expr       { Binop($1, Add, $3) }
     | expr MINUS  expr       { Binop($1, Sub, $3) }
@@ -117,9 +134,9 @@ expr:
     | expr OR expr           { Bool($1, Or, $3) }
     | NEGATE expr            {  Unop(Negate, $2)   } 
     /*Struct 177*/
-    |NEW STRUCT ID            { NewStruct($3) }
+    |STRUCT ID            { NewStruct($2) }
     /* Arrays */
-    |NEW typ LBRACK expr RBRACK make_arrayL {ArrayL($2,$4,$6)}
+    |typ LBRACK expr RBRACK make_arrayL {ArrayL($1,$3,$5)}
     /* Conditional */
     | IF LPAREN expr RPAREN LCURLY expr RCURLY                         {Conditional($3, $6)}
     | IF LPAREN expr RPAREN LCURLY expr RCURLY ELSE LCURLY expr RCURLY {ConditionalEl($3, $6, $10)};
