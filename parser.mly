@@ -12,6 +12,7 @@
 %token <int> INTL
 %token <string> ID
 %token <bool> BOOLL
+%token <string> STRING
 %token <char> CHARL
 
 
