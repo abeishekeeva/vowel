@@ -47,7 +47,7 @@ rule tokenize = parse
 | ['a'-'z']+ as variable   { ID(variable)             }
 | string     as str_val    { STRING(unescape str_val) }
 | '='        { ASSIGN }
-| "+="       { INCREMENT }
+| "+="       { INCREMENT }  
 | "-="       { DECREMENT }
 | "and"      { AND }
 | "or"       { OR }
