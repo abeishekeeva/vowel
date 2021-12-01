@@ -1,4 +1,4 @@
-int test_incr()
+int main()
 {
   int a;
   a = 42;

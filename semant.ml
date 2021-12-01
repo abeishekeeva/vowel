@@ -67,7 +67,7 @@ let check (globals, functions) =
     with Not_found -> raise (Failure ("unrecognized function " ^ s))
   in
 
-  (* let _ = find_func "main" in *)(* Ensure "main" is defined *)
+  let _ = find_func "main" in (* Ensure "main" is defined *)
 
   let check_function func =
     (* Make sure no formals or locals are void or duplicates *)
@@ -111,7 +111,7 @@ let check (globals, functions) =
           let err = "illegal assignment for increment" ^ string_of_typ lt ^ " = " ^ 
           string_of_typ rt ^ " in " ^ string_of_expr ex
           in (check_assign lt rt err, SIncr(var, (rt, e')))
-          
+
       | Unop(op, e) as ex -> 
           let (t, e') = expr e in
           let ty = match op with

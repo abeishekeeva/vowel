@@ -10,6 +10,7 @@ type token =
   | TIMES
   | DIVIDE
   | ASSIGN
+  | INCR
   | NOT
   | EQ
   | NEQ

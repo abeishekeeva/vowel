@@ -1,7 +1,7 @@
 int main()
 {
-  int x = 5;
-  x = 2;
-  print(x);
-  return 0;
+  int a;
+  a = 42;
+  a -= 2; 
+  print(a);
 }
