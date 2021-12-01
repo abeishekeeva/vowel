@@ -56,14 +56,6 @@ let translate (globals, functions) =
       L.var_arg_function_type i32_t [| L.pointer_type i8_t |] in
   let printf_func : L.llvalue = 
       L.declare_function "printf" printf_t the_module in
-
-(*
-  let printstr_t : L.lltype = 
-      L.var_arg_function_type str_t [| L.pointer_type i8_t |] in
-  let printstr_func : L.llvalue = 
-      L.declare_function "printstr" printstr_t the_module in
-*)
-
   let printbig_t : L.lltype =
       L.function_type i32_t [| i32_t |] in
   let printbig_func : L.llvalue =
@@ -129,12 +121,14 @@ let translate (globals, functions) =
                           ignore(L.build_store e' (lookup s) builder); e'
       | SBinop ((A.Float,_ ) as e1, op, e2) ->
 	  let e1' = expr builder e1
-	  and e2' = expr builder e2 in
+    and e2' = expr builder e2
+    in
 	  (match op with 
 	    A.Add     -> L.build_fadd
 	  | A.Sub     -> L.build_fsub
 	  | A.Mult    -> L.build_fmul
-	  | A.Div     -> L.build_fdiv 
+    | A.Div     -> L.build_fdiv 
+    | A.Mod     -> L.build_frem
 	  | A.Equal   -> L.build_fcmp L.Fcmp.Oeq
 	  | A.Neq     -> L.build_fcmp L.Fcmp.One
 	  | A.Less    -> L.build_fcmp L.Fcmp.Olt
@@ -151,7 +145,8 @@ let translate (globals, functions) =
 	    A.Add     -> L.build_add
 	  | A.Sub     -> L.build_sub
 	  | A.Mult    -> L.build_mul
-          | A.Div     -> L.build_sdiv
+    | A.Div     -> L.build_sdiv
+    | A.Mod     -> L.build_srem
 	  | A.And     -> L.build_and
 	  | A.Or      -> L.build_or
 	  | A.Equal   -> L.build_icmp L.Icmp.Eq

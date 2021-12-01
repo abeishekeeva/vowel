@@ -9,6 +9,7 @@ type token =
   | MINUS
   | TIMES
   | DIVIDE
+  | MODULUS
   | ASSIGN
   | NOT
   | EQ
