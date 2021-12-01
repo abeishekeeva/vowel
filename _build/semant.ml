@@ -132,6 +132,14 @@ let check (globals, functions) =
                        string_of_typ t1 ^ " " ^ string_of_op op ^ " " ^
                        string_of_typ t2 ^ " in " ^ string_of_expr e))
           in (ty, SBinop((t1, e1'), op, (t2, e2')))
+
+      |Decrement(var, e) as ex ->
+        let lt = type_of_identifier var 
+        and (rt, e') = expr e in
+        let err = "illegal assignment for decrement" ^ string_of_typ lt ^ " = " ^
+        string_of_typ rt ^ " in " ^string_of_expr ex
+        in (check_assign lt rt err, SDecr(var, (rt,e')))
+
       | Call(fname, args) as call -> 
           let fd = find_func fname in
           let param_length = List.length fd.formals in

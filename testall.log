@@ -256,6 +256,11 @@ cc -o test-if6.exe test-if6.s printbig.o
 diff -b test-if6.out tests/test-if6.out > test-if6.diff
 ###### SUCCESS
 
+###### Testing test-lex
+./microc.native tests/test-lex.mc > test-lex.ll
+Fatal error: exception Stdlib.Parsing.Parse_error
+###### FAILED
+
 ###### Testing test-local1
 ./microc.native tests/test-local1.mc > test-local1.ll
 llc -relocation-model=pic test-local1.ll > test-local1.s

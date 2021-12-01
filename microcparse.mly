@@ -18,7 +18,8 @@ open Ast
 
 %nonassoc NOELSE
 %nonassoc ELSE
-%right ASSIGN DECREMENT
+%right DECREMENT
+%right ASSIGN 
 %left OR
 %left AND
 %left EQ NEQ
@@ -108,7 +109,7 @@ expr:
   | ID ASSIGN expr   { Assign($1, $3)         }
   | ID LPAREN args_opt RPAREN { Call($1, $3)  }
   | LPAREN expr RPAREN { $2                   }
-  | expr DECREMENT expr { Binop ($1, Decrement, $3) }
+  | ID DECREMENT expr { Decrement($1, $3) }
 
 args_opt:
     /* nothing */ { [] }

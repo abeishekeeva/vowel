@@ -19,6 +19,7 @@ type token =
   | GEQ
   | AND
   | OR
+  | DECREMENT
   | RETURN
   | IF
   | ELSE
