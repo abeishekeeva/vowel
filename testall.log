@@ -264,6 +264,9 @@ cc -o test-incr.exe test-incr.s printbig.o
 (.text+0x18): undefined reference to `main'
 /usr/bin/ld: (.text+0x1c): undefined reference to `main'
 collect2: error: ld returned 1 exit status
+###### Testing test-lex
+./microc.native tests/test-lex.mc > test-lex.ll
+Fatal error: exception Stdlib.Parsing.Parse_error
 ###### FAILED
 
 ###### Testing test-local1

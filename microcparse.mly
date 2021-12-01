@@ -6,6 +6,7 @@ open Ast
 
 %token SEMI LPAREN RPAREN LBRACE RBRACE COMMA PLUS MINUS TIMES DIVIDE ASSIGN INCR
 %token NOT EQ NEQ LT LEQ GT GEQ AND OR
+%token DECREMENT
 %token RETURN IF ELSE FOR WHILE INT BOOL FLOAT VOID STRING
 %token <int> LITERAL
 %token <bool> BLIT
@@ -18,6 +19,7 @@ open Ast
 %nonassoc NOELSE
 %nonassoc ELSE
 %right INCR
+%right DECREMENT
 %right ASSIGN 
 %left OR
 %left AND
@@ -109,6 +111,7 @@ expr:
   | ID INCR expr     { Incr($1, $3)           }
   | ID LPAREN args_opt RPAREN { Call($1, $3)  }
   | LPAREN expr RPAREN { $2                   }
+  | ID DECREMENT expr { Decrement($1, $3) }
 
 args_opt:
     /* nothing */ { [] }

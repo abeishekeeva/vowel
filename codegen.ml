@@ -123,12 +123,16 @@ let translate (globals, functions) =
                        let old_val = L.build_load (lookup s) s builder in 
                        let incremented = L.build_add e' old_val s builder in 
                       ignore(L.build_store incremented (lookup s) builder); incremented
+      | SDecr(s, e) -> let e' = expr builder e in
+                            let oldvar = L.build_load (lookup s) s builder in
+                            let nvar = L.build_sub oldvar e' s builder in
+                            ignore(L.build_store nvar (lookup s) builder); nvar 
       | SBinop ((A.Float,_ ) as e1, op, e2) ->
 	  let e1' = expr builder e1
 	  and e2' = expr builder e2 in
 	  (match op with 
 	    A.Add     -> L.build_fadd
-	  | A.Sub     -> L.build_fsub
+	  | A.Sub     -> L.build_fsub 
 	  | A.Mult    -> L.build_fmul
 	  | A.Div     -> L.build_fdiv 
 	  | A.Equal   -> L.build_fcmp L.Fcmp.Oeq
@@ -156,6 +160,7 @@ let translate (globals, functions) =
 	  | A.Leq     -> L.build_icmp L.Icmp.Sle
 	  | A.Greater -> L.build_icmp L.Icmp.Sgt
 	  | A.Geq     -> L.build_icmp L.Icmp.Sge
+
 	  ) e1' e2' "tmp" builder
       | SUnop(op, ((t, _) as e)) ->
           let e' = expr builder e in
