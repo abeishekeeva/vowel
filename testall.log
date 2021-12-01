@@ -256,6 +256,16 @@ cc -o test-if6.exe test-if6.s printbig.o
 diff -b test-if6.out tests/test-if6.out > test-if6.diff
 ###### SUCCESS
 
+###### Testing test-incr
+./microc.native tests/test-incr.mc > test-incr.ll
+llc -relocation-model=pic test-incr.ll > test-incr.s
+cc -o test-incr.exe test-incr.s printbig.o
+/usr/bin/ld: /usr/lib/gcc/aarch64-linux-gnu/9/../../../aarch64-linux-gnu/Scrt1.o: in function `_start':
+(.text+0x18): undefined reference to `main'
+/usr/bin/ld: (.text+0x1c): undefined reference to `main'
+collect2: error: ld returned 1 exit status
+###### FAILED
+
 ###### Testing test-local1
 ./microc.native tests/test-local1.mc > test-local1.ll
 llc -relocation-model=pic test-local1.ll > test-local1.s
@@ -475,8 +485,13 @@ diff -b fail-if3.err tests/fail-if3.err > fail-if3.diff
 
 ###### Testing fail-nomain
 ./microc.native < tests/fail-nomain.mc 2> fail-nomain.err >> testall.log
-diff -b fail-nomain.err tests/fail-nomain.err > fail-nomain.diff
-###### SUCCESS
+; ModuleID = 'MicroC'
+source_filename = "MicroC"
+
+declare i32 @printf(i8*, ...)
+
+declare i32 @printbig(i32)
+###### FAILED
 
 ###### Testing fail-print
 ./microc.native < tests/fail-print.mc 2> fail-print.err >> testall.log
