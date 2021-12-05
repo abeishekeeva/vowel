@@ -10,8 +10,10 @@ char *string_concat(char *s1, char *s2) {
     return new;
 }
 
-int string_equality(char *s1, char *s2){
-	int result;
-	result = strcmp(s1, s2);
+int *string_equality(char *s1, char *s2){
+	int *result = (int *) malloc(sizeof(int));
+	int res = strcmp(s1, s2);
+	result = &res;
+
 	return result;
 }
