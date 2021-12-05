@@ -288,6 +288,14 @@ cc -o test-local2.exe test-local2.s printbig.o
 diff -b test-local2.out tests/test-local2.out > test-local2.diff
 ###### SUCCESS
 
+###### Testing test-modulus
+./vowel.native tests/test-modulus.mc > test-modulus.ll
+llc -relocation-model=pic test-modulus.ll > test-modulus.s
+cc -o test-modulus.exe test-modulus.s printbig.o
+./test-modulus.exe
+diff -b test-modulus.out tests/test-modulus.out > test-modulus.diff
+###### SUCCESS
+
 ###### Testing test-ops1
 ./vowel.native tests/test-ops1.mc > test-ops1.ll
 llc -relocation-model=pic test-ops1.ll > test-ops1.s
@@ -310,6 +318,14 @@ llc -relocation-model=pic test-printbig.ll > test-printbig.s
 cc -o test-printbig.exe test-printbig.s printbig.o
 ./test-printbig.exe
 diff -b test-printbig.out tests/test-printbig.out > test-printbig.diff
+###### SUCCESS
+
+###### Testing test-string
+./vowel.native tests/test-string.mc > test-string.ll
+llc -relocation-model=pic test-string.ll > test-string.s
+cc -o test-string.exe test-string.s printbig.o
+./test-string.exe
+diff -b test-string.out tests/test-string.out > test-string.diff
 ###### SUCCESS
 
 ###### Testing test-var1
