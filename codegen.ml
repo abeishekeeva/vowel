@@ -51,10 +51,9 @@ let translate (globals, functions) =
         | _ -> L.const_int (ltype_of_typ t) 0
       in StringMap.add n (L.define_global n init the_module) m in
     List.fold_left global_var StringMap.empty globals in
-
-    
+  
   let string_concat_t : L.lltype =
-    L.function_type str_t [| str_t; str_t |] in   [| str_t   |]  
+    L.function_type str_t [| str_t; str_t |] in
   let string_concat_f : L.llvalue =
     L.declare_function "string_concat" string_concat_t the_module in
 
