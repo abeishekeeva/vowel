@@ -1,6 +1,6 @@
 (* Ocamllex scanner for MicroC *)
 
-{ open Microcparse }
+{ open Vowelparse }
 
 let digit = ['0' - '9']
 let digits = digit+

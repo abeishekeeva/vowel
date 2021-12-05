@@ -119,12 +119,13 @@ let translate (globals, functions) =
       | SId s       -> L.build_load (lookup s) s builder
       | SAssign (s, e) -> let e' = expr builder e in
                           ignore(L.build_store e' (lookup s) builder); e'
+
       | SIncr(s, e) -> let e' = expr builder e in
                        let old_val = L.build_load (lookup s) s builder in 
                        let incremented = L.build_add e' old_val s builder in 
                       ignore(L.build_store incremented (lookup s) builder); incremented
       | SDecr(s, e) -> let e' = expr builder e in
-                            let oldvar = L.build_load (lookup s) s builder in
+                            let oldvar = L.build_load (lookup s) s builder in 
                             let nvar = L.build_sub oldvar e' s builder in
                             ignore(L.build_store nvar (lookup s) builder); nvar 
       | SBinop ((A.Float,_ ) as e1, op, e2) ->

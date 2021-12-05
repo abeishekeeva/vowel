@@ -8,7 +8,7 @@ test : all testall.sh
 # to test linking external code
 
 .PHONY : all
-all : microc.native printbig.o
+all : vowel.native printbig.o
 
 # "make microc.native" compiles the compiler
 #
@@ -17,9 +17,9 @@ all : microc.native printbig.o
 #
 # See https://github.com/ocaml/ocamlbuild/blob/master/manual/manual.adoc
 
-microc.native :
+vowel.native :
 	opam config exec -- \
-	ocamlbuild -use-ocamlfind microc.native
+	ocamlbuild -use-ocamlfind vowel.native
 
 # "make clean" removes all generated files
 
@@ -50,12 +50,12 @@ FAILS = \
 TESTFILES = $(TESTS:%=test-%.mc) $(TESTS:%=test-%.out) \
 	    $(FAILS:%=fail-%.mc) $(FAILS:%=fail-%.err)
 
-TARFILES = ast.ml sast.ml codegen.ml Makefile _tags microc.ml microcparse.mly \
+TARFILES = ast.ml sast.ml codegen.ml Makefile _tags vowel.ml vowelparse.mly \
 	README scanner.mll semant.ml testall.sh \
 	printbig.c arcade-font.pbm font2c \
 	Dockerfile \
 	$(TESTFILES:%=tests/%) 
 
-microc.tar.gz : $(TARFILES)
-	cd .. && tar czf microc/microc.tar.gz \
+vowel.tar.gz : $(TARFILES)
+	cd .. && tar czf vowel/vowel.tar.gz \
 		$(TARFILES:%=microc/%)
