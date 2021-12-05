@@ -1,4 +1,6 @@
 int main()
 {
-  printstr("Hello World");
+  string j;
+  j = "Hell" + "o";
+  printstr(j);
 }
