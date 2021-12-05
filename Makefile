@@ -32,7 +32,7 @@ vowel.native :
 clean :
 	ocamlbuild -clean
 	rm -rf testall.log ocamlllvm *.diff
-	rm -f *.o vowel_func.bc
+	rm -f *.o *.output vowel_func.bc
 
 # Testing the "printbig" example
 

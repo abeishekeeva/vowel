@@ -52,12 +52,11 @@ let translate (globals, functions) =
       in StringMap.add n (L.define_global n init the_module) m in
     List.fold_left global_var StringMap.empty globals in
 
-    (* TRYING WHAT THE PYLIT PEOPLE DID *)
+    
   let string_concat_t : L.lltype =
-    L.function_type str_t [| str_t; str_t |] in
+    L.function_type str_t [| str_t; str_t |] in   [| str_t   |]  
   let string_concat_f : L.llvalue =
     L.declare_function "string_concat" string_concat_t the_module in
-    (* - - - - - - - - *)
 
   let printf_t : L.lltype = 
       L.var_arg_function_type i32_t [| L.pointer_type i8_t |] in
