@@ -8,28 +8,10 @@ main:                                   # @main
 # %bb.0:                                # %entry
 	pushq	%rax
 	.cfi_def_cfa_offset 16
-	movl	$72, %edi
-	callq	printbig@PLT
-	movl	$69, %edi
-	callq	printbig@PLT
-	movl	$76, %edi
-	callq	printbig@PLT
-	movl	$76, %edi
-	callq	printbig@PLT
-	movl	$79, %edi
-	callq	printbig@PLT
-	movl	$32, %edi
-	callq	printbig@PLT
-	movl	$87, %edi
-	callq	printbig@PLT
-	movl	$79, %edi
-	callq	printbig@PLT
-	movl	$82, %edi
-	callq	printbig@PLT
-	movl	$76, %edi
-	callq	printbig@PLT
-	movl	$68, %edi
-	callq	printbig@PLT
+	leaq	.Lfmt(%rip), %rdi
+	movl	$1, %esi
+	xorl	%eax, %eax
+	callq	printf@PLT
 	xorl	%eax, %eax
 	popq	%rcx
 	.cfi_def_cfa_offset 8
