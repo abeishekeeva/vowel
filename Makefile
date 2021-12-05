@@ -9,7 +9,7 @@ test : all testall.sh
 
 .PHONY : all
 
-all : vowel.native vowel_func.o
+all : vowel.native vowel_func.o printbig.o
 
 # "make microc.native" compiles the compiler
 #

@@ -54,7 +54,7 @@ let translate (globals, functions) =
 
     
   let string_concat_t : L.lltype =
-    L.function_type str_t [| str_t; str_t |] in   [| str_t   |]  
+    L.function_type str_t [| str_t; str_t |] in  
   let string_concat_f : L.llvalue =
     L.declare_function "string_concat" string_concat_t the_module in
 
@@ -124,6 +124,14 @@ let translate (globals, functions) =
       | SId s       -> L.build_load (lookup s) s builder
       | SAssign (s, e) -> let e' = expr builder e in
                           ignore(L.build_store e' (lookup s) builder); e'
+      | SIncr(s, e) -> let e' = expr builder e in
+      let old_val = L.build_load (lookup s) s builder in 
+      let incremented = L.build_add e' old_val s builder in 
+      ignore(L.build_store incremented (lookup s) builder); incremented
+      | SDecr(s, e) -> let e' = expr builder e in
+                  let oldvar = L.build_load (lookup s) s builder in
+                  let nvar = L.build_sub oldvar e' s builder in
+                  ignore(L.build_store nvar (lookup s) builder); nvar 
       | SBinop ((A.String,_ ) as e1, op, e2) -> 
         let e1' = expr builder e1
         and e2' = expr builder e2 in
@@ -138,6 +146,7 @@ let translate (globals, functions) =
           | A.Sub     -> L.build_fsub
           | A.Mult    -> L.build_fmul
           | A.Div     -> L.build_fdiv 
+          | A.Mod     -> L.build_frem
           | A.Equal   -> L.build_fcmp L.Fcmp.Oeq
           | A.Neq     -> L.build_fcmp L.Fcmp.One
           | A.Less    -> L.build_fcmp L.Fcmp.Olt
@@ -155,6 +164,7 @@ let translate (globals, functions) =
           | A.Sub     -> L.build_sub
           | A.Mult    -> L.build_mul
           | A.Div     -> L.build_sdiv
+          | A.Mod     -> L.build_srem
           | A.And     -> L.build_and
           | A.Or      -> L.build_or
           | A.Equal   -> L.build_icmp L.Icmp.Eq
