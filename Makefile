@@ -8,7 +8,8 @@ test : all testall.sh
 # to test linking external code
 
 .PHONY : all
-all : vowel.native printbig.o
+
+all : vowel.native vowel_func.o
 
 # "make microc.native" compiles the compiler
 #
@@ -19,7 +20,11 @@ all : vowel.native printbig.o
 
 vowel.native :
 	opam config exec -- \
-	ocamlbuild -use-ocamlfind vowel.native
+	rm -f *.o
+	ocamlbuild -use-ocamlfind -pkgs llvm.bitreader vowel.native
+	gcc -c vowel_func.c
+	cc -emit-llvm -o vowel_func.bc -c vowel_func.c -Wno-varargs
+#used to be clang in the last line
 
 # "make clean" removes all generated files
 
@@ -27,11 +32,12 @@ vowel.native :
 clean :
 	ocamlbuild -clean
 	rm -rf testall.log ocamlllvm *.diff
+	rm -f *.o vowel_func.bc
 
 # Testing the "printbig" example
 
-printbig : printbig.c
-	cc -o printbig -DBUILD_TEST printbig.c
+vowel_func : vowel_func.c
+	cc -o vowel_func -DBUILD_TEST vowel_func.c
 
 # Building the tarball
 
@@ -52,7 +58,7 @@ TESTFILES = $(TESTS:%=test-%.mc) $(TESTS:%=test-%.out) \
 
 TARFILES = ast.ml sast.ml codegen.ml Makefile _tags vowel.ml vowelparse.mly \
 	README scanner.mll semant.ml testall.sh \
-	printbig.c arcade-font.pbm font2c \
+	vowel_func.c vowel_func.c arcade-font.pbm font2c \
 	Dockerfile \
 	$(TESTFILES:%=tests/%) 
 

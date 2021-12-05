@@ -129,8 +129,9 @@ let check (globals, functions) =
           let same = t1 = t2 in
           (* Determine expression type based on operator and operand types *)
           let ty = match op with
-            Add | Sub | Mult | Div | Mod when same && t1 = Int   -> Int
-          | Add | Sub | Mult | Div | Mod when same && t1 = Float -> Float
+            Add | Sub | Mult | Div when same && t1 = Int   -> Int
+          | Add | Sub | Mult | Div when same && t1 = Float -> Float
+          | Add when same && t1 = String -> String
           | Equal | Neq            when same               -> Bool
           | Less | Leq | Greater | Geq
                      when same && (t1 = Int || t1 = Float) -> Bool
