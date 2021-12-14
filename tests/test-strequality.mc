@@ -7,6 +7,5 @@ int main()
 
   k = "Hello";
 
-
-  printb( j==k );
+  print( j==k );
 }
