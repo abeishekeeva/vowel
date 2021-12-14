@@ -59,7 +59,7 @@ let translate (globals, functions) =
     L.declare_function "string_concat" string_concat_t the_module in
   
   let string_equality_t : L.lltype = 
-    L.function_type i32_t [| str_t; str_t |] in
+    L.function_type i1_t [| str_t; str_t |] in
   let string_equality_f : L.llvalue =
     L.declare_function "string_equality" string_equality_t the_module in
 
