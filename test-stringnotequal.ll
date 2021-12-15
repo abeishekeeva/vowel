@@ -9,7 +9,7 @@ source_filename = "MicroC"
 
 declare i8* @string_concat(i8*, i8*)
 
-declare i1 @string_equality(i8*, i8*)
+declare i32 @string_equality(i8*, i8*)
 
 declare i32 @printf(i8*, ...)
 
@@ -23,8 +23,8 @@ entry:
   store i8* getelementptr inbounds ([8 x i8], [8 x i8]* @string.3, i32 0, i32 0), i8** %b
   %a1 = load i8*, i8** %a
   %b2 = load i8*, i8** %b
-  %string_equality = call i1 @string_equality(i8* %a1, i8* %b2)
-  %tmp = icmp ne i1 false, %string_equality
+  %string_equality = call i32 @string_equality(i8* %a1, i8* %b2)
+  %tmp = icmp ne i32 0, %string_equality
   %printf = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt, i32 0, i32 0), i1 %tmp)
   ret i32 0
 }

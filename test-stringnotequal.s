@@ -13,7 +13,9 @@ main:                                   # @main
 	leaq	.Lstring.3(%rip), %rsi
 	movq	%rsi, 8(%rsp)
 	callq	string_equality@PLT
-	movzbl	%al, %esi
+	xorl	%esi, %esi
+	testl	%eax, %eax
+	setne	%sil
 	leaq	.Lfmt(%rip), %rdi
 	xorl	%eax, %eax
 	callq	printf@PLT

@@ -59,7 +59,7 @@ let translate (globals, functions) =
     L.declare_function "string_concat" string_concat_t the_module in
   
   let string_equality_t : L.lltype = 
-    L.function_type i1_t [| str_t; str_t |] in
+    L.function_type i32_t [| str_t; str_t |] in
   let string_equality_f : L.llvalue =
     L.declare_function "string_equality" string_equality_t the_module in
 
@@ -163,8 +163,8 @@ let translate (globals, functions) =
         and e2' = expr builder e2 in
         (match op with
            A.Add     -> L.build_call string_concat_f [| e1'; e2' |] "string_concat" builder
-          | A.Equal ->  (L.build_icmp L.Icmp.Eq) (L.const_int i1_t 0) (L.build_call string_equality_f [| e1'; e2' |] "string_equality" builder) "tmp" builder
-          | A.Neq     -> (L.build_icmp L.Icmp.Ne) (L.const_int i1_t 0) (L.build_call string_equality_f [| e1';e2' |] "string_equality" builder) "tmp" builder
+          | A.Equal ->  (L.build_icmp L.Icmp.Eq) (L.const_int i32_t 0) (L.build_call string_equality_f [| e1'; e2' |] "string_equality" builder) "tmp" builder
+          | A.Neq     -> (L.build_icmp L.Icmp.Ne) (L.const_int i32_t 0) (L.build_call string_equality_f [| e1';e2' |] "string_equality" builder) "tmp" builder
           | _ -> raise (Failure ("operation " ^ (A.string_of_op op) ^ " not implemented")))
 
 
