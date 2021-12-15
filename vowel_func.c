@@ -11,15 +11,15 @@ char *string_concat(char *s1, char *s2) {
     return new;
 }
 
-bool string_equality(char *s1, char *s2){
+bool string_inequality(char *s1, char *s2){
 	bool result;
 	int res = strcmp(s1, s2);
 	bool bres = false;
 	if (res == 0){
-		bres = true;
+		bres = false;
 	}
 	else{
-		bres = false;
+		bres = true;
 	}
 	result = bres;
 	return result;
