@@ -1,11 +1,8 @@
-int main()
-{
-  string j;
-  j = "Hello";
+int main(){
+	string a;
+	string b;
+	a = "Hello";
+	b = "Hello";
+	printb(a==b);
 
-  string k;
-
-  k = "Hello";
-
-  printb( j==k );
 }
