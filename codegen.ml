@@ -63,10 +63,7 @@ let translate (globals, functions) =
   let string_inequality_f : L.llvalue =
     L.declare_function "string_inequality" string_inequality_t the_module in
 
-  let string_equality_t : L.lltype = 
-    L.function_type i32_t [| str_t; str_t |] in
-  let string_equality_f : L.llvalue =
-    L.declare_function "string_equality" string_equality_t the_module in
+  
 
   let printf_t : L.lltype = 
       L.var_arg_function_type i32_t [| L.pointer_type i8_t |] in
