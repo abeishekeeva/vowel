@@ -6,14 +6,19 @@
 main:                                   # @main
 	.cfi_startproc
 # %bb.0:                                # %entry
-	pushq	%rax
-	.cfi_def_cfa_offset 16
+	subq	$24, %rsp
+	.cfi_def_cfa_offset 32
+	leaq	.Lstring(%rip), %rdi
+	movq	%rdi, 16(%rsp)
+	leaq	.Lstring.3(%rip), %rsi
+	movq	%rsi, 8(%rsp)
+	callq	string_equality@PLT
+	movzbl	%al, %esi
 	leaq	.Lfmt(%rip), %rdi
-	movl	$1, %esi
 	xorl	%eax, %eax
 	callq	printf@PLT
 	xorl	%eax, %eax
-	popq	%rcx
+	addq	$24, %rsp
 	.cfi_def_cfa_offset 8
 	retq
 .Lfunc_end0:
@@ -35,5 +40,15 @@ main:                                   # @main
 .Lfmt.2:
 	.asciz	"%s\n"
 	.size	.Lfmt.2, 4
+
+	.type	.Lstring,@object        # @string
+.Lstring:
+	.asciz	"\"Hell\""
+	.size	.Lstring, 7
+
+	.type	.Lstring.3,@object      # @string.3
+.Lstring.3:
+	.asciz	"\"Hello\""
+	.size	.Lstring.3, 8
 
 	.section	".note.GNU-stack","",@progbits

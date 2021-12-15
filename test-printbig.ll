@@ -7,7 +7,7 @@ source_filename = "MicroC"
 
 declare i8* @string_concat(i8*, i8*)
 
-declare i32 @string_equality(i8*, i8*)
+declare i1 @string_equality(i8*, i8*)
 
 declare i32 @printf(i8*, ...)
 

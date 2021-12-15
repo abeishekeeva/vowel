@@ -321,13 +321,13 @@ diff -b test-ops2.out tests/test-ops2.out > test-ops2.diff
 ./vowel.native tests/test-printbig.mc > test-printbig.ll
 llc -relocation-model=pic test-printbig.ll > test-printbig.s
 cc -o test-printbig.exe test-printbig.s vowel_func.o
-/usr/bin/ld: /tmp/cc2xrdfZ.o: in function `main':
+/usr/bin/ld: /tmp/cciO7Lql.o: in function `main':
 MicroC:(.text+0x7): undefined reference to `printbig'
 /usr/bin/ld: MicroC:(.text+0x11): undefined reference to `printbig'
 /usr/bin/ld: MicroC:(.text+0x1b): undefined reference to `printbig'
 /usr/bin/ld: MicroC:(.text+0x25): undefined reference to `printbig'
 /usr/bin/ld: MicroC:(.text+0x2f): undefined reference to `printbig'
-/usr/bin/ld: /tmp/cc2xrdfZ.o:MicroC:(.text+0x39): more undefined references to `printbig' follow
+/usr/bin/ld: /tmp/cciO7Lql.o:MicroC:(.text+0x39): more undefined references to `printbig' follow
 collect2: error: ld returned 1 exit status
 ###### FAILED
 
@@ -343,6 +343,15 @@ cc -o test-string.exe test-string.s vowel_func.o
 ./test-string.exe
 diff -b test-string.out tests/test-string.out > test-string.diff
 ###### SUCCESS
+
+###### Testing test-stringnotequal
+./vowel.native tests/test-stringnotequal.mc > test-stringnotequal.ll
+llc -relocation-model=pic test-stringnotequal.ll > test-stringnotequal.s
+cc -o test-stringnotequal.exe test-stringnotequal.s vowel_func.o
+./test-stringnotequal.exe
+diff -b test-stringnotequal.out tests/test-stringnotequal.out > test-stringnotequal.diff
+FAILED test-stringnotequal.out differs from tests/test-stringnotequal.out
+###### FAILED
 
 ###### Testing test-var1
 ./vowel.native tests/test-var1.mc > test-var1.ll

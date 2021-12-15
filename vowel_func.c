@@ -11,16 +11,16 @@ char *string_concat(char *s1, char *s2) {
     return new;
 }
 
-int string_equality(char *s1, char *s2){
-	//bool result;
+bool string_equality(char *s1, char *s2){
+	bool result;
 	int res = strcmp(s1, s2);
-	//bool bres = false;
-	/*if (res == 0){
+	bool bres = false;
+	if (res == 0){
 		bres = true;
 	}
 	else{
 		bres = false;
 	}
-	result = bres;*/
-	return res;
+	result = bres;
+	return result;
 }
