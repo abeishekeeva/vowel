@@ -24,6 +24,7 @@ type expr =
   | ArrayAccess of string * expr
   | ArrayLit of expr list
   | ArrAssign of string * expr * expr
+  (* | DecAssn of typ * string * expr *)
   | Noexpr
 
 type stmt =
@@ -84,6 +85,7 @@ let rec string_of_expr = function
   | ArrayAccess (s, e) ->  s ^ "[" ^ string_of_expr e ^ "]"
   | ArrayLit(e) -> "[" ^ String.concat "," (List.map string_of_expr (List.rev e)) ^ "]"
   | ArrAssign(s, e1, e2) -> s ^ "[" ^ string_of_expr e1 ^ "] = " ^ string_of_expr  e2
+  (* | DecAssn(t, s, e) -> string_of_typ t ^ " " ^ s ^ " = " ^ string_of_expr e *)
   | Noexpr -> ""
 
 let rec string_of_stmt = function
@@ -99,12 +101,13 @@ let rec string_of_stmt = function
       string_of_expr e3  ^ ") " ^ string_of_stmt s
   | While(e, s) -> "while (" ^ string_of_expr e ^ ") " ^ string_of_stmt s
 
-let string_of_typ = function
+let rec string_of_typ = function
     Int -> "int"
   | String -> "string"
   | Bool -> "bool"
   | Float -> "float"
   | Void -> "void"
+  | Arr(t, _) -> string_of_typ t ^ "[]"
 
 let string_of_vdecl (t, id) = string_of_typ t ^ " " ^ id ^ ";\n"
 

@@ -32,12 +32,30 @@ cc -o test-arith3.exe test-arith3.s vowel_func.o
 diff -b test-arith3.out tests/test-arith3.out > test-arith3.diff
 ###### SUCCESS
 
+###### Testing test-array-access
+./vowel.native tests/test-array-access.mc > test-array-access.ll
+Fatal error: exception Stdlib.Parsing.Parse_error
+###### FAILED
+
 ###### Testing test-cobytest
 ./vowel.native tests/test-cobytest.mc > test-cobytest.ll
 llc -relocation-model=pic test-cobytest.ll > test-cobytest.s
 cc -o test-cobytest.exe test-cobytest.s vowel_func.o
 ./test-cobytest.exe
 diff -b test-cobytest.out tests/test-cobytest.out > test-cobytest.diff
+###### SUCCESS
+
+###### Testing test-declare-and-assign
+./vowel.native tests/test-declare-and-assign.mc > test-declare-and-assign.ll
+Fatal error: exception Stdlib.Parsing.Parse_error
+###### FAILED
+
+###### Testing test-declare-array
+./vowel.native tests/test-declare-array.mc > test-declare-array.ll
+llc -relocation-model=pic test-declare-array.ll > test-declare-array.s
+cc -o test-declare-array.exe test-declare-array.s vowel_func.o
+./test-declare-array.exe
+diff -b test-declare-array.out tests/test-declare-array.out > test-declare-array.diff
 ###### SUCCESS
 
 ###### Testing test-fib
@@ -264,11 +282,6 @@ cc -o test-incr.exe test-incr.s vowel_func.o
 diff -b test-incr.out tests/test-incr.out > test-incr.diff
 ###### SUCCESS
 
-###### Testing test-intarr
-./vowel.native tests/test-intarr.mc > test-intarr.ll
-Fatal error: exception Stdlib.Parsing.Parse_error
-###### FAILED
-
 ###### Testing test-lex
 ./vowel.native tests/test-lex.mc > test-lex.ll
 llc -relocation-model=pic test-lex.ll > test-lex.s
@@ -326,15 +339,23 @@ diff -b test-ops2.out tests/test-ops2.out > test-ops2.diff
 ./vowel.native tests/test-printbig.mc > test-printbig.ll
 llc -relocation-model=pic test-printbig.ll > test-printbig.s
 cc -o test-printbig.exe test-printbig.s vowel_func.o
-/usr/bin/ld: /tmp/ccaxW1c3.o: in function `main':
-MicroC:(.text+0x8): undefined reference to `printbig'
-/usr/bin/ld: MicroC:(.text+0x10): undefined reference to `printbig'
-/usr/bin/ld: MicroC:(.text+0x18): undefined reference to `printbig'
-/usr/bin/ld: MicroC:(.text+0x20): undefined reference to `printbig'
-/usr/bin/ld: MicroC:(.text+0x28): undefined reference to `printbig'
-/usr/bin/ld: /tmp/ccaxW1c3.o:MicroC:(.text+0x30): more undefined references to `printbig' follow
+/usr/bin/ld: /tmp/ccCfYbET.o: in function `main':
+MicroC:(.text+0x7): undefined reference to `printbig'
+/usr/bin/ld: MicroC:(.text+0x11): undefined reference to `printbig'
+/usr/bin/ld: MicroC:(.text+0x1b): undefined reference to `printbig'
+/usr/bin/ld: MicroC:(.text+0x25): undefined reference to `printbig'
+/usr/bin/ld: MicroC:(.text+0x2f): undefined reference to `printbig'
+/usr/bin/ld: /tmp/ccCfYbET.o:MicroC:(.text+0x39): more undefined references to `printbig' follow
 collect2: error: ld returned 1 exit status
 ###### FAILED
+
+###### Testing test-string-array
+./vowel.native tests/test-string-array.mc > test-string-array.ll
+llc -relocation-model=pic test-string-array.ll > test-string-array.s
+cc -o test-string-array.exe test-string-array.s vowel_func.o
+./test-string-array.exe
+diff -b test-string-array.out tests/test-string-array.out > test-string-array.diff
+###### SUCCESS
 
 ###### Testing test-string
 ./vowel.native tests/test-string.mc > test-string.ll
@@ -376,20 +397,28 @@ cc -o test-while2.exe test-while2.s vowel_func.o
 diff -b test-while2.out tests/test-while2.out > test-while2.diff
 ###### SUCCESS
 
+###### Testing test-wrong-type
+./vowel.native tests/test-wrong-type.mc > test-wrong-type.ll
+Fatal error: exception Failure("illegal assignment __ int = float in a = 42.1")
+###### FAILED
+
 ###### Testing fail-assign1
 ./vowel.native < tests/fail-assign1.mc 2> fail-assign1.err >> testall.log
 diff -b fail-assign1.err tests/fail-assign1.err > fail-assign1.diff
-###### SUCCESS
+FAILED fail-assign1.err differs from tests/fail-assign1.err
+###### FAILED
 
 ###### Testing fail-assign2
 ./vowel.native < tests/fail-assign2.mc 2> fail-assign2.err >> testall.log
 diff -b fail-assign2.err tests/fail-assign2.err > fail-assign2.diff
-###### SUCCESS
+FAILED fail-assign2.err differs from tests/fail-assign2.err
+###### FAILED
 
 ###### Testing fail-assign3
 ./vowel.native < tests/fail-assign3.mc 2> fail-assign3.err >> testall.log
 diff -b fail-assign3.err tests/fail-assign3.err > fail-assign3.diff
-###### SUCCESS
+FAILED fail-assign3.err differs from tests/fail-assign3.err
+###### FAILED
 
 ###### Testing fail-dead1
 ./vowel.native < tests/fail-dead1.mc 2> fail-dead1.err >> testall.log

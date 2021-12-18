@@ -67,6 +67,13 @@ let check (globals, functions) =
     with Not_found -> raise (Failure ("unrecognized function " ^ s))
   in
 
+  let rec check_arr (arrtyp, lv) =
+    (match arrtyp with
+      Arr(ty,_) ->  check_arr (ty, lv+1)
+    | _ -> (arrtyp, lv))
+
+    in
+
   let _ = find_func "main" in (* Ensure "main" is defined *)
 
   let check_function func =
@@ -77,7 +84,18 @@ let check (globals, functions) =
     (* Raise an exception if the given rvalue type cannot be assigned to
        the given lvalue type *)
     let check_assign lvaluet rvaluet err =
-       if lvaluet = rvaluet then lvaluet else raise (Failure err)
+       (* if lvaluet = rvaluet then lvaluet else raise (Failure err) *)
+
+       (* if lvaluet = Any then rvaluet else *)
+        if lvaluet = rvaluet then lvaluet else
+          (match lvaluet with
+            (* Object(_) -> if rvaluet = Null then lvaluet else raise (Failure err) *)
+          | Arr _ -> (match rvaluet with 
+                          Arr _ -> let r_arr = check_arr (rvaluet, 0) in
+                                    let l_arr = check_arr (lvaluet, 0) in
+                                      if r_arr = l_arr then rvaluet else raise (Failure err)
+                        | _ -> raise (Failure err))
+          | _ -> raise (Failure err))
     in   
 
     (* Build local symbol table of variables for this function *)
@@ -110,7 +128,7 @@ let check (globals, functions) =
       | Assign(var, e) as ex -> 
           let lt = type_of_identifier var
           and (rt, e') = expr e in
-          let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^ 
+          let err = "illegal assignment __ " ^ string_of_typ lt ^ " = " ^ 
             string_of_typ rt ^ " in " ^ string_of_expr ex
           in (check_assign lt rt err, SAssign(var, (rt, e')))
           
@@ -199,7 +217,7 @@ let check (globals, functions) =
           let v_ty = type_of_identifier v in
           let e_ty = is_arr_ty (v, v_ty) in
           let (rt, e2') = expr e2 in
-          let err = "illegal assignment " ^ string_of_typ e_ty ^ " = " ^
+          let err = "illegal assignment for array " ^ string_of_typ e_ty ^ " = " ^
           string_of_typ rt ^ " in " ^ string_of_expr arrassign in
           (* let (ty, e2') = check_assign_null e2 e_ty err *)
           (e_ty, SArrAssign(v, (t,e1'), (rt,e2')))
