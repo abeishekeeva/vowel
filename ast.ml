@@ -5,7 +5,7 @@ type op = Add | Sub | Mult | Div | Mod | Equal | Neq | Less | Leq | Greater | Ge
 
 type uop = Neg | Not
 
-type typ = Int | Bool | Float | Void | String
+type typ = Int | Bool | Float | Void | String | Arr of (typ * int)
 
 type bind = typ * string
 
@@ -21,6 +21,9 @@ type expr =
   | Incr of string * expr 
   | Decrement of string * expr
   | Call of string * expr list
+  | ArrayAccess of string * expr
+  | ArrayLit of expr list
+  | ArrAssign of string * expr * expr
   | Noexpr
 
 type stmt =
@@ -78,6 +81,9 @@ let rec string_of_expr = function
   | Decrement(v, e) -> v ^ "-="  ^ string_of_expr e
   | Call(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
+  | ArrayAccess (s, e) ->  s ^ "[" ^ string_of_expr e ^ "]"
+  | ArrayLit(e) -> "[" ^ String.concat "," (List.map string_of_expr (List.rev e)) ^ "]"
+  | ArrAssign(s, e1, e2) -> s ^ "[" ^ string_of_expr e1 ^ "] = " ^ string_of_expr  e2
   | Noexpr -> ""
 
 let rec string_of_stmt = function

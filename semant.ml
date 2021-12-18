@@ -90,6 +90,14 @@ let check (globals, functions) =
       try StringMap.find s symbols
       with Not_found -> raise (Failure ("undeclared identifier " ^ s))
     in
+    
+    (* check if of array type, return element type *)
+    let is_arr_ty (v, ty) = match ty with 
+        Arr(t,_) -> 
+          if t = Void then raise (Failure ("void type array " ^ v ^ " is not allowed")) 
+          else t
+      | _ -> raise (Failure ("cannot access an element in variable " ^ v ^ " of type " ^ string_of_typ ty))
+    in
 
     (* Return a semantically-checked expression, i.e., with a type *)
     let rec expr = function
@@ -163,6 +171,39 @@ let check (globals, functions) =
           in 
           let args' = List.map2 check_call fd.formals args
           in (fd.typ, SCall(fname, args'))
+      | ArrayLit(el) as arraylit ->(* check if types of expr are consistent *)
+        let ty_inconsistent_err = "inconsistent types in array " ^ string_of_expr arraylit in
+        let fst_e = List.hd el in
+        let (fst_ty, _) = expr fst_e in
+        let (arr_ty_len, arr_ty_e) = List.fold_left (fun (t, l) e ->
+        let (et, e') = expr e in
+        let is_arr = (match et with
+            Arr _ -> true
+            | _ -> false) in if ((et = fst_ty) || is_arr) then (t+1, (et, e')::l) else (t, (et, e')::l)) (0,[]) el
+        in if arr_ty_len != List.length el
+          then raise (Failure ty_inconsistent_err)
+          (* determine arr type *)
+          else let arr_ty = Arr(fst_ty, arr_ty_len)
+          in (arr_ty, SArrayLit(arr_ty_e))
+      | ArrayAccess(v, e) as arrayacess ->(* check if type of e is an int *)
+          let (t, e') = expr e in
+          if t != Int then raise 
+          (Failure (string_of_expr e ^ " is not of int → type in " ^ string_of_expr arrayacess)) else
+          (* check if variable is array type *)
+          let v_ty = type_of_identifier v in
+          let e_ty = is_arr_ty (v, v_ty) in (e_ty, SArrayAccess(v, (t, e')))
+      | ArrAssign(v, e1, e2) as arrassign ->(* check if type of e is an int *)
+          let (t, e1') = expr e1 in
+          if t != Int then raise (Failure (string_of_expr e1 ^ " is not of int type → in " ^ string_of_expr arrassign))
+          else (* check if variable is array type *)
+          let v_ty = type_of_identifier v in
+          let e_ty = is_arr_ty (v, v_ty) in
+          let (rt, e2') = expr e2 in
+          let err = "illegal assignment " ^ string_of_typ e_ty ^ " = " ^
+          string_of_typ rt ^ " in " ^ string_of_expr arrassign in
+          (* let (ty, e2') = check_assign_null e2 e_ty err *)
+          (e_ty, SArrAssign(v, (t,e1'), (rt,e2')))
+          
     in
 
     let check_bool_expr e = 

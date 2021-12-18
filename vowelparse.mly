@@ -4,10 +4,11 @@
 open Ast
 %}
 
-%token SEMI LPAREN RPAREN LBRACE RBRACE COMMA PLUS MINUS TIMES DIVIDE MODULUS ASSIGN INCR
+%token SEMI LPAREN RPAREN LBRACE RBRACE LBRACKET RBRACKET COMMA PLUS MINUS TIMES DIVIDE MODULUS ASSIGN INCR
 %token NOT EQ NEQ LT LEQ GT GEQ AND OR
 %token DECREMENT
 %token RETURN IF ELSE FOR WHILE INT BOOL FLOAT VOID STRING
+%token ARRAY
 %token <int> LITERAL
 %token <bool> BLIT
 %token <string> ID FLIT SLIT
@@ -61,6 +62,7 @@ typ:
   | FLOAT  { Float }
   | VOID   { Void  }
   | STRING { String }
+  | typ ARRAY { Arr($1, 0) }
 
 vdecl_list:
     /* nothing */    { [] }
@@ -112,7 +114,11 @@ expr:
   | ID INCR expr     { Incr($1, $3)           }
   | ID LPAREN args_opt RPAREN { Call($1, $3)  }
   | LPAREN expr RPAREN { $2                   }
-  | ID DECREMENT expr { Decrement($1, $3) }
+  | ID DECREMENT expr { Decrement($1, $3)     }
+  /* Arrays */
+  | ID LBRACKET expr LBRACKET { ArrayAccess($1, $3) }
+  | LBRACKET args_list LBRACKET { ArrayLit($2) }
+  | ID LBRACKET expr LBRACKET ASSIGN expr { ArrAssign($1, $3, $6) }
 
 args_opt:
     /* nothing */ { [] }

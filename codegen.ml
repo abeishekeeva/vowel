@@ -35,12 +35,13 @@ let translate (globals, functions) =
   and void_t     = L.void_type   context in
 
   (* Return the LLVM type for a MicroC type *)
-  let ltype_of_typ = function
+  let rec ltype_of_typ = function
       A.Int   -> i32_t
     | A.Bool  -> i1_t
     | A.Float -> float_t
     | A.Void  -> void_t
     | A.String -> str_t
+    | A.Arr(ty,_) -> L.pointer_type (ltype_of_typ ty)
   in
 
   (* Create a map of global variables after creating each *)
@@ -122,12 +123,48 @@ let translate (globals, functions) =
       | SFliteral l -> L.const_float_of_string float_t l
       | SNoexpr     -> L.const_int i32_t 0
       | SId s       -> L.build_load (lookup s) s builder
+      | SArrayLit arr -> let len = L.const_int i32_t (List.length arr) in
+            let size = L.const_int i32_t ((List.length arr) + 1) in
+            let (fst_t, _) = List.hd arr in
+            let ty = ltype_of_typ (A.Arr(fst_t, (List.length arr))) in
+            (* allocate memory for array *)
+            let arr_alloca = L.build_array_alloca ty size "arr" builder in
+            (* bitcast *)
+            let arr_ptr = L.build_pointercast arr_alloca ty "arrptr" builder in
+            (* store all elements *)
+            let elts = List.map (expr builder) arr in
+            let store_elt ind elt =
+            let pos = L.const_int i32_t (ind) in
+            let elt_ptr = L.build_gep arr_ptr [| pos |] "arrelt" builder in
+            ignore(L.build_store elt elt_ptr builder)
+            in List.iteri store_elt elts;
+            let elt_ptr = L.build_gep arr_ptr [| len |] "arrlast" builder in
+            let null_elt = L.const_null (L.element_type ty) in
+            ignore(L.build_store null_elt elt_ptr builder);
+            arr_ptr
+      | SArrayAccess (s, e) ->
+            let ind = expr builder e in
+            let (ty, _) = e in
+            (* increment index by one to get actual ptr position *)
+            let pos = L.build_add ind (L.const_int i32_t 0) "accpos" builder in
+            let arr = expr builder (ty, (SId s)) in
+            let elt = L.build_gep arr [| pos |] "acceltptr" builder in
+            L.build_load elt "accelt" builder
+      | SArrAssign (s, e1, e2) ->
+            let ind = expr builder e1 in
+            let (ty, _) = e1 in
+            (* increment index by one to get actual ptr position *)
+            let pos = L.build_add ind (L.const_int i32_t 0) "accpos" builder in
+            let arr = expr builder (ty, (SId s)) in
+            let new_val = expr builder e2 in
+            let elt_ptr = L.build_gep arr [| pos |] "arrelt" builder in
+            L.build_store new_val elt_ptr builder
       | SAssign (s, e) -> let e' = expr builder e in
                           ignore(L.build_store e' (lookup s) builder); e'
       | SIncr(s, e) -> let e' = expr builder e in
-      let old_val = L.build_load (lookup s) s builder in 
-      let incremented = L.build_add e' old_val s builder in 
-      ignore(L.build_store incremented (lookup s) builder); incremented
+        let old_val = L.build_load (lookup s) s builder in 
+        let incremented = L.build_add e' old_val s builder in 
+        ignore(L.build_store incremented (lookup s) builder); incremented
       | SDecr(s, e) -> let e' = expr builder e in
                   let oldvar = L.build_load (lookup s) s builder in
                   let nvar = L.build_sub oldvar e' s builder in

@@ -19,6 +19,8 @@ rule token = parse
 | ')'      { RPAREN }
 | '{'      { LBRACE }
 | '}'      { RBRACE }
+| '['      { LBRACKET }
+| ']'      { RBRACKET }
 | ';'      { SEMI }
 | ','      { COMMA }
 | '+'      { PLUS }
@@ -46,6 +48,7 @@ rule token = parse
 | "string" { STRING }
 | "bool"   { BOOL }
 | "float"  { FLOAT }
+| "[]"     { ARRAY }
 | "void"   { VOID }
 | "true"   { BLIT(true)  }
 | "false"  { BLIT(false) }

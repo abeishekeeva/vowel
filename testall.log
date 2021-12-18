@@ -264,6 +264,11 @@ cc -o test-incr.exe test-incr.s vowel_func.o
 diff -b test-incr.out tests/test-incr.out > test-incr.diff
 ###### SUCCESS
 
+###### Testing test-intarr
+./vowel.native tests/test-intarr.mc > test-intarr.ll
+Fatal error: exception Stdlib.Parsing.Parse_error
+###### FAILED
+
 ###### Testing test-lex
 ./vowel.native tests/test-lex.mc > test-lex.ll
 llc -relocation-model=pic test-lex.ll > test-lex.s
@@ -321,13 +326,13 @@ diff -b test-ops2.out tests/test-ops2.out > test-ops2.diff
 ./vowel.native tests/test-printbig.mc > test-printbig.ll
 llc -relocation-model=pic test-printbig.ll > test-printbig.s
 cc -o test-printbig.exe test-printbig.s vowel_func.o
-/usr/bin/ld: /tmp/ccfz44z3.o: in function `main':
+/usr/bin/ld: /tmp/ccbVuAeD.o: in function `main':
 MicroC:(.text+0x8): undefined reference to `printbig'
 /usr/bin/ld: MicroC:(.text+0x10): undefined reference to `printbig'
 /usr/bin/ld: MicroC:(.text+0x18): undefined reference to `printbig'
 /usr/bin/ld: MicroC:(.text+0x20): undefined reference to `printbig'
 /usr/bin/ld: MicroC:(.text+0x28): undefined reference to `printbig'
-/usr/bin/ld: /tmp/ccfz44z3.o:MicroC:(.text+0x30): more undefined references to `printbig' follow
+/usr/bin/ld: /tmp/ccbVuAeD.o:MicroC:(.text+0x30): more undefined references to `printbig' follow
 collect2: error: ld returned 1 exit status
 ###### FAILED
 
