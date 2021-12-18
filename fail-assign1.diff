@@ -1,0 +1,4 @@
+1c1
+< Fatal error: exception Failure("illegal assignment __ int = bool in i = false")
+---
+> Fatal error: exception Failure("illegal assignment int = bool in i = false")

@@ -4,11 +4,9 @@
 open Ast
 %}
 
-%token SEMI LPAREN RPAREN LBRACE RBRACE LBRACKET RBRACKET COMMA PLUS MINUS TIMES DIVIDE MODULUS ASSIGN INCR
+%token SEMI LPAREN RPAREN LBRACE RBRACE COMMA PLUS MINUS TIMES DIVIDE MODULUS ASSIGN
 %token NOT EQ NEQ LT LEQ GT GEQ AND OR
-%token DECREMENT
 %token RETURN IF ELSE FOR WHILE INT BOOL FLOAT VOID STRING
-%token ARRAY
 %token <int> LITERAL
 %token <bool> BLIT
 %token <string> ID FLIT SLIT
@@ -19,9 +17,7 @@ open Ast
 
 %nonassoc NOELSE
 %nonassoc ELSE
-%right INCR
-%right DECREMENT
-%right ASSIGN 
+%right ASSIGN
 %left OR
 %left AND
 %left EQ NEQ
@@ -36,8 +32,9 @@ program:
   decls EOF { $1 }
 
 decls:
-   /* nothing */ { ([], [])               }
+   /* nothing */ { ([], [], [])               }
  | decls vdecl { (($2 :: fst $1), snd $1) }
+ | decls vdecl_asgn { (($2 :: fst $1), snd $1, $4) }
  | decls fdecl { (fst $1, ($2 :: snd $1)) }
 
 fdecl:
@@ -62,14 +59,18 @@ typ:
   | FLOAT  { Float }
   | VOID   { Void  }
   | STRING { String }
-  | typ ARRAY { Arr($1, 0) }
 
 vdecl_list:
     /* nothing */    { [] }
   | vdecl_list vdecl { $2 :: $1 }
 
 vdecl:
-    typ ID SEMI { ($1, $2) }
+   typ ID SEMI { ($1, $2) }
+
+
+vdecl_asgn:
+   typ ID ASSIGN expr SEMI{ ($1, $2, $4) }
+
 
 stmt_list:
     /* nothing */  { [] }
@@ -111,17 +112,8 @@ expr:
   | MINUS expr %prec NOT { Unop(Neg, $2)      }
   | NOT expr         { Unop(Not, $2)          }
   | ID ASSIGN expr   { Assign($1, $3)         }
-  | ID INCR expr     { Incr($1, $3)           }
   | ID LPAREN args_opt RPAREN { Call($1, $3)  }
   | LPAREN expr RPAREN { $2                   }
-  | ID DECREMENT expr { Decrement($1, $3)     }
-  /* Arrays */
-  | ID LBRACKET expr RBRACKET { ArrayAccess($1, $3) }
-  | LBRACKET args_list RBRACKET { ArrayLit($2) }
-  | ID LBRACKET expr RBRACKET ASSIGN expr { ArrAssign($1, $3, $6) }
-  /* VARIABLE DECLAREATION */
-  /* | typ VARIABLE ASSIGN expr { DecAssn($1, $2, $4) } */
-  
 
 args_opt:
     /* nothing */ { [] }
