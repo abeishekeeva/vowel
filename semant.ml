@@ -43,7 +43,7 @@ let check (globals, functions) =
 			                         ("printf", Float);
 			                         ("printbig", Int);
                                ("printstr", String);
-                               ("len", Int)]
+                               ("len", String)]
   in
   (*let built_in_decls =
     StringMap.add "len"{

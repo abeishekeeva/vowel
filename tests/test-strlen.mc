@@ -1,8 +1,7 @@
 int main(){
-	string s;
-	s = "Hello";
-	int x;
-	x = len(s);
-	print(x);
-
-}
+	string a;
+  a = "Hello World Test";
+  a = "Goodbye World Test";
+  int x;
+  return 0;
+  }
