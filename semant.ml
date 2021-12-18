@@ -42,17 +42,16 @@ let check (globals, functions) =
 			                         ("printb", Bool);
 			                         ("printf", Float);
 			                         ("printbig", Int);
-                               ("printstr", String);
-                               ("len", String)]
+                               ("printstr", String)]
   in
-  (*let built_in_decls =
+  let built_in_decls =
     StringMap.add "len"{
       typ = Int;
       fname = "len";
       formals = [(String, "str")];
       locals = [];
       body = []} built_in_decls 
-    in*)
+    in
     
 
   (* Add function name to symbol table *)

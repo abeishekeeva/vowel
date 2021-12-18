@@ -9,10 +9,10 @@ char *string_concat(char *s1, char *s2) {
     return new;
 }
 
-int len(char *s){
+int len(const char *str){
 	int l;
-	size_t len = strlen(s);
-	l = (int)(len);
+	size_t len = strlen(str);
+	l = (int)(len) -2 ;
 
 
 }
