@@ -44,6 +44,14 @@ let check (globals, functions) =
 			                         ("printbig", Int);
                                ("printstr", String) ]
   in
+  let built_in_decls =
+    StringMap.add "slice" {
+    typ = String;
+    fname = "slice";
+    formals = [(String, "str"); (Int, "start"); (Int, "end")];
+    locals = [];
+    body = [] } built_in_decls
+  in
 
   (* Add function name to symbol table *)
   let add_func map fd = 

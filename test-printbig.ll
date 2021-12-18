@@ -7,6 +7,8 @@ source_filename = "MicroC"
 
 declare i8* @string_concat(i8*, i8*)
 
+declare i8* @slice(i8*, i32, i32)
+
 declare i32 @printf(i8*, ...)
 
 declare i32 @printbig(i32)
