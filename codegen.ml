@@ -57,6 +57,11 @@ let translate (globals, functions) =
     L.function_type str_t [| str_t; str_t |] in  
   let string_concat_f : L.llvalue =
     L.declare_function "string_concat" string_concat_t the_module in
+  
+  let len_t : L.lltype =
+    L.function_type i32_t [| str_t|] in  
+  let len_f : L.llvalue =
+    L.declare_function "len" len_t the_module in
 
   let printf_t : L.lltype = 
       L.var_arg_function_type i32_t [| L.pointer_type i8_t |] in
@@ -184,6 +189,7 @@ let translate (globals, functions) =
       | SCall ("printbig", [e]) -> L.build_call printbig_func [| (expr builder e) |] "printbig" builder
       | SCall ("printf", [e]) -> L.build_call printf_func [| float_format_str ; (expr builder e) |] "printf" builder
       | SCall ("printstr", [e]) -> L.build_call printf_func [| string_format_str ; (expr builder e) |] "printf" builder
+      | SCall ("len", [e]) -> L.build_call len_f [| (expr builder e) |] "len" builder
       | SCall (f, args) ->
         let (fdef, fdecl) = StringMap.find f function_decls in
 	 let llargs = List.rev (List.map (expr builder) (List.rev args)) in

@@ -8,3 +8,8 @@ char *string_concat(char *s1, char *s2) {
     strncat(new, s2+1, strlen(s2)-1);
     return new;
 }
+
+int len(char *s){
+	return strlen(s);
+
+}
