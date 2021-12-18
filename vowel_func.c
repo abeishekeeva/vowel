@@ -10,6 +10,9 @@ char *string_concat(char *s1, char *s2) {
 }
 
 int len(char *s){
-	return strlen(s);
+	int l;
+	size_t len = strlen(s);
+	l = (int)(len);
+
 
 }
