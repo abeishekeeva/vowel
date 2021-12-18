@@ -3,3 +3,5 @@ scanner.ml
 _build/
 microc.native
 testall.log
+.DS_Store
+testall.log

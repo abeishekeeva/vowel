@@ -4,9 +4,10 @@
 open Ast
 %}
 
-%token SEMI LPAREN RPAREN LBRACE RBRACE COMMA PLUS MINUS TIMES DIVIDE MODULUS ASSIGN INCR
+%token SEMI LPAREN RPAREN LBRACE RBRACE COMMA PLUS MINUS TIMES DIVIDE
+%token MODULUS ASSIGN
+%token INCREMENT DECREMENT
 %token NOT EQ NEQ LT LEQ GT GEQ AND OR
-%token DECREMENT
 %token RETURN IF ELSE FOR WHILE INT BOOL FLOAT VOID STRING
 %token <int> LITERAL
 %token <bool> BLIT
@@ -18,9 +19,7 @@ open Ast
 
 %nonassoc NOELSE
 %nonassoc ELSE
-%right INCR
-%right DECREMENT
-%right ASSIGN 
+%right INCREMENT DECREMENT ASSIGN 
 %left OR
 %left AND
 %left EQ NEQ
@@ -87,6 +86,11 @@ expr_opt:
     /* nothing */ { Noexpr }
   | expr          { $1 }
 
+/* assignment_op:
+  ASSIGN       { Assign }
+| INCREMENT    { Incr }
+| DECREMENT    { Decr } */
+
 expr:
     LITERAL          { Literal($1)            }
   | FLIT	           { Fliteral($1)           }
@@ -97,7 +101,7 @@ expr:
   | expr MINUS  expr { Binop($1, Sub,   $3)   }
   | expr TIMES  expr { Binop($1, Mult,  $3)   }
   | expr DIVIDE expr { Binop($1, Div,   $3)   }
-  | expr MODULUS expr { Binop($1, Mod,   $3)   }
+  | expr MODULUS expr{ Binop($1, Mod,   $3)   }
   | expr EQ     expr { Binop($1, Equal, $3)   }
   | expr NEQ    expr { Binop($1, Neq,   $3)   }
   | expr LT     expr { Binop($1, Less,  $3)   }
@@ -108,11 +112,11 @@ expr:
   | expr OR     expr { Binop($1, Or,    $3)   }
   | MINUS expr %prec NOT { Unop(Neg, $2)      }
   | NOT expr         { Unop(Not, $2)          }
-  | ID ASSIGN expr   { Assign($1, $3)         }
-  | ID INCR expr     { Incr($1, $3)           }
   | ID LPAREN args_opt RPAREN { Call($1, $3)  }
   | LPAREN expr RPAREN { $2                   }
-  | ID DECREMENT expr { Decrement($1, $3) }
+  | ID ASSIGN expr    { Assign($1, $3)         }
+  | ID INCREMENT expr      { Increment($1, $3)      }
+  | ID DECREMENT expr { Decrement($1, $3)     } 
 
 args_opt:
     /* nothing */ { [] }
