@@ -18,13 +18,13 @@ type expr =
   | Binop of expr * op * expr
   | Unop of uop * expr
   | Assign of string * expr
+  | DeclAssn of typ * string * expr
   | Incr of string * expr 
   | Decrement of string * expr
   | Call of string * expr list
   | ArrayAccess of string * expr
   | ArrayLit of expr list
   | ArrAssign of string * expr * expr
-  (* | DecAssn of typ * string * expr *)
   | Noexpr
 
 type stmt =
@@ -61,11 +61,18 @@ let string_of_op = function
   | Geq -> ">="
   | And -> "&&"
   | Or -> "||"
- 
 
 let string_of_uop = function
     Neg -> "-"
   | Not -> "!"
+
+let rec string_of_typ = function
+  Int -> "int"
+| String -> "string"
+| Bool -> "bool"
+| Float -> "float"
+| Void -> "void"
+| Arr(t, _) -> string_of_typ t ^ "[]"
 
 let rec string_of_expr = function
     Literal(l) -> string_of_int l
@@ -78,6 +85,7 @@ let rec string_of_expr = function
       string_of_expr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expr e2
   | Unop(o, e) -> string_of_uop o ^ string_of_expr e
   | Assign(v, e) -> v ^ " = " ^ string_of_expr e
+  | DeclAssn(t, s, e) -> string_of_typ t ^ " " ^ s ^ " = " ^ string_of_expr e 
   | Incr(v, e) -> v ^ "+= " ^ string_of_expr e
   | Decrement(v, e) -> v ^ "-="  ^ string_of_expr e
   | Call(f, el) ->
@@ -85,7 +93,6 @@ let rec string_of_expr = function
   | ArrayAccess (s, e) ->  s ^ "[" ^ string_of_expr e ^ "]"
   | ArrayLit(e) -> "[" ^ String.concat "," (List.map string_of_expr (List.rev e)) ^ "]"
   | ArrAssign(s, e1, e2) -> s ^ "[" ^ string_of_expr e1 ^ "] = " ^ string_of_expr  e2
-  (* | DecAssn(t, s, e) -> string_of_typ t ^ " " ^ s ^ " = " ^ string_of_expr e *)
   | Noexpr -> ""
 
 let rec string_of_stmt = function
@@ -100,14 +107,6 @@ let rec string_of_stmt = function
       "for (" ^ string_of_expr e1  ^ " ; " ^ string_of_expr e2 ^ " ; " ^
       string_of_expr e3  ^ ") " ^ string_of_stmt s
   | While(e, s) -> "while (" ^ string_of_expr e ^ ") " ^ string_of_stmt s
-
-let rec string_of_typ = function
-    Int -> "int"
-  | String -> "string"
-  | Bool -> "bool"
-  | Float -> "float"
-  | Void -> "void"
-  | Arr(t, _) -> string_of_typ t ^ "[]"
 
 let string_of_vdecl (t, id) = string_of_typ t ^ " " ^ id ^ ";\n"
 

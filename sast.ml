@@ -12,6 +12,7 @@ and sx =
   | SBinop of sexpr * op * sexpr
   | SUnop of uop * sexpr
   | SAssign of string * sexpr
+  | SDeclAssn of typ * string * sexpr
   | SIncr of string * sexpr
   | SCall of string * sexpr list
   | SDecr of string * sexpr
@@ -59,6 +60,7 @@ let rec string_of_sexpr (t, e) =
   | SArrayAccess(s, e) -> s ^ "[" ^ string_of_sexpr e ^ "]"
   | SArrayLit(e) -> "[" ^ String.concat "," (List.map string_of_sexpr (List.rev e )) ^ "]"
   | SArrAssign(s, e1, e2) -> s ^ "[" ^ string_of_sexpr e1 ^ "] = " ^ string_of_sexpr e2
+  | SDeclAssn(t, s, e) -> string_of_typ t ^ " " ^ s ^ " = " ^ string_of_sexpr e
   | SNoexpr -> ""
 	) ^ ")"				     
 

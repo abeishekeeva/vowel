@@ -1,9 +1,18 @@
-(* Semantic checking for the MicroC compiler *)
+(* Semantic checking for the Vowel compiler *)
 
 open Ast
 open Sast
 
-module StringMap = Map.Make(String)
+module StringMap = Map.Make(String);;
+
+module HashtblString =
+   struct 
+    type t = string
+    let equal = ( = )
+    let hash = Hashtbl.hash
+   end;;
+
+module StringHash = Hashtbl.Make(HashtblString);;
 
 (* Semantic checking of the AST. Returns an SAST if successful,
    throws an exception if something is wrong.
@@ -23,6 +32,12 @@ let check (globals, functions) =
 	  raise (Failure ("duplicate " ^ kind ^ " " ^ n1))
       | _ :: t -> dups t
     in dups (List.sort (fun (_,a) (_,b) -> compare a b) binds)
+  in
+
+  let check_bind tbl (t, n) =
+    if t = Void then raise (Failure ("illegal void " ^ n)) else
+    if (StringHash.mem tbl n) then raise (Failure ("duplicate " ^ n)) else 
+      StringHash.add tbl n t; tbl
   in
 
   (**** Check global variables ****)
@@ -80,13 +95,11 @@ let check (globals, functions) =
     (* Make sure no formals or locals are void or duplicates *)
     check_binds "formal" func.formals;
     check_binds "local" func.locals;
+    let tbl = StringHash.create 10 in
 
     (* Raise an exception if the given rvalue type cannot be assigned to
        the given lvalue type *)
     let check_assign lvaluet rvaluet err =
-       (* if lvaluet = rvaluet then lvaluet else raise (Failure err) *)
-
-       (* if lvaluet = Any then rvaluet else *)
         if lvaluet = rvaluet then lvaluet else
           (match lvaluet with
             (* Object(_) -> if rvaluet = Null then lvaluet else raise (Failure err) *)
@@ -131,7 +144,17 @@ let check (globals, functions) =
           let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^ 
             string_of_typ rt ^ " in " ^ string_of_expr ex
           in (check_assign lt rt err, SAssign(var, (rt, e')))
-          
+      | DeclAssn(ty, var, e) as declassgn ->
+          ignore (check_bind tbl (ty, var));
+          let (rt, e') = expr e in
+          let err = "illegal assignment " ^ string_of_typ ty ^ " = " ^ 
+              string_of_typ rt ^ " in " ^ string_of_expr declassgn (* in
+            let (ty, e') = check_assign_null e ty err
+            update array size *)
+          in let _ = (match ty with 
+            Arr _ -> StringHash.replace tbl var ty
+          | _ -> ignore 1)
+          in (ty, SDeclAssn(ty, var, (ty, e')))
       | Incr(var, e) as ex -> 
           let lt = type_of_identifier var
           and (rt, e') = expr e in 
@@ -168,12 +191,12 @@ let check (globals, functions) =
                        string_of_typ t2 ^ " in " ^ string_of_expr e))
           in (ty, SBinop((t1, e1'), op, (t2, e2')))
 
-      |Decrement(var, e) as ex ->
-        let lt = type_of_identifier var 
-        and (rt, e') = expr e in
-        let err = "illegal assignment for decrement" ^ string_of_typ lt ^ " = " ^
-        string_of_typ rt ^ " in " ^string_of_expr ex
-        in (check_assign lt rt err, SDecr(var, (rt,e')))
+      | Decrement(var, e) as ex ->
+          let lt = type_of_identifier var 
+          and (rt, e') = expr e in
+          let err = "illegal assignment for decrement" ^ string_of_typ lt ^ " = " ^
+          string_of_typ rt ^ " in " ^string_of_expr ex
+          in (check_assign lt rt err, SDecr(var, (rt,e')))
 
       | Call(fname, args) as call -> 
           let fd = find_func fname in
@@ -190,21 +213,21 @@ let check (globals, functions) =
           let args' = List.map2 check_call fd.formals args
           in (fd.typ, SCall(fname, args'))
       | ArrayLit(el) as arraylit ->(* check if types of expr are consistent *)
-        let ty_inconsistent_err = "inconsistent types in array " ^ string_of_expr arraylit in
-        let fst_e = List.hd el in
-        let (fst_ty, _) = expr fst_e in
-        let (arr_ty_len, arr_ty_e) = List.fold_left (fun (t, l) e ->
-            let (et, e') = expr e in
-            let is_arr = (match et with
-                Arr _ -> true
-                | _ -> false) in if ((et = fst_ty) || is_arr) 
-                                then (t+1, (et, e')::l) 
-                                else (t, (et, e')::l)) (0,[]) el
-        in if arr_ty_len != List.length el
-          then raise (Failure ty_inconsistent_err)
-          (* determine arr type *)
-          else let arr_ty = Arr(fst_ty, arr_ty_len)
-          in (arr_ty, SArrayLit(arr_ty_e))
+          let ty_inconsistent_err = "inconsistent types in array " ^ string_of_expr arraylit in
+          let fst_e = List.hd el in
+          let (fst_ty, _) = expr fst_e in
+          let (arr_ty_len, arr_ty_e) = List.fold_left (fun (t, l) e ->
+              let (et, e') = expr e in
+              let is_arr = (match et with
+                  Arr _ -> true
+                  | _ -> false) in if ((et = fst_ty) || is_arr) 
+                                  then (t+1, (et, e')::l) 
+                                  else (t, (et, e')::l)) (0,[]) el
+          in if arr_ty_len != List.length el
+            then raise (Failure ty_inconsistent_err)
+            (* determine arr type *)
+            else let arr_ty = Arr(fst_ty, arr_ty_len)
+            in (arr_ty, SArrayLit(arr_ty_e))
       | ArrayAccess(v, e) as arrayacess ->(* check if type of e is an int *)
           let (t, e') = expr e in
           if t != Int then raise 

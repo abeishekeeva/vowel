@@ -16,7 +16,16 @@ module L = Llvm
 module A = Ast
 open Sast 
 
-module StringMap = Map.Make(String)
+module StringMap = Map.Make(String);;
+
+module HashtblString =
+   struct 
+    type t = string
+    let equal = ( = )
+    let hash = Hashtbl.hash
+   end;;
+
+module StringHash = Hashtbl.Make(HashtblString);;
 
 (* translate : Sast.program -> Llvm.module *)
 let translate (globals, functions) =
@@ -85,6 +94,10 @@ let translate (globals, functions) =
       in let ftype = L.function_type (ltype_of_typ fdecl.styp) formal_types in
       StringMap.add name (L.define_function name ftype the_module, fdecl) m in
     List.fold_left function_decl StringMap.empty functions in
+
+  (* Adding StringHash tbl here -- TODO: add all the formals? See JavaLite  *)
+    let tbl = StringHash.create 10
+  in
   
   (* Fill in the body of the given function *)
   let build_function_body fdecl =
@@ -168,6 +181,12 @@ let translate (globals, functions) =
             L.build_store new_val elt_ptr builder
       | SAssign (s, e) -> let e' = expr builder e in
                           ignore(L.build_store e' (lookup s) builder); e'
+      | SDeclAssn (t, s, e) -> 
+        let e' = expr builder e in
+        let var = L.build_alloca (ltype_of_typ t) s builder in
+            ignore (L.build_store e' var builder);
+        StringHash.add tbl s var; e'
+
       | SIncr(s, e) -> let e' = expr builder e in
         let old_val = L.build_load (lookup s) s builder in 
         let incremented = L.build_add e' old_val s builder in 
