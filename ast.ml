@@ -14,12 +14,12 @@ type expr =
   | Fliteral of string
   | STRliteral of string
   | BoolLit of bool
-  | Id of string
+  | Id of string 
   | Binop of expr * op * expr
   | Unop of uop * expr
   | Assign of string * expr
   | DeclAssn of typ * string * expr
-  | Incr of string * expr 
+  | Increment of string * expr 
   | Decrement of string * expr
   | Call of string * expr list
   | ArrayAccess of string * expr
@@ -86,8 +86,8 @@ let rec string_of_expr = function
   | Unop(o, e) -> string_of_uop o ^ string_of_expr e
   | Assign(v, e) -> v ^ " = " ^ string_of_expr e
   | DeclAssn(t, s, e) -> string_of_typ t ^ " " ^ s ^ " = " ^ string_of_expr e 
-  | Incr(v, e) -> v ^ "+= " ^ string_of_expr e
-  | Decrement(v, e) -> v ^ "-="  ^ string_of_expr e
+  | Increment(v, e) -> v ^ "+= " ^ string_of_expr e
+  | Decrement(v, e) -> v ^ "-="  ^ string_of_expr e 
   | Call(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
   | ArrayAccess (s, e) ->  s ^ "[" ^ string_of_expr e ^ "]"

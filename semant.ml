@@ -138,6 +138,7 @@ let check (globals, functions) =
       | STRliteral l -> (String, SSTRliteral l)
       | Noexpr     -> (Void, SNoexpr)
       | Id s       -> (type_of_identifier s, SId s)
+
       | Assign(var, e) as ex -> 
           let lt = type_of_identifier var
           and (rt, e') = expr e in
@@ -155,12 +156,22 @@ let check (globals, functions) =
             Arr _ -> StringHash.replace tbl var ty
           | _ -> ignore 1)
           in (ty, SDeclAssn(ty, var, (ty, e')))
-      | Incr(var, e) as ex -> 
+
+      | Increment(var, e) as ex -> 
+          let l = Binop(Id(var), Add, e) in 
           let lt = type_of_identifier var
-          and (rt, e') = expr e in 
-          let err = "illegal assignment for increment" ^ string_of_typ lt ^ " = " ^ 
-          string_of_typ rt ^ " in " ^ string_of_expr ex
-          in (check_assign lt rt err, SIncr(var, (rt, e')))
+          and (rt, e') = expr l in
+          let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^ 
+            string_of_typ rt ^ " in " ^ string_of_expr ex
+          in (check_assign lt rt err, SAssign(var, (rt, e')))
+
+      | Decrement(var, e) as ex -> 
+          let l = Binop(Id(var), Sub, e) in 
+          let lt = type_of_identifier var
+          and (rt, e') = expr l in
+          let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^ 
+            string_of_typ rt ^ " in " ^ string_of_expr ex
+          in (check_assign lt rt err, SAssign(var, (rt, e')))
 
       | Unop(op, e) as ex -> 
           let (t, e') = expr e in
@@ -190,13 +201,6 @@ let check (globals, functions) =
                        string_of_typ t1 ^ " " ^ string_of_op op ^ " " ^
                        string_of_typ t2 ^ " in " ^ string_of_expr e))
           in (ty, SBinop((t1, e1'), op, (t2, e2')))
-
-      | Decrement(var, e) as ex ->
-          let lt = type_of_identifier var 
-          and (rt, e') = expr e in
-          let err = "illegal assignment for decrement" ^ string_of_typ lt ^ " = " ^
-          string_of_typ rt ^ " in " ^string_of_expr ex
-          in (check_assign lt rt err, SDecr(var, (rt,e')))
 
       | Call(fname, args) as call -> 
           let fd = find_func fname in

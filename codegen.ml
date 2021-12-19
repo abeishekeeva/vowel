@@ -187,16 +187,6 @@ let translate (globals, functions) =
             ignore (L.build_store e' var builder);
         StringHash.add tbl s var; e'
 
-      | SIncr(s, e) -> let e' = expr builder e in
-        let old_val = L.build_load (lookup s) s builder in 
-        let incremented = L.build_add e' old_val s builder in 
-        ignore(L.build_store incremented (lookup s) builder); incremented
-      | SDecr(s, e) -> let e' = expr builder e in
-                  let oldvar = L.build_load (lookup s) s builder in
-                  let nvar = L.build_sub oldvar e' s builder in
-                  ignore(L.build_store nvar (lookup s) builder); nvar 
-      
-
       | SBinop ((A.Float,_ ) as e1, op, e2) ->
         let e1' = expr builder e1
         and e2' = expr builder e2 in
@@ -216,11 +206,11 @@ let translate (globals, functions) =
 	          raise (Failure "internal error: semant should have rejected and/or on float")
 	      ) e1' e2' "tmp" builder
 
-| SBinop ((A.String,_ ) as e1, op, e2) -> 
+      | SBinop ((A.String,_ ) as e1, op, e2) -> 
         let e1' = expr builder e1
         and e2' = expr builder e2 in
         (match op with
-           A.Add     -> L.build_call string_concat_f [| e1'; e2' |] "string_concat" builder
+            A.Add     -> L.build_call string_concat_f [| e1'; e2' |] "string_concat" builder
           | A.Equal ->  (L.build_icmp L.Icmp.Eq) (L.const_int i32_t 0) (L.build_call string_inequality_f [| e1'; e2' |] "string_inequality" builder) "tmp" builder
           | A.Neq     -> (L.build_icmp L.Icmp.Ne) (L.const_int i32_t 0) (L.build_call string_inequality_f [| e1';e2' |] "string_inequality" builder) "tmp" builder
           | _ -> raise (Failure ("operation " ^ (A.string_of_op op) ^ " not implemented")))

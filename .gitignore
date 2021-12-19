@@ -9,3 +9,5 @@ vowel_func.o
 vowel_func.bc 
 printbig.o
 vowel.native
+.DS_Store
+testall.log
