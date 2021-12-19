@@ -3,3 +3,4 @@ scanner.ml
 _build/
 microc.native
 testall.log
+test-printbig.s
