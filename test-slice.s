@@ -6,9 +6,21 @@
 main:                                   # @main
 	.cfi_startproc
 # %bb.0:                                # %entry
-	leaq	.Lstring(%rip), %rax
-	movq	%rax, -8(%rsp)
+	subq	$24, %rsp
+	.cfi_def_cfa_offset 32
+	leaq	.Lstring(%rip), %rdi
+	movq	%rdi, 16(%rsp)
+	movl	$2, %esi
+	movl	$7, %edx
+	callq	Slice@PLT
+	movq	%rax, 8(%rsp)
+	leaq	.Lfmt.2(%rip), %rdi
+	movq	%rax, %rsi
 	xorl	%eax, %eax
+	callq	printf@PLT
+	xorl	%eax, %eax
+	addq	$24, %rsp
+	.cfi_def_cfa_offset 8
 	retq
 .Lfunc_end0:
 	.size	main, .Lfunc_end0-main

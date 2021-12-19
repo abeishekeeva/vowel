@@ -136,9 +136,6 @@ let slice_t : L.lltype =
       let old_val = L.build_load (lookup s) s builder in 
       let incremented = L.build_add e' old_val s builder in 
       ignore(L.build_store incremented (lookup s) builder); incremented
-
-
-      | SSlice ("Slice",e1, e2) -> L.build_call slice_f [| (expr builder s) ; (expr builder e1); (expr builder e2) |] "Slice" builder
       | SDecr(s, e) -> let e' = expr builder e in
                   let oldvar = L.build_load (lookup s) s builder in
                   let nvar = L.build_sub oldvar e' s builder in
@@ -191,10 +188,14 @@ let slice_t : L.lltype =
           A.Neg when t = A.Float   -> L.build_fneg 
           | A.Neg                  -> L.build_neg
           | A.Not                  -> L.build_not) e' "tmp" builder
+
+
       | SCall ("print", [e]) | SCall ("printb", [e]) -> L.build_call printf_func [| int_format_str ; (expr builder e) |] "printf" builder
       | SCall ("printbig", [e]) -> L.build_call printbig_func [| (expr builder e) |] "printbig" builder
       | SCall ("printf", [e]) -> L.build_call printf_func [| float_format_str ; (expr builder e) |] "printf" builder
       | SCall ("printstr", [e]) -> L.build_call printf_func [| string_format_str ; (expr builder e) |] "printf" builder
+      | SCall ("Slice", [v;e1;e2]) -> L.build_call slice_f [| (expr builder v); (expr builder e1); (expr builder e2) |] "Slice" builder
+
       | SCall (f, args) ->
         let (fdef, fdecl) = StringMap.find f function_decls in
 	 let llargs = List.rev (List.map (expr builder) (List.rev args)) in

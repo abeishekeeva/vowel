@@ -125,8 +125,6 @@ let built_in_decls =
           let err = "illegal assignment for increment" ^ string_of_typ lt ^ " = " ^ 
           string_of_typ rt ^ " in " ^ string_of_expr ex
           in (check_assign lt rt err, SIncr(var, (rt, e')))
-      
-
 
 
       | Unop(op, e) as ex -> 

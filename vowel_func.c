@@ -10,9 +10,11 @@ char *string_concat(char *s1, char *s2) {
 }
 
 
-char *slice(const char *str, size_t s, size_t e){
+char *Slice(const char *str, size_t s, size_t e){
+	s++;
+	e++;
 	size_t index = 0;
-	size_t length = strlen(str);
+	size_t length = strlen(str) ;
 	char *slicestring = (char*)malloc(length +1);
 	while (s < e && s <length){
 		slicestring[index] = str[s];
@@ -20,6 +22,6 @@ char *slice(const char *str, size_t s, size_t e){
 		s++;
 	}
 	slicestring[index] = '\0';
-	
+
 	return slicestring;
 }

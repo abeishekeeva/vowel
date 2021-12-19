@@ -20,7 +20,6 @@ type expr =
   | Assign of string * expr
   | Incr of string * expr 
   | Decrement of string * expr
-  | Slice of string * expr * expr
   | Call of string * expr list
   | Noexpr
 
@@ -77,7 +76,6 @@ let rec string_of_expr = function
   | Assign(v, e) -> v ^ " = " ^ string_of_expr e
   | Incr(v, e) -> v ^ "+= " ^ string_of_expr e
   | Decrement(v, e) -> v ^ "-="  ^ string_of_expr e
-  | Slice (v, e1, e2) -> v^ "[" ^ string_of_expr e1 ^ ":" ^ string_of_expr e2^ "]"
   | Call(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
   | Noexpr -> ""

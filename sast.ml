@@ -13,9 +13,8 @@ and sx =
   | SUnop of uop * sexpr
   | SAssign of string * sexpr
   | SIncr of string * sexpr
-  | SCall of string * sexpr list
   | SDecr of string * sexpr
-  | SSlice of string * sexpr * sexpr
+  | SCall of string * sexpr list
   | SNoexpr
 
 type sstmt =
@@ -52,7 +51,6 @@ let rec string_of_sexpr (t, e) =
   | SAssign(v, e) -> v ^ " = " ^ string_of_sexpr e
   | SIncr(v, e) -> v ^ " += " ^ string_of_sexpr e
   | SDecr (v, e) -> v ^ " -= " ^ string_of_sexpr e
-  | SSlice (v, e1, e2) -> v^ "[" ^ string_of_sexpr e1 ^ ":" ^ string_of_sexpr e2^ "]"
   | SCall(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_sexpr el) ^ ")"
   | SNoexpr -> ""

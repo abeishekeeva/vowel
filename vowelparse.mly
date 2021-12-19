@@ -4,7 +4,7 @@
 open Ast
 %}
 
-%token SEMI LPAREN RPAREN LBRACE RBRACE COMMA PLUS MINUS TIMES DIVIDE MODULUS ASSIGN INCR COLON LBRACK RBRACK
+%token SEMI LPAREN RPAREN LBRACE RBRACE COMMA PLUS MINUS TIMES DIVIDE MODULUS ASSIGN INCR COLON
 %token NOT EQ NEQ LT LEQ GT GEQ AND OR
 %token DECREMENT
 %token RETURN IF ELSE FOR WHILE INT BOOL FLOAT VOID STRING
@@ -110,7 +110,6 @@ expr:
   | NOT expr         { Unop(Not, $2)          }
   | ID ASSIGN expr   { Assign($1, $3)         }
   | ID INCR expr     { Incr($1, $3)           }
-  | ID LBRACK expr COLON expr RBRACK { Call("Slice", $1, $3, $5)} 
   | ID LPAREN args_opt RPAREN { Call($1, $3)  } 
   | LPAREN expr RPAREN { $2                   }
   | ID DECREMENT expr { Decrement($1, $3) }
