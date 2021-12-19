@@ -38,8 +38,7 @@ llc -relocation-model=pic test-array-access.ll > test-array-access.s
 cc -o test-array-access.exe test-array-access.s vowel_func.o
 ./test-array-access.exe
 diff -b test-array-access.out tests/test-array-access.out > test-array-access.diff
-FAILED test-array-access.out differs from tests/test-array-access.out
-###### FAILED
+###### SUCCESS
 
 ###### Testing test-cobytest
 ./vowel.native tests/test-cobytest.mc > test-cobytest.ll
@@ -319,6 +318,14 @@ cc -o test-local2.exe test-local2.s vowel_func.o
 diff -b test-local2.out tests/test-local2.out > test-local2.diff
 ###### SUCCESS
 
+###### Testing test-loop-array
+./vowel.native tests/test-loop-array.mc > test-loop-array.ll
+llc -relocation-model=pic test-loop-array.ll > test-loop-array.s
+cc -o test-loop-array.exe test-loop-array.s vowel_func.o
+./test-loop-array.exe
+diff -b test-loop-array.out tests/test-loop-array.out > test-loop-array.diff
+###### SUCCESS
+
 ###### Testing test-modulus
 ./vowel.native tests/test-modulus.mc > test-modulus.ll
 llc -relocation-model=pic test-modulus.ll > test-modulus.s
@@ -347,6 +354,7 @@ diff -b test-ops2.out tests/test-ops2.out > test-ops2.diff
 ./vowel.native tests/test-printbig.mc > test-printbig.ll
 llc -relocation-model=pic test-printbig.ll > test-printbig.s
 cc -o test-printbig.exe test-printbig.s vowel_func.o
+<<<<<<< HEAD
 /usr/bin/ld: /tmp/ccSIMtEK.o: in function `main':
 MicroC:(.text+0x8): undefined reference to `printbig'
 /usr/bin/ld: MicroC:(.text+0x10): undefined reference to `printbig'
@@ -354,6 +362,15 @@ MicroC:(.text+0x8): undefined reference to `printbig'
 /usr/bin/ld: MicroC:(.text+0x20): undefined reference to `printbig'
 /usr/bin/ld: MicroC:(.text+0x28): undefined reference to `printbig'
 /usr/bin/ld: /tmp/ccSIMtEK.o:MicroC:(.text+0x30): more undefined references to `printbig' follow
+=======
+/usr/bin/ld: /tmp/ccGcVhBx.o: in function `main':
+MicroC:(.text+0x7): undefined reference to `printbig'
+/usr/bin/ld: MicroC:(.text+0x11): undefined reference to `printbig'
+/usr/bin/ld: MicroC:(.text+0x1b): undefined reference to `printbig'
+/usr/bin/ld: MicroC:(.text+0x25): undefined reference to `printbig'
+/usr/bin/ld: MicroC:(.text+0x2f): undefined reference to `printbig'
+/usr/bin/ld: /tmp/ccGcVhBx.o:MicroC:(.text+0x39): more undefined references to `printbig' follow
+>>>>>>> ab27569ad4cbf1d74507022788e3bf29bdf6e975
 collect2: error: ld returned 1 exit status
 ###### FAILED
 
