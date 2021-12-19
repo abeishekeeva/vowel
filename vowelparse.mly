@@ -4,7 +4,7 @@
 open Ast
 %}
 
-%token SEMI LPAREN RPAREN LBRACE RBRACE LBRACKET RBRACKET COMMA PLUS MINUS TIMES DIVIDE
+%token SEMI LPAREN RPAREN LBRACE RBRACE LBRACKET RBRACKET COMMA PLUS MINUS TIMES DIVIDE 
 %token MODULUS ASSIGN
 %token INCREMENT DECREMENT
 %token NOT EQ NEQ LT LEQ GT GEQ AND OR
@@ -88,10 +88,6 @@ expr_opt:
     /* nothing */ { Noexpr }
   | expr          { $1 }
 
-/* assignment_op:
-  ASSIGN       { Assign }
-| INCREMENT    { Incr }
-| DECREMENT    { Decr } */
 
 expr:
     LITERAL          { Literal($1)            }
@@ -112,12 +108,13 @@ expr:
   | expr GEQ    expr { Binop($1, Geq,   $3)   }
   | expr AND    expr { Binop($1, And,   $3)   }
   | expr OR     expr { Binop($1, Or,    $3)   }
+  /* | expr INTERSEC expr {Binop($1, Intersec, $3)} */
   | MINUS expr %prec NOT { Unop(Neg, $2)      }
   | NOT expr         { Unop(Not, $2)          }
   | ID LPAREN args_opt RPAREN { Call($1, $3)  }
   | LPAREN expr RPAREN { $2                   }
   | ID ASSIGN expr    { Assign($1, $3)        }
-  | ID INCREMENT expr { Increment($1, $3)    }
+  | ID INCREMENT expr { Increment($1, $3)     }
   | ID DECREMENT expr { Decrement($1, $3)     } 
   /* Arrays */
   | ID LBRACKET expr RBRACKET { ArrayAccess($1, $3) }
