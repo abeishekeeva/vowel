@@ -128,7 +128,7 @@ let check (globals, functions) =
       | Assign(var, e) as ex -> 
           let lt = type_of_identifier var
           and (rt, e') = expr e in
-          let err = "illegal assignment __ " ^ string_of_typ lt ^ " = " ^ 
+          let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^ 
             string_of_typ rt ^ " in " ^ string_of_expr ex
           in (check_assign lt rt err, SAssign(var, (rt, e')))
           
@@ -194,10 +194,12 @@ let check (globals, functions) =
         let fst_e = List.hd el in
         let (fst_ty, _) = expr fst_e in
         let (arr_ty_len, arr_ty_e) = List.fold_left (fun (t, l) e ->
-        let (et, e') = expr e in
-        let is_arr = (match et with
-            Arr _ -> true
-            | _ -> false) in if ((et = fst_ty) || is_arr) then (t+1, (et, e')::l) else (t, (et, e')::l)) (0,[]) el
+            let (et, e') = expr e in
+            let is_arr = (match et with
+                Arr _ -> true
+                | _ -> false) in if ((et = fst_ty) || is_arr) 
+                                then (t+1, (et, e')::l) 
+                                else (t, (et, e')::l)) (0,[]) el
         in if arr_ty_len != List.length el
           then raise (Failure ty_inconsistent_err)
           (* determine arr type *)

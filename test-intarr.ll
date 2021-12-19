@@ -14,7 +14,6 @@ declare i32 @printbig(i32)
 define i32 @main() {
 entry:
   %a = alloca i32*
-  %b = alloca i32
   %arr = alloca i32*, i32 4
   %arrptr = bitcast i32** %arr to i32*
   %arrelt = getelementptr i32, i32* %arrptr, i32 0
@@ -26,8 +25,5 @@ entry:
   %arrlast = getelementptr i32, i32* %arrptr, i32 3
   store i32 0, i32* %arrlast
   store i32* %arrptr, i32** %a
-  %a3 = load i32*, i32** %a
-  %arrelt4 = getelementptr i32, i32* %a3, i32 1
-  store i32 3, i32* %arrelt4
   ret i32 0
 }

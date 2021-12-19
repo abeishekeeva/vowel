@@ -6,33 +6,17 @@
 main:                                   // @main
 	.cfi_startproc
 // %bb.0:                               // %entry
-	str	x30, [sp, #-16]!        // 8-byte Folded Spill
-	.cfi_def_cfa_offset 16
-	.cfi_offset w30, -16
-	mov	w0, #72
-	bl	printbig
-	mov	w0, #69
-	bl	printbig
-	mov	w0, #76
-	bl	printbig
-	mov	w0, #76
-	bl	printbig
-	mov	w0, #79
-	bl	printbig
-	mov	w0, #32
-	bl	printbig
-	mov	w0, #87
-	bl	printbig
-	mov	w0, #79
-	bl	printbig
-	mov	w0, #82
-	bl	printbig
-	mov	w0, #76
-	bl	printbig
-	mov	w0, #68
-	bl	printbig
+	sub	sp, sp, #48             // =48
+	.cfi_def_cfa_offset 48
+	mov	w8, #1
+	mov	x9, sp
+	mov	x10, #12884901891
+	str	w8, [sp]
+	str	wzr, [sp, #12]
+	str	x9, [sp, #40]
+	stur	x10, [sp, #4]
 	mov	w0, wzr
-	ldr	x30, [sp], #16          // 8-byte Folded Reload
+	add	sp, sp, #48             // =48
 	ret
 .Lfunc_end0:
 	.size	main, .Lfunc_end0-main
