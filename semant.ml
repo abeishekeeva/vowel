@@ -144,11 +144,11 @@ let check (globals, functions) =
           let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^ 
             string_of_typ rt ^ " in " ^ string_of_expr ex
           in (check_assign lt rt err, SAssign(var, (rt, e')))
-      | DeclAssn(ty, var, e) as declassgn ->
+      | DeclAssn(ty, var, e) as declassn ->
           ignore (check_bind tbl (ty, var));
           let (rt, e') = expr e in
           let err = "illegal assignment " ^ string_of_typ ty ^ " = " ^ 
-              string_of_typ rt ^ " in " ^ string_of_expr declassgn (* in
+              string_of_typ rt ^ " in " ^ string_of_expr declassn (* in
             let (ty, e') = check_assign_null e ty err
             update array size *)
           in let _ = (match ty with 
