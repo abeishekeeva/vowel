@@ -20,5 +20,6 @@ char *slice(const char *str, size_t s, size_t e){
 		s++;
 	}
 	slicestring[index] = '\0';
+	
 	return slicestring;
 }

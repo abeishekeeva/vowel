@@ -1,7 +1,8 @@
 int main(){
 	string r;
-	r = "thisismystring";
 	string k;
-	k = "key";
+	r = "thisismystring";
+	k = r[2:7];
+	printstr(k);
 	return 0;
 }

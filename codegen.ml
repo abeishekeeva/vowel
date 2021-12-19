@@ -58,10 +58,11 @@ let translate (globals, functions) =
   let string_concat_f : L.llvalue =
     L.declare_function "string_concat" string_concat_t the_module in
 
-  let stringslice_t : L.lltype =
+let slice_t : L.lltype =
     L.function_type str_t [| str_t; i32_t; i32_t |] in  
-  let stringslice_f : L.llvalue =
-    L.declare_function "slice" stringslice_t the_module in
+  let slice_f : L.llvalue =
+    L.declare_function "Slice" slice_t the_module in
+
 
 
 
@@ -135,6 +136,9 @@ let translate (globals, functions) =
       let old_val = L.build_load (lookup s) s builder in 
       let incremented = L.build_add e' old_val s builder in 
       ignore(L.build_store incremented (lookup s) builder); incremented
+
+
+      | SSlice ("Slice",e1, e2) -> L.build_call slice_f [| (expr builder s) ; (expr builder e1); (expr builder e2) |] "Slice" builder
       | SDecr(s, e) -> let e' = expr builder e in
                   let oldvar = L.build_load (lookup s) s builder in
                   let nvar = L.build_sub oldvar e' s builder in
@@ -191,7 +195,6 @@ let translate (globals, functions) =
       | SCall ("printbig", [e]) -> L.build_call printbig_func [| (expr builder e) |] "printbig" builder
       | SCall ("printf", [e]) -> L.build_call printf_func [| float_format_str ; (expr builder e) |] "printf" builder
       | SCall ("printstr", [e]) -> L.build_call printf_func [| string_format_str ; (expr builder e) |] "printf" builder
-      | SCall ("slice", [e; s1; s2]) -> L.build_call stringslice_f [| (expr builder e) ; (expr builder s1) ;(expr builder s2) |] "slice" builder
       | SCall (f, args) ->
         let (fdef, fdecl) = StringMap.find f function_decls in
 	 let llargs = List.rev (List.map (expr builder) (List.rev args)) in
