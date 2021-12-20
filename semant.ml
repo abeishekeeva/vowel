@@ -193,6 +193,7 @@ let check (globals, functions) =
           | Add | Sub | Mult | Div | Mod when same && t1 = Float -> Float
           | Add when same && t1 = String -> String
           | Equal | Neq            when same               -> Bool
+          | Intersec when same && t1 = String -> ArrLit
           | Less | Leq | Greater | Geq
                      when same && (t1 = Int || t1 = Float) -> Bool
           | And | Or when same && t1 = Bool -> Bool
@@ -233,11 +234,11 @@ let check (globals, functions) =
             else let arr_ty = Arr(fst_ty, arr_ty_len)
             in (arr_ty, SArrayLit(arr_ty_e))
       | ArrayAccess(v, e) as arrayacess ->(* check if type of e is an int *)
-          let (t, e') = expr e in
+          let (t, e') = expr e in 
           if t != Int then raise 
           (Failure (string_of_expr e ^ " is not of int → type in " ^ string_of_expr arrayacess)) else
           (* check if variable is array type *)
-          let v_ty = type_of_identifier v in
+          let v_ty = type_of_identifier v 
           let e_ty = is_arr_ty (v, v_ty) in (e_ty, SArrayAccess(v, (t, e')))
       | ArrAssign(v, e1, e2) as arrassign ->(* check if type of e is an int *)
           let (t, e1') = expr e1 in
@@ -246,7 +247,7 @@ let check (globals, functions) =
           let v_ty = type_of_identifier v in
           let e_ty = is_arr_ty (v, v_ty) in
           let (rt, e2') = expr e2 in
-          let err = "illegal assignment for array " ^ string_of_typ e_ty ^ " = " ^
+          (*let err = "illegal assignment for array " ^ string_of_typ e_ty ^ " = " ^ *)
           string_of_typ rt ^ " in " ^ string_of_expr arrassign in
           (* let (ty, e2') = check_assign_null e2 e_ty err *)
           (e_ty, SArrAssign(v, (t,e1'), (rt,e2')))

@@ -39,6 +39,7 @@ let translate (globals, functions) =
   let i32_t      = L.i32_type    context
   and i8_t       = L.i8_type     context
   and str_t      = L.pointer_type (L.i8_type context)
+  and arr_t      = L.pointer_type (L.i8_type context)
   and i1_t       = L.i1_type     context
   and float_t    = L.double_type context
   and void_t     = L.void_type   context in
@@ -50,7 +51,8 @@ let translate (globals, functions) =
     | A.Float -> float_t
     | A.Void  -> void_t
     | A.String -> str_t
-    | A.Arr(ty,_) -> L.pointer_type (ltype_of_typ ty)
+    (* | A.Arr(ty,_) -> L.pointer_type (ltype_of_typ ty) *)
+    | A.Arr(ty) -> L.pointer_type (ltype_of_typ ty)
   in
 
   (* Create a map of global variables after creating each *)
@@ -73,7 +75,10 @@ let translate (globals, functions) =
   let string_inequality_f : L.llvalue =
     L.declare_function "string_inequality" string_inequality_t the_module in
 
-  
+  let string_intersection_t : L.lltype = 
+      L.function_type arr_t [| str_t; str_t |] in
+  let string_intersection_f : L.llvalue =
+      L.declare_function "string_intersection" string_intersection_t the_module in
 
   let printf_t : L.lltype = 
       L.var_arg_function_type i32_t [| L.pointer_type i8_t |] in
@@ -213,6 +218,7 @@ let translate (globals, functions) =
             A.Add     -> L.build_call string_concat_f [| e1'; e2' |] "string_concat" builder
           | A.Equal ->  (L.build_icmp L.Icmp.Eq) (L.const_int i32_t 0) (L.build_call string_inequality_f [| e1'; e2' |] "string_inequality" builder) "tmp" builder
           | A.Neq     -> (L.build_icmp L.Icmp.Ne) (L.const_int i32_t 0) (L.build_call string_inequality_f [| e1';e2' |] "string_inequality" builder) "tmp" builder
+          | A.Intersec -> L.build_call string_intersection_f [| e1'; e2' |] "string_intersection" builder
           | _ -> raise (Failure ("operation " ^ (A.string_of_op op) ^ " not implemented")))
 
 

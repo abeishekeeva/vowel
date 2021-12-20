@@ -1,11 +1,11 @@
 (* Abstract Syntax Tree and functions for printing it *)
 
 type op = Add | Sub | Mult | Div | Mod | Equal | Neq | Less | Leq | Greater | Geq |
-          And | Or
+          And | Or | Intersec
 
 type uop = Neg | Not
 
-type typ = Int | Bool | Float | Void | String | Arr of (typ * int)
+type typ = Int | Bool | Float | Void | String | Arr of typ(* (typ * int) *)
 
 type bind = typ * string
 
@@ -61,6 +61,7 @@ let string_of_op = function
   | Geq -> ">="
   | And -> "&&"
   | Or -> "||"
+  | Intersec -> "&"
 
 let string_of_uop = function
     Neg -> "-"
@@ -72,7 +73,8 @@ let rec string_of_typ = function
 | Bool -> "bool"
 | Float -> "float"
 | Void -> "void"
-| Arr(t, _) -> string_of_typ t ^ "[]"
+(* | Arr(t, _) -> string_of_typ t ^ "[]" *)
+| Arr(t) -> string_of_typ t ^ "[]"
 
 let rec string_of_expr = function
     Literal(l) -> string_of_int l
