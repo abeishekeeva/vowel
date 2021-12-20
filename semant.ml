@@ -107,6 +107,7 @@ let check (statements, globals, functions) =
     check_binds "formal" func.formals;
     check_binds "local" func.locals;
     let tbl = StringHash.create 10 in
+    let formal_tbl = StringHash.create 5 in
 
     (* Raise an exception if the given rvalue type cannot be assigned to
        the given lvalue type *)
@@ -123,6 +124,20 @@ let check (statements, globals, functions) =
     in   
 
     (* Build local symbol table of variables for this function *)
+    let _ = List.fold_left check_bind
+      formal_tbl (func.formals @ func.locals )
+    in
+
+    (* Return a variable from our local symbol table *)
+    let type_of_identifier s =
+      try StringHash.find tbl s
+      with Not_found -> 
+        try StringHash.find formal_tbl s
+        with Not_found -> raise (Failure ("undeclared identifier " ^ s))
+    in
+(*
+
+    (* Build local symbol table of variables for this function *)
     let symbols = List.fold_left (fun m (ty, name) -> StringMap.add name ty m)
 	                StringMap.empty (globals @ func.formals @ func.locals )
     in
@@ -132,6 +147,7 @@ let check (statements, globals, functions) =
       try StringMap.find s symbols
       with Not_found -> raise (Failure ("undeclared identifier " ^ s))
     in
+*)
     
     (* check if of array type, return element type *)
     let is_arr_ty (v, ty) = match ty with 
@@ -220,11 +236,14 @@ let check (statements, globals, functions) =
           if List.length args != param_length then
             raise (Failure ("expecting " ^ string_of_int param_length ^ 
                             " arguments in " ^ string_of_expr call))
-          else let check_call (ft, _) e = 
+          else let check_call (ft, n) e = 
             let (et, e') = expr e in 
             let err = "illegal argument found " ^ string_of_typ et ^
               " expected " ^ string_of_typ ft ^ " in " ^ string_of_expr e
             in (check_assign ft et err, e')
+          in let _ = (match et with 
+          Arr _ -> StringHash.replace formal_tbl n et
+        | _ -> ignore 1) in (et,e')
           in 
           let args' = List.map2 check_call fd.formals args
           in (fd.typ, SCall(fname, args'))
