@@ -164,20 +164,24 @@ let check (statements, globals, functions) =
       | BoolLit l  -> (Bool, SBoolLit l)
       | STRliteral l -> (String, SSTRliteral l)
       | Noexpr     -> (Void, SNoexpr)
-      | Id s       -> (type_of_identifier s, SId s)
+      | Id s       ->  raise (Failure ("I'm Being Called From Id")) (* (type_of_identifier s, SId s) *)
       | Assign(var, e) as ex -> 
+        raise (Failure ("I'm Being Called From Assign"))
+        (*
           let lt = type_of_identifier var in
-          and (rt, e') = expr e in
+          let (rt, e') = expr e in
           let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^ 
             string_of_typ rt ^ " in " ^ string_of_expr ex
           in let _ = (match lt with 
             Arr _ -> StringHash.replace tbl var lt
             | _ -> ignore 1)
-          in
-            (check_assign lt rt err, SAssign(var, (rt, e')))
+          in (check_assign lt rt err, SAssign(var, (rt, e')))
+        *)
 
       | DeclAssn(ty, var, e) as declassn ->
-          ignore (check_bind tbl (ty, var));
+          raise (Failure ("I'm Being Called From DeclAssn"))
+          (*
+          ignore (check_bind tbl (ty, var));   
           let (rt, e') = expr e in
           let _err = "illegal assignment " ^ string_of_typ ty ^ " = " ^ 
               string_of_typ rt ^ " in " ^ string_of_expr declassn (* in
@@ -187,6 +191,7 @@ let check (statements, globals, functions) =
             Arr _ -> StringHash.replace tbl var ty
           | _ -> ignore 1)
           in (ty, SDeclAssn(ty, var, (ty, e')))
+          *)
       | Incr(var, e) as ex -> 
           let lt = type_of_identifier var
           and (rt, e') = expr e in 
@@ -210,15 +215,14 @@ let check (statements, globals, functions) =
           let same = t1 = t2 in
           (* Determine expression type based on operator and operand types *)
           let ty = match op with
-            Add | Sub | Mult | Div | Mod when same && t1 = Int   -> Int
-          | Add | Sub | Mult | Div | Mod when same && t1 = Float -> Float
-          | Add when same && t1 = String -> String
-          | Equal | Neq            when same               -> Bool
-          | Less | Leq | Greater | Geq
+              Add | Sub | Mult | Div | Mod when same && t1 = Int   -> Int
+            | Add | Sub | Mult | Div | Mod when same && t1 = Float -> Float
+            | Add when same && t1 = String -> String
+            | Equal | Neq            when same               -> Bool
+            | Less | Leq | Greater | Geq
                      when same && (t1 = Int || t1 = Float) -> Bool
-          | And | Or when same && t1 = Bool -> Bool
-          | _ -> raise (
-	      Failure ("illegal binary operator " ^
+            | And | Or when same && t1 = Bool -> Bool
+            | _ -> raise (Failure ("illegal binary operator " ^
                        string_of_typ t1 ^ " " ^ string_of_op op ^ " " ^
                        string_of_typ t2 ^ " in " ^ string_of_expr e))
           in (ty, SBinop((t1, e1'), op, (t2, e2')))
@@ -237,17 +241,18 @@ let check (statements, globals, functions) =
             raise (Failure ("expecting " ^ string_of_int param_length ^ 
                             " arguments in " ^ string_of_expr call))
           else let check_call (ft, n) e = 
-            let (et, e') = expr e in 
-            let err = "illegal argument found " ^ string_of_typ et ^
+            let (et, e') = expr e 
+            in let err = "illegal argument found " ^ string_of_typ et ^
               " expected " ^ string_of_typ ft ^ " in " ^ string_of_expr e
-            in (check_assign ft et err, e')
-          in let _ = (match et with 
-          Arr _ -> StringHash.replace formal_tbl n et
-        | _ -> ignore 1) in (et,e')
-          in 
-          let args' = List.map2 check_call fd.formals args
+            in let _ = (check_assign ft et err, e')
+            in let _ = (match et with 
+              Arr _ -> StringHash.replace formal_tbl n et
+              | _ -> ignore 1) in (et, e')
+          in let args' = List.map2 check_call fd.formals args
           in (fd.typ, SCall(fname, args'))
-      | ArrayLit(el) as arraylit ->(* check if types of expr are consistent *)
+
+      
+      | ArrayLit(el) as arraylit -> (* check if types of expr are consistent *)
           let ty_inconsistent_err = "inconsistent types in array " ^ string_of_expr arraylit in
           let fst_e = List.hd el in
           let (fst_ty, _) = expr fst_e in
@@ -263,17 +268,19 @@ let check (statements, globals, functions) =
             (* determine arr type *)
             else let arr_ty = Arr(fst_ty, arr_ty_len)
             in (arr_ty, SArrayLit(arr_ty_e))
+
+      
       | ArrayAccess(v, e) as arrayacess ->(* check if type of e is an int *)
           let (t, e') = expr e in
           if t != Int then raise 
           (Failure (string_of_expr e ^ " is not of int → type in " ^ string_of_expr arrayacess)) else
-          (* check if variable is array type *)
+            (* check if variable is array type *)
           let v_ty = type_of_identifier v in
           let e_ty = is_arr_ty (v, v_ty) in (e_ty, SArrayAccess(v, (t, e')))
       | ArrAssign(v, e1, e2) as arrassign ->(* check if type of e is an int *)
           let (t, e1') = expr e1 in
           if t != Int then raise (Failure (string_of_expr e1 ^ " is not of int type → in " ^ string_of_expr arrassign))
-          else (* check if variable is array type *)
+          else (* check if variable is array type *) 
           let v_ty = type_of_identifier v in
           let e_ty = is_arr_ty (v, v_ty) in
           let (rt, e2') = expr e2 in
