@@ -19,7 +19,7 @@ module StringHash = Hashtbl.Make(HashtblString);;
 
    Check each global variable, then check each function *)
 
-let check (globals, functions) =
+let check (statements, globals, functions) =
 
   (* Verify a list of bindings has no void types or duplicate names *)
   let check_binds (kind : string) (binds : bind list) =
@@ -59,6 +59,17 @@ let check (globals, functions) =
 			                         ("printbig", Int);
                                ("printstr", String) ]
   in
+
+  (* declare main function with all statements *)
+  let main_decl = 
+    {
+      typ = Int;
+      fname = "main";
+      formals = [];
+      locals = [];
+      body = List.rev statements }
+    in
+  let functions = main_decl :: functions in
 
   (* Add function name to symbol table *)
   let add_func map fd = 
@@ -139,15 +150,20 @@ let check (globals, functions) =
       | Noexpr     -> (Void, SNoexpr)
       | Id s       -> (type_of_identifier s, SId s)
       | Assign(var, e) as ex -> 
-          let lt = type_of_identifier var
+          let lt = type_of_identifier var in
           and (rt, e') = expr e in
           let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^ 
             string_of_typ rt ^ " in " ^ string_of_expr ex
-          in (check_assign lt rt err, SAssign(var, (rt, e')))
+          in let _ = (match lt with 
+            Arr _ -> StringHash.replace tbl var lt
+            | _ -> ignore 1)
+          in
+            (check_assign lt rt err, SAssign(var, (rt, e')))
+
       | DeclAssn(ty, var, e) as declassn ->
           ignore (check_bind tbl (ty, var));
           let (rt, e') = expr e in
-          let err = "illegal assignment " ^ string_of_typ ty ^ " = " ^ 
+          let _err = "illegal assignment " ^ string_of_typ ty ^ " = " ^ 
               string_of_typ rt ^ " in " ^ string_of_expr declassn (* in
             let (ty, e') = check_assign_null e ty err
             update array size *)
@@ -242,7 +258,7 @@ let check (globals, functions) =
           let v_ty = type_of_identifier v in
           let e_ty = is_arr_ty (v, v_ty) in
           let (rt, e2') = expr e2 in
-          let err = "illegal assignment for array " ^ string_of_typ e_ty ^ " = " ^
+          let _err = "illegal assignment for array " ^ string_of_typ e_ty ^ " = " ^
           string_of_typ rt ^ " in " ^ string_of_expr arrassign in
           (* let (ty, e2') = check_assign_null e2 e_ty err *)
           (e_ty, SArrAssign(v, (t,e1'), (rt,e2')))
@@ -260,7 +276,7 @@ let check (globals, functions) =
         Expr e -> SExpr (expr e)
       | If(p, b1, b2) -> SIf(check_bool_expr p, check_stmt b1, check_stmt b2)
       | For(e1, e2, e3, st) ->
-	  SFor(expr e1, check_bool_expr e2, expr e3, check_stmt st)
+	      SFor(expr e1, check_bool_expr e2, expr e3, check_stmt st)
       | While(p, s) -> SWhile(check_bool_expr p, check_stmt s)
       | Return e -> let (t, e') = expr e in
         if t = func.typ then SReturn (t, e') 
