@@ -1,13 +1,10 @@
-int a;
+int a = 0;
 
 void foo(int c)
 {
   a = c + 42;
 }
 
-int main()
-{
-  foo(73);
-  print(a);
-  return 0;
-}
+
+foo(73);
+print(a);

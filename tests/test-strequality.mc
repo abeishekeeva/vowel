@@ -1,8 +1,3 @@
-int main(){
-	string a;
-	string b;
-	a = "Hello";
-	b = "Hello";
-	printb(a==b);
-
-}
+string a = "Hello";
+string b = "Hello";
+printb(a==b);

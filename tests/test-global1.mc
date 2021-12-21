@@ -1,5 +1,5 @@
-int a;
-int b;
+int a = 42;
+int b = 21;
 
 void printa()
 {
@@ -17,14 +17,9 @@ void incab()
   b = b + 1;
 }
 
-int main()
-{
-  a = 42;
-  b = 21;
-  printa();
-  printbb();
-  incab();
-  printa();
-  printbb();
-  return 0;
-}
+
+printa();
+printbb();
+incab();
+printa();
+printbb();

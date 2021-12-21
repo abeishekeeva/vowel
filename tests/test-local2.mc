@@ -1,14 +1,11 @@
 int foo(int a, bool b)
 {
-  int c;
-  bool d;
+  int c = a;
+  bool d = true;
 
-  c = a;
 
   return c + 10;
 }
 
-int main() {
- print(foo(37, false));
- return 0;
-}
+
+print(foo(37, false));

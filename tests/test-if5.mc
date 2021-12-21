@@ -1,6 +1,6 @@
 int cond(bool b)
 {
-  int x;
+  int x = 0;
   if (b)
     x = 42;
   else
@@ -8,9 +8,6 @@ int cond(bool b)
   return x;
 }
 
-int main()
-{
- print(cond(true));
- print(cond(false));
- return 0;
-}
+
+print(cond(true));
+print(cond(false));

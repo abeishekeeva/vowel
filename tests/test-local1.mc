@@ -1,13 +1,9 @@
 void foo(bool i)
 {
-  int i; /* Should hide the formal i */
+  int i = 42; /* Should hide the formal i */
 
-  i = 42;
   print(i + i);
 }
 
-int main()
-{
-  foo(true);
-  return 0;
-}
+
+foo(true);

@@ -1,7 +1,3 @@
-int main()
-{
-  string a;
-  a = "hello";
-  a += "world"; 
-  printstr(a);
-}
+string a = "hello";
+a += "world"; 
+printstr(a);

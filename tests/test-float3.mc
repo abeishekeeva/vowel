@@ -14,17 +14,11 @@ void testfloat(float a, float b)
   printb(a <= b);
 }
 
-int main()
-{
-  float c;
-  float d;
 
-  c = 42.0;
-  d = 3.14159;
+float c = 42.0;
+float d = 3.14159;
 
-  testfloat(c, d);
 
-  testfloat(d, d);
+testfloat(c, d);
 
-  return 0;
-}
+testfloat(d, d);

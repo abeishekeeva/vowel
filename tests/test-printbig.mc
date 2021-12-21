@@ -8,18 +8,15 @@
  * an executable
  */
 
-int main()
-{
-  printbig(72); /* H */
-  printbig(69); /* E */
-  printbig(76); /* L */
-  printbig(76); /* L */
-  printbig(79); /* O */
-  printbig(32); /*   */
-  printbig(87); /* W */
-  printbig(79); /* O */
-  printbig(82); /* R */
-  printbig(76); /* L */
-  printbig(68); /* D */
-  return 0;
-}
+
+printbig(72); /* H */
+printbig(69); /* E */
+printbig(76); /* L */
+printbig(76); /* L */
+printbig(79); /* O */
+printbig(32); /*   */
+printbig(87); /* W */
+printbig(79); /* O */
+printbig(82); /* R */
+printbig(76); /* L */
+printbig(68); /* D */

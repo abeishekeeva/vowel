@@ -1,13 +1,8 @@
-int main()
-{
-  string[] a;
-  int i;
+string[] a = ["first", "second", "third"];
+int i = 0;
 
-  a = ["first", "second", "third"];
 
-  for (i = 0 ; i < 3 ; i = i + 1) {
-    printstr(a[i]);
-  }
 
-  return 0;
+for (i = 0 ; i < 3 ; i = i + 1) {
+  printstr(a[i]);
 }
