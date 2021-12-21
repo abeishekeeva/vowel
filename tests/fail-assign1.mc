@@ -1,11 +1,10 @@
-int main()
+int assign_fail()
 {
-  int i;
-  bool b;
+  int i = 42;
+  bool b = true; 
 
-  i = 42;
-  i = 10;
-  b = true;
-  b = false;
   i = false; /* Fail: assigning a bool to an integer */
+
 }
+
+assign_fail()
