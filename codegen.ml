@@ -83,6 +83,14 @@ let translate (globals, functions) =
   let string_sub_f : L.llvalue =
     L.declare_function "string_sub" string_sub_t the_module in
 
+let slice_t : L.lltype =
+    L.function_type str_t [| str_t; i32_t; i32_t |] in  
+  let slice_f : L.llvalue =
+    L.declare_function "slice" slice_t the_module in
+
+
+
+
   let printf_t : L.lltype = 
       L.var_arg_function_type i32_t [| L.pointer_type i8_t |] in
   let printf_func : L.llvalue = 
@@ -266,10 +274,14 @@ let translate (globals, functions) =
           A.Neg when t = A.Float   -> L.build_fneg 
           | A.Neg                  -> L.build_neg
           | A.Not                  -> L.build_not) e' "tmp" builder
+
+
       | SCall ("print", [e]) | SCall ("printb", [e]) -> L.build_call printf_func [| int_format_str ; (expr builder e) |] "printf" builder
       | SCall ("printbig", [e]) -> L.build_call printbig_func [| (expr builder e) |] "printbig" builder
       | SCall ("printf", [e]) -> L.build_call printf_func [| float_format_str ; (expr builder e) |] "printf" builder
       | SCall ("printstr", [e]) -> L.build_call printf_func [| string_format_str ; (expr builder e) |] "printf" builder
+      | SCall ("slice", [v;e1;e2]) -> L.build_call slice_f [| (expr builder v); (expr builder e1); (expr builder e2) |] "slice" builder
+
       | SCall (f, args) ->
         let (fdef, fdecl) = StringMap.find f function_decls in
 	 let llargs = List.rev (List.map (expr builder) (List.rev args)) in

@@ -79,6 +79,19 @@ let check (statements, globals, functions) =
     in
   let functions = main_decl :: functions in
 
+let built_in_decls =
+ StringMap.add "slice" {
+ typ = String;
+ fname = "slice";
+ formals = [(String, "str"); (Int, "from"); (Int, "to")];
+ locals = [];
+ body = [] } built_in_decls
+ in
+
+
+
+
+
   (* Add function name to symbol table *)
   let add_func map fd = 
     let built_in_err = "function " ^ fd.fname ^ " may not be defined"
@@ -214,6 +227,7 @@ let check (statements, globals, functions) =
           let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^ 
             string_of_typ rt ^ " in " ^ string_of_expr ex
           in (check_assign lt rt err, SAssign(var, (rt, e')))
+
 
       | Unop(op, e) as ex -> 
           let (t, e') = expr e in

@@ -183,3 +183,19 @@ char **string_sub(char s1[], char s2[]) {
 	    }
     return arr_res;
 }
+
+char *slice(const char *str, size_t s, size_t e) {
+	s++;
+	e++;
+	size_t index = 0;
+	size_t length = strlen(str) ;
+	char *slicestring = (char*)malloc(length +1);
+	while (s < e && s <length){
+		slicestring[index] = str[s];
+		index++;
+		s++;
+	}
+	slicestring[index] = '\0';
+
+	return slicestring;
+}

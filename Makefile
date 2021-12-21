@@ -46,7 +46,7 @@ TESTS = \
   func2 func3 func4 func5 func6 func7 func8 func9 gcd2 gcd global1 \
   global2 global3 hello if1 if2 if3 if4 if5 if6 local1 local2 ops1 \
   ops2 printbig var1 var2 while1 while2 declassn lex incr intarr incrstr strequality \
-  stringnotequal str-intersect stringsub
+  stringnotequal str-intersect stringsub slice
 
 FAILS = \
   assign1 assign2 assign3 dead1 dead2 expr1 expr2 expr3 float1 float2 \
