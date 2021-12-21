@@ -59,6 +59,14 @@ let check (globals, functions) =
 			                         ("printbig", Int);
                                ("printstr", String) ]
   in
+  let built_in_decls =
+ StringMap.add "string_sub" {
+ typ = Arr(String,99);
+ fname = "string_sub";
+ formals = [(String, "str"); (String, "str2")];
+ locals = [];
+ body = [] } built_in_decls
+ in
 
   (* Add function name to symbol table *)
   let add_func map fd = 
@@ -191,7 +199,8 @@ let check (globals, functions) =
           let ty = match op with
             Add | Sub | Mult | Div | Mod when same && t1 = Int   -> Int
           | Add | Sub | Mult | Div | Mod when same && t1 = Float -> Float
-          | Add when same && t1 = String -> String
+          | Add  when same && t1 = String -> String
+          |Sub when same && t1 = String -> Arr(String,99)
           | Equal | Neq            when same               -> Bool
           | Less | Leq | Greater | Geq
                      when same && (t1 = Int || t1 = Float) -> Bool
