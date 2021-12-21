@@ -203,5 +203,22 @@ int len(const char *str){
 	int l;
 	size_t len = strlen(str);
 	l = (int)(len) -2 ;
+	
+}
 
+char *string_mult(char *s1, size_t s) {
+	char *first = calloc(sizeof (char) * 100, strlen(s1) + 1 );
+	char *second = calloc(sizeof (char) * 100, strlen(s1) + 1 );
+	strcpy(first, s1); 
+	first[strlen(first)-1] = '\0'; 
+	first[0] = ' ';
+	first++;
+	strcpy(second, first); 
+	size_t length = strlen(second) ;
+    char *new = (char*)malloc(length*s);
+    while (s>0){
+    strcat(new,second);
+    s--;
+	}
+    return new;
 }

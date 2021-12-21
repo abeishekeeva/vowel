@@ -28,7 +28,7 @@ module HashtblString =
 module StringHash = Hashtbl.Make(HashtblString);;
 
 (* translate : Sast.program -> Llvm.module *)
-let translate (globals, functions) =
+let translate (functions) =
   let context    = L.global_context () in
   
   (* Create the LLVM compilation module into which
@@ -55,13 +55,13 @@ let translate (globals, functions) =
   in
 
   (* Create a map of global variables after creating each *)
-  let global_vars : L.llvalue StringMap.t =
+  (* let global_vars : L.llvalue StringMap.t =
     let global_var m (t, n) = 
       let init = match t with
           A.Float -> L.const_float (ltype_of_typ t) 0.0
         | _ -> L.const_int (ltype_of_typ t) 0
       in StringMap.add n (L.define_global n init the_module) m in
-    List.fold_left global_var StringMap.empty globals in
+    List.fold_left global_var StringMap.empty globals in *)
 
     
   let string_concat_t : L.lltype =
@@ -92,6 +92,11 @@ let slice_t : L.lltype =
     L.function_type i32_t [| str_t |] in  
   let len_f : L.llvalue =
     L.declare_function "len" len_t the_module in
+  
+    let string_mult_t : L.lltype = 
+      L.function_type str_t [| str_t; i32_t |] in
+    let string_mult_f : L.llvalue =
+      L.declare_function "string_mult" string_mult_t the_module in
 
   let printf_t : L.lltype = 
       L.var_arg_function_type i32_t [| L.pointer_type i8_t |] in
@@ -114,8 +119,8 @@ let slice_t : L.lltype =
     List.fold_left function_decl StringMap.empty functions in
 
   (* Adding StringHash tbl here -- TODO: add all the formals? See JavaLite  *)
-    let tbl = StringHash.create 10
-  in
+    (* let tbl = StringHash.create 10
+  in *)
   
   (* Fill in the body of the given function *)
   let build_function_body fdecl =
@@ -248,6 +253,7 @@ let slice_t : L.lltype =
           | A.Equal ->  (L.build_icmp L.Icmp.Eq) (L.const_int i32_t 0) (L.build_call string_inequality_f [| e1'; e2' |] "string_inequality" builder) "tmp" builder
           | A.Neq     -> (L.build_icmp L.Icmp.Ne) (L.const_int i32_t 0) (L.build_call string_inequality_f [| e1';e2' |] "string_inequality" builder) "tmp" builder
           | A.Intersec -> L.build_call string_intersection_f [| e1'; e2' |] "string_intersection" builder
+          | A.Mult ->  L.build_call string_mult_f [| e1'; e2' |] "string_mult" builder
           | _ -> raise (Failure ("operation " ^ (A.string_of_op op) ^ " not implemented")))
 
 

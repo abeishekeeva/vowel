@@ -88,6 +88,15 @@ let built_in_decls =
   body = [] } built_in_decls
   in
 
+  let built_in_decls =
+    StringMap.add "string_mult" {
+    typ = String;
+    fname = "string_mult";
+    formals = [(String, "str"); (Int, "a")]; 
+    locals = [];
+    body = [] } built_in_decls
+  in
+
 let built_in_decls =
   StringMap.add "len"{
     typ = Int;
@@ -256,6 +265,7 @@ let built_in_decls =
           | Add  when same && t1 = String -> String
           | Sub when same && t1 = String -> Arr(String,99)
           | Equal | Neq            when same               -> Bool
+          | Mult when t1 = String -> String
           | Intersec when same && t1 = String -> Arr(String, 99)
           | Less | Leq | Greater | Geq
                      when same && (t1 = Int || t1 = Float) -> Bool
