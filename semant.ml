@@ -142,13 +142,13 @@ let check (globals, functions) =
       | Assign(var, e) as ex -> 
           let lt = type_of_identifier var
           and (rt, e') = expr e in
-          let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^ 
+          let err = "1illegal assignment " ^ string_of_typ lt ^ " = " ^ 
             string_of_typ rt ^ " in " ^ string_of_expr ex
           in (check_assign lt rt err, SAssign(var, (rt, e')))
       | DeclAssn(ty, var, e) as declassn ->
           ignore (check_bind tbl (ty, var));
           let (rt, e') = expr e in
-          let err = "illegal assignment " ^ string_of_typ ty ^ " = " ^ 
+          let _err = "2illegal assignment " ^ string_of_typ ty ^ " = " ^ 
               string_of_typ rt ^ " in " ^ string_of_expr declassn (* in
             let (ty, e') = check_assign_null e ty err
             update array size *)
@@ -161,7 +161,7 @@ let check (globals, functions) =
           let l = Binop(Id(var), Add, e) in 
           let lt = type_of_identifier var
           and (rt, e') = expr l in
-          let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^ 
+          let err = "3illegal assignment " ^ string_of_typ lt ^ " = " ^ 
             string_of_typ rt ^ " in " ^ string_of_expr ex
           in (check_assign lt rt err, SAssign(var, (rt, e')))
 
@@ -169,7 +169,7 @@ let check (globals, functions) =
           let l = Binop(Id(var), Sub, e) in 
           let lt = type_of_identifier var
           and (rt, e') = expr l in
-          let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^ 
+          let err = "4illegal assignment " ^ string_of_typ lt ^ " = " ^ 
             string_of_typ rt ^ " in " ^ string_of_expr ex
           in (check_assign lt rt err, SAssign(var, (rt, e')))
 
@@ -193,7 +193,7 @@ let check (globals, functions) =
           | Add | Sub | Mult | Div | Mod when same && t1 = Float -> Float
           | Add when same && t1 = String -> String
           | Equal | Neq            when same               -> Bool
-          | Intersec when same && t1 = String -> ArrLit
+          | Intersec when same && t1 = String -> Arr(String, 99)
           | Less | Leq | Greater | Geq
                      when same && (t1 = Int || t1 = Float) -> Bool
           | And | Or when same && t1 = Bool -> Bool
@@ -233,13 +233,15 @@ let check (globals, functions) =
             (* determine arr type *)
             else let arr_ty = Arr(fst_ty, arr_ty_len)
             in (arr_ty, SArrayLit(arr_ty_e))
-      | ArrayAccess(v, e) as arrayacess ->(* check if type of e is an int *)
+      | ArrayAccess(v, e) as arrayacess ->
+          (* check if type of e is an int *)
           let (t, e') = expr e in 
-          if t != Int then raise 
-          (Failure (string_of_expr e ^ " is not of int → type in " ^ string_of_expr arrayacess)) else
+          if t != Int then raise (Failure (string_of_expr e ^ " is not of int → type in " ^ string_of_expr arrayacess)) 
+          else
           (* check if variable is array type *)
-          let v_ty = type_of_identifier v 
-          let e_ty = is_arr_ty (v, v_ty) in (e_ty, SArrayAccess(v, (t, e')))
+          let v_ty = type_of_identifier v in
+          let e_ty = is_arr_ty (v, v_ty) 
+        in (e_ty, SArrayAccess(v, (t, e')))
       | ArrAssign(v, e1, e2) as arrassign ->(* check if type of e is an int *)
           let (t, e1') = expr e1 in
           if t != Int then raise (Failure (string_of_expr e1 ^ " is not of int type → in " ^ string_of_expr arrassign))
@@ -248,7 +250,7 @@ let check (globals, functions) =
           let e_ty = is_arr_ty (v, v_ty) in
           let (rt, e2') = expr e2 in
           (*let err = "illegal assignment for array " ^ string_of_typ e_ty ^ " = " ^ *)
-          string_of_typ rt ^ " in " ^ string_of_expr arrassign in
+          (* string_of_typ rt ^ " in " ^ string_of_expr arrassign in *)
           (* let (ty, e2') = check_assign_null e2 e_ty err *)
           (e_ty, SArrAssign(v, (t,e1'), (rt,e2')))
           

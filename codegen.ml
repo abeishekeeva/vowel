@@ -39,7 +39,6 @@ let translate (globals, functions) =
   let i32_t      = L.i32_type    context
   and i8_t       = L.i8_type     context
   and str_t      = L.pointer_type (L.i8_type context)
-  and arr_t      = L.pointer_type (L.i8_type context)
   and i1_t       = L.i1_type     context
   and float_t    = L.double_type context
   and void_t     = L.void_type   context in
@@ -52,7 +51,7 @@ let translate (globals, functions) =
     | A.Void  -> void_t
     | A.String -> str_t
     (* | A.Arr(ty,_) -> L.pointer_type (ltype_of_typ ty) *)
-    | A.Arr(ty) -> L.pointer_type (ltype_of_typ ty)
+    | A.Arr(ty,_) -> L.pointer_type (ltype_of_typ ty)
   in
 
   (* Create a map of global variables after creating each *)
@@ -76,7 +75,7 @@ let translate (globals, functions) =
     L.declare_function "string_inequality" string_inequality_t the_module in
 
   let string_intersection_t : L.lltype = 
-      L.function_type arr_t [| str_t; str_t |] in
+      L.function_type (L.pointer_type str_t) [| str_t; str_t |] in
   let string_intersection_f : L.llvalue =
       L.declare_function "string_intersection" string_intersection_t the_module in
 
@@ -207,6 +206,7 @@ let translate (globals, functions) =
           | A.Leq     -> L.build_fcmp L.Fcmp.Ole
           | A.Greater -> L.build_fcmp L.Fcmp.Ogt
           | A.Geq     -> L.build_fcmp L.Fcmp.Oge
+          | A.Intersec -> raise (Failure "internal error: semant should have rejected intersection binop with floats")
           | A.And | A.Or ->
 	          raise (Failure "internal error: semant should have rejected and/or on float")
 	      ) e1' e2' "tmp" builder
@@ -239,6 +239,7 @@ let translate (globals, functions) =
           | A.Leq     -> L.build_icmp L.Icmp.Sle
           | A.Greater -> L.build_icmp L.Icmp.Sgt
           | A.Geq     -> L.build_icmp L.Icmp.Sge
+          | A.Intersec -> raise (Failure "internal error: intersection operator should have triggered on binop with string")
         ) e1' e2' "tmp" builder
       | SUnop(op, ((t, _) as e)) ->
           let e' = expr builder e in

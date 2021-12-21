@@ -20,8 +20,8 @@ open Ast
 
 %nonassoc NOELSE
 %nonassoc ELSE
-%left INTERSEC
 %right INCREMENT DECREMENT ASSIGN 
+%left INTERSEC
 %left OR
 %left AND
 %left EQ NEQ
@@ -122,9 +122,9 @@ expr:
   | ID INCREMENT expr { Increment($1, $3)    }
   | ID DECREMENT expr { Decrement($1, $3)     } 
   /* Arrays */
-  | ID LBRACKET expr RBRACKET { ArrayAccess($1, $3) }
-  | LBRACKET args_list RBRACKET { ArrayLit($2) }
-  | ID LBRACKET expr RBRACKET ASSIGN expr { ArrAssign($1, $3, $6) }
+  | ID LBRACKET expr RBRACKET { ArrayAccess($1, $3) }    
+  | LBRACKET args_list RBRACKET { ArrayLit($2) }        
+  | ID LBRACKET expr RBRACKET ASSIGN expr { ArrAssign($1, $3, $6) }      
   /* VARIABLE DECLARATION */
   /* | typ ID ASSIGN expr { DeclAssn($1, $2, $4) }  */
   
