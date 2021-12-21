@@ -44,6 +44,8 @@ char **string_intersection(char s1[], char s2[]) {
     char *first = calloc(sizeof (char) * 10, strlen(s1) + 1 );
     char *second = calloc(sizeof (char) * 10, strlen(s2) + 1);
 	strcpy(first, s1); strcpy(second, s2);
+	first[strlen(first)-1] = '\0'; second[strlen(second)-1] = '\0';
+	first[0] = ' '; second[0] = ' ';
 
     int space_counter1 = 1;
     int space_counter2 = 1;
@@ -104,5 +106,5 @@ char **string_intersection(char s1[], char s2[]) {
 	        }
 	    }
 	}
-    return ++arr_res;
+    return arr_res;
 }
