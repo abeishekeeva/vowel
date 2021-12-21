@@ -39,9 +39,13 @@ bool string_equality(char *s1, char *s2){
 	return result;
 }
 
- char** string_sub(char s1[], char s2[]) { 
- 	  char** string_intersect(char s1[], char s2[]) { 
-    
+ char **string_sub(char s1[], char s2[]) { 
+ 	char *first = calloc(sizeof (char) * 100, strlen(s1) + 1 );
+    char *second = calloc(sizeof (char) * 100, strlen(s2) + 1);
+	strcpy(first, s1); strcpy(second, s2);
+	first[strlen(first)-1] = '\0'; second[strlen(second)-1] = '\0';
+	first[0] = ' '; second[0] = ' ';
+
     int space_counter1 = 1;
     int space_counter2 = 1;
     
@@ -63,16 +67,13 @@ bool string_equality(char *s1, char *s2){
     char **array = malloc (sizeof (char *) * space_counter1);
     char **remove_array = malloc (sizeof (char *) * space_counter1);
     char **array2 = malloc (sizeof (char *) * space_counter2);
-    
+
     char *zero = "0";
     for (int w = 0; w < space_counter1; w++){
         remove_array[w] = zero;
     }
-
     
-    char *t = strtok(s1, " ");
-
-	
+    char *t = strtok(first, " ");
 	int i = 0;
 	while (t != NULL)
     {
@@ -81,7 +82,7 @@ bool string_equality(char *s1, char *s2){
         t = strtok (NULL, " ");
     }
     
-    char *t2 = strtok (s2, " ");
+    char *t2 = strtok (second, " ");
     int i2 = 0; 
     while (t2 != NULL)
     {
@@ -90,33 +91,26 @@ bool string_equality(char *s1, char *s2){
         t2 = strtok (NULL, " ");
     }
     
-//        1     0    0  1  0
- //s1 = "hello this is a string";
-//s2 = "hello a";
-
-
-
-	char *one = "1";
+    char *one = "1";
     int counter = 0;
 	for (int j = 0; j < i; j++) {
 	    for (int k = 0; k < i2; k++) {
 	        if (strcmp(array[j], array2[k]) == 0) {
 	            counter++; 
 	            remove_array[j] = one;
-	            
 	           
 	        }
 	    }
 	}
-	char **arr_res = malloc (sizeof (char *) * space_counter1);
+  
+	char **arr_res = malloc (sizeof (char *) * counter);
 	int l = 0;
 	for (int j = 0; j < i; j++) {
 	        if (remove_array[j]== zero) {
 	            arr_res[l] = array[j];
 	            l++;
 	        }
-	
-	}
+	    }
     return arr_res;
 }
 
@@ -134,4 +128,4 @@ bool string_equality(char *s1, char *s2){
 
 
 
- }
+ 
