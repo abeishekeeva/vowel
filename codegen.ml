@@ -111,16 +111,16 @@ let translate (globals, functions) =
     (* Construct the function's "locals": formal arguments and locally
        declared variables.  Allocate each on the stack, initialize their
        value, if appropriate, and remember their values in the "locals" map *)
-    let local_vars =
+    (* let local_vars =
       let add_formal m (t, n) p = 
         L.set_value_name n p;
 	let local = L.build_alloca (ltype_of_typ t) n builder in
         ignore (L.build_store p local builder);
-	StringMap.add n local m 
+	StringMap.add n local m  *)
 
       (* Allocate space for any locally declared variables and add the
        * resulting registers to our map *)
-      and add_local m (t, n) =
+      (* and add_local m (t, n) =
 	let local_var = L.build_alloca (ltype_of_typ t) n builder
 	in StringMap.add n local_var m 
       in
@@ -128,12 +128,26 @@ let translate (globals, functions) =
       let formals = List.fold_left2 add_formal StringMap.empty fdecl.sformals
           (Array.to_list (L.params the_function)) in
       List.fold_left add_local formals fdecl.slocals 
-    in
+    in *)
+
+    (* Construct a hash table for function formals and locals
+       add all the formals first *)
+    let tbl = StringHash.create 10 in
+    let formal_tbl = StringHash.create 5 in
+      let add_formal tbl (t, n) p = 
+        L.set_value_name n p;
+        let local = L.build_alloca (ltype_of_typ t) n builder in
+            ignore (L.build_store p local builder);
+        StringHash.add tbl n local; tbl in
+      let _ = List.fold_left2 add_formal formal_tbl fdecl.sformals
+        (Array.to_list (L.params the_function)) in
 
     (* Return the value for a variable or formal argument.
        Check local names first, then global names *)
-    let lookup n = try StringMap.find n local_vars
-                   with Not_found -> StringMap.find n global_vars
+    let lookup n = try StringHash.find tbl n(*StringMap.find tbl n n local_vars*)
+                     with Not_found -> try 
+                     StringHash.find formal_tbl n(*StringMap.find formal_tbl n n global_vars*)
+                   with Not_found -> raise (Failure ("variable " ^ n ^ " not found in lookup"))
     in
     (* Construct code for an expression; return its value *)
     let rec expr builder ((_, e) : sexpr) = match e with

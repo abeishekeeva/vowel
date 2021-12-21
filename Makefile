@@ -42,7 +42,7 @@ vowel_func : vowel_func.c
 # Building the tarball
 
 TESTS = \
-  add1 arith1 arith2 arith3 fib float1 float2 float3 for1 for2 func1 \
+  aaaa add1 arith1 arith2 arith3 fib float1 float2 float3 for1 for2 func1 \
   func2 func3 func4 func5 func6 func7 func8 func9 gcd2 gcd global1 \
   global2 global3 hello if1 if2 if3 if4 if5 if6 local1 local2 ops1 \
   ops2 printbig var1 var2 while1 while2 declassn lex incr intarr incrstr strequality stringnotequal

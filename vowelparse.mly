@@ -35,17 +35,18 @@ program:
   decls EOF { $1 }
 
 decls:
-   /* nothing */ { ([], [])               }
- | decls vdecl { (($2 :: fst $1), snd $1) }
- | decls fdecl { (fst $1, ($2 :: snd $1)) }
+   /* nothing */ { ([], [], [])         }
+ | decls stmt { let (stmt, vdecl, fdecl) = $1 in ($2::stmt, vdecl, fdecl) }
+ | decls vdecl { let (stmt, vdecl, fdecl) = $1 in (stmt, $2::vdecl, fdecl) }
+ | decls fdecl { let (stmt, vdecl, fdecl) = $1 in (stmt, vdecl, $2::fdecl) }
 
 fdecl:
-   typ ID LPAREN formals_opt RPAREN LBRACE vdecl_list stmt_list RBRACE
+   typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE
      { { typ = $1;
 	 fname = $2;
 	 formals = List.rev $4;
-	 locals = List.rev $7;
-	 body = List.rev $8 } }
+	 locals = [];
+	 body = List.rev $7 } }
 
 formals_opt:
     /* nothing */ { [] }
@@ -63,16 +64,21 @@ typ:
   | STRING { String }
   | typ ARRAY { Arr($1, 0) }
 
-vdecl_list:
-    /* nothing */    { [] }
+/*
+  vdecl_list:
+        { [] }
   | vdecl_list vdecl { $2 :: $1 }
+
+*/
 
 vdecl:
     typ ID SEMI { ($1, $2) }
 
+
 stmt_list:
     /* nothing */  { [] }
   | stmt_list stmt { $2 :: $1 }
+
 
 stmt:
     expr SEMI                               { Expr $1               }
@@ -124,7 +130,7 @@ expr:
   | LBRACKET args_list RBRACKET { ArrayLit($2) }
   | ID LBRACKET expr RBRACKET ASSIGN expr { ArrAssign($1, $3, $6) }
   /* VARIABLE DECLARATION */
-  | typ ID ASSIGN expr { DeclAssn($1, $2, $4) } 
+  | typ ID ASSIGN expr { DeclAssn($1, $2, $4) }
   
 
 
