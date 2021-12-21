@@ -204,5 +204,4 @@ int len(const char *str){
 	size_t len = strlen(str);
 	l = (int)(len) -2 ;
 
-
 }
