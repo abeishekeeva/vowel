@@ -48,6 +48,14 @@ cc -o test-cobytest.exe test-cobytest.s vowel_func.o
 diff -b test-cobytest.out tests/test-cobytest.out > test-cobytest.diff
 ###### SUCCESS
 
+###### Testing test-decl-infunc
+./vowel.native tests/test-decl-infunc.mc > test-decl-infunc.ll
+llc -relocation-model=pic test-decl-infunc.ll > test-decl-infunc.s
+cc -o test-decl-infunc.exe test-decl-infunc.s vowel_func.o
+./test-decl-infunc.exe
+diff -b test-decl-infunc.out tests/test-decl-infunc.out > test-decl-infunc.diff
+###### SUCCESS
+
 ###### Testing test-declare-array
 ./vowel.native tests/test-declare-array.mc > test-declare-array.ll
 llc -relocation-model=pic test-declare-array.ll > test-declare-array.s
@@ -154,11 +162,8 @@ diff -b test-func6.out tests/test-func6.out > test-func6.diff
 
 ###### Testing test-func7
 ./vowel.native tests/test-func7.mc > test-func7.ll
-llc -relocation-model=pic test-func7.ll > test-func7.s
-cc -o test-func7.exe test-func7.s vowel_func.o
-./test-func7.exe
-diff -b test-func7.out tests/test-func7.out > test-func7.diff
-###### SUCCESS
+Fatal error: exception Failure("undeclared identifier a")
+###### FAILED
 
 ###### Testing test-func8
 ./vowel.native tests/test-func8.mc > test-func8.ll
@@ -194,11 +199,8 @@ diff -b test-gcd2.out tests/test-gcd2.out > test-gcd2.diff
 
 ###### Testing test-global1
 ./vowel.native tests/test-global1.mc > test-global1.ll
-llc -relocation-model=pic test-global1.ll > test-global1.s
-cc -o test-global1.exe test-global1.s vowel_func.o
-./test-global1.exe
-diff -b test-global1.out tests/test-global1.out > test-global1.diff
-###### SUCCESS
+Fatal error: exception Failure("undeclared identifier a")
+###### FAILED
 
 ###### Testing test-global2
 ./vowel.native tests/test-global2.mc > test-global2.ll
@@ -280,6 +282,14 @@ cc -o test-incr.exe test-incr.s vowel_func.o
 diff -b test-incr.out tests/test-incr.out > test-incr.diff
 ###### SUCCESS
 
+###### Testing test-incrstr
+./vowel.native tests/test-incrstr.mc > test-incrstr.ll
+llc -relocation-model=pic test-incrstr.ll > test-incrstr.s
+cc -o test-incrstr.exe test-incrstr.s vowel_func.o
+./test-incrstr.exe
+diff -b test-incrstr.out tests/test-incrstr.out > test-incrstr.diff
+###### SUCCESS
+
 ###### Testing test-intarr
 ./vowel.native tests/test-intarr.mc > test-intarr.ll
 llc -relocation-model=pic test-intarr.ll > test-intarr.s
@@ -348,15 +358,31 @@ diff -b test-ops2.out tests/test-ops2.out > test-ops2.diff
 ./vowel.native tests/test-printbig.mc > test-printbig.ll
 llc -relocation-model=pic test-printbig.ll > test-printbig.s
 cc -o test-printbig.exe test-printbig.s vowel_func.o
-/usr/bin/ld: /tmp/ccemVy3l.o: in function `main':
-MicroC:(.text+0x8): undefined reference to `printbig'
-/usr/bin/ld: MicroC:(.text+0x10): undefined reference to `printbig'
-/usr/bin/ld: MicroC:(.text+0x18): undefined reference to `printbig'
-/usr/bin/ld: MicroC:(.text+0x20): undefined reference to `printbig'
-/usr/bin/ld: MicroC:(.text+0x28): undefined reference to `printbig'
-/usr/bin/ld: /tmp/ccemVy3l.o:MicroC:(.text+0x30): more undefined references to `printbig' follow
+/usr/bin/ld: /tmp/ccwqPalz.o: in function `main':
+MicroC:(.text+0x7): undefined reference to `printbig'
+/usr/bin/ld: MicroC:(.text+0x11): undefined reference to `printbig'
+/usr/bin/ld: MicroC:(.text+0x1b): undefined reference to `printbig'
+/usr/bin/ld: MicroC:(.text+0x25): undefined reference to `printbig'
+/usr/bin/ld: MicroC:(.text+0x2f): undefined reference to `printbig'
+/usr/bin/ld: /tmp/ccwqPalz.o:MicroC:(.text+0x39): more undefined references to `printbig' follow
 collect2: error: ld returned 1 exit status
 ###### FAILED
+
+###### Testing test-strconcat
+./vowel.native tests/test-strconcat.mc > test-strconcat.ll
+llc -relocation-model=pic test-strconcat.ll > test-strconcat.s
+cc -o test-strconcat.exe test-strconcat.s vowel_func.o
+./test-strconcat.exe
+diff -b test-strconcat.out tests/test-strconcat.out > test-strconcat.diff
+###### SUCCESS
+
+###### Testing test-strequality
+./vowel.native tests/test-strequality.mc > test-strequality.ll
+llc -relocation-model=pic test-strequality.ll > test-strequality.s
+cc -o test-strequality.exe test-strequality.s vowel_func.o
+./test-strequality.exe
+diff -b test-strequality.out tests/test-strequality.out > test-strequality.diff
+###### SUCCESS
 
 ###### Testing test-string-array
 ./vowel.native tests/test-string-array.mc > test-string-array.ll
@@ -374,6 +400,14 @@ cc -o test-string.exe test-string.s vowel_func.o
 diff -b test-string.out tests/test-string.out > test-string.diff
 ###### SUCCESS
 
+###### Testing test-stringnotequal
+./vowel.native tests/test-stringnotequal.mc > test-stringnotequal.ll
+llc -relocation-model=pic test-stringnotequal.ll > test-stringnotequal.s
+cc -o test-stringnotequal.exe test-stringnotequal.s vowel_func.o
+./test-stringnotequal.exe
+diff -b test-stringnotequal.out tests/test-stringnotequal.out > test-stringnotequal.diff
+###### SUCCESS
+
 ###### Testing test-var1
 ./vowel.native tests/test-var1.mc > test-var1.ll
 llc -relocation-model=pic test-var1.ll > test-var1.s
@@ -384,11 +418,8 @@ diff -b test-var1.out tests/test-var1.out > test-var1.diff
 
 ###### Testing test-var2
 ./vowel.native tests/test-var2.mc > test-var2.ll
-llc -relocation-model=pic test-var2.ll > test-var2.s
-cc -o test-var2.exe test-var2.s vowel_func.o
-./test-var2.exe
-diff -b test-var2.out tests/test-var2.out > test-var2.diff
-###### SUCCESS
+Fatal error: exception Failure("undeclared identifier a")
+###### FAILED
 
 ###### Testing test-while1
 ./vowel.native tests/test-while1.mc > test-while1.ll
@@ -406,130 +437,149 @@ cc -o test-while2.exe test-while2.s vowel_func.o
 diff -b test-while2.out tests/test-while2.out > test-while2.diff
 ###### SUCCESS
 
-###### Testing test-wrong-type
-./vowel.native tests/test-wrong-type.mc > test-wrong-type.ll
-Fatal error: exception Failure("illegal assignment int = float in a = 42.1")
-###### FAILED
-
 ###### Testing fail-assign1
 ./vowel.native < tests/fail-assign1.mc 2> fail-assign1.err >> testall.log
 diff -b fail-assign1.err tests/fail-assign1.err > fail-assign1.diff
-###### SUCCESS
+FAILED fail-assign1.err differs from tests/fail-assign1.err
+###### FAILED
 
 ###### Testing fail-assign2
 ./vowel.native < tests/fail-assign2.mc 2> fail-assign2.err >> testall.log
 diff -b fail-assign2.err tests/fail-assign2.err > fail-assign2.diff
-###### SUCCESS
+FAILED fail-assign2.err differs from tests/fail-assign2.err
+###### FAILED
 
 ###### Testing fail-assign3
 ./vowel.native < tests/fail-assign3.mc 2> fail-assign3.err >> testall.log
 diff -b fail-assign3.err tests/fail-assign3.err > fail-assign3.diff
-###### SUCCESS
+FAILED fail-assign3.err differs from tests/fail-assign3.err
+###### FAILED
 
 ###### Testing fail-dead1
 ./vowel.native < tests/fail-dead1.mc 2> fail-dead1.err >> testall.log
 diff -b fail-dead1.err tests/fail-dead1.err > fail-dead1.diff
-###### SUCCESS
+FAILED fail-dead1.err differs from tests/fail-dead1.err
+###### FAILED
 
 ###### Testing fail-dead2
 ./vowel.native < tests/fail-dead2.mc 2> fail-dead2.err >> testall.log
 diff -b fail-dead2.err tests/fail-dead2.err > fail-dead2.diff
-###### SUCCESS
+FAILED fail-dead2.err differs from tests/fail-dead2.err
+###### FAILED
 
 ###### Testing fail-expr1
 ./vowel.native < tests/fail-expr1.mc 2> fail-expr1.err >> testall.log
 diff -b fail-expr1.err tests/fail-expr1.err > fail-expr1.diff
-###### SUCCESS
+FAILED fail-expr1.err differs from tests/fail-expr1.err
+###### FAILED
 
 ###### Testing fail-expr2
 ./vowel.native < tests/fail-expr2.mc 2> fail-expr2.err >> testall.log
 diff -b fail-expr2.err tests/fail-expr2.err > fail-expr2.diff
-###### SUCCESS
+FAILED fail-expr2.err differs from tests/fail-expr2.err
+###### FAILED
 
 ###### Testing fail-expr3
 ./vowel.native < tests/fail-expr3.mc 2> fail-expr3.err >> testall.log
 diff -b fail-expr3.err tests/fail-expr3.err > fail-expr3.diff
-###### SUCCESS
+FAILED fail-expr3.err differs from tests/fail-expr3.err
+###### FAILED
 
 ###### Testing fail-float1
 ./vowel.native < tests/fail-float1.mc 2> fail-float1.err >> testall.log
 diff -b fail-float1.err tests/fail-float1.err > fail-float1.diff
-###### SUCCESS
+FAILED fail-float1.err differs from tests/fail-float1.err
+###### FAILED
 
 ###### Testing fail-float2
 ./vowel.native < tests/fail-float2.mc 2> fail-float2.err >> testall.log
 diff -b fail-float2.err tests/fail-float2.err > fail-float2.diff
-###### SUCCESS
+FAILED fail-float2.err differs from tests/fail-float2.err
+###### FAILED
 
 ###### Testing fail-for1
 ./vowel.native < tests/fail-for1.mc 2> fail-for1.err >> testall.log
 diff -b fail-for1.err tests/fail-for1.err > fail-for1.diff
-###### SUCCESS
+FAILED fail-for1.err differs from tests/fail-for1.err
+###### FAILED
 
 ###### Testing fail-for2
 ./vowel.native < tests/fail-for2.mc 2> fail-for2.err >> testall.log
 diff -b fail-for2.err tests/fail-for2.err > fail-for2.diff
-###### SUCCESS
+FAILED fail-for2.err differs from tests/fail-for2.err
+###### FAILED
 
 ###### Testing fail-for3
 ./vowel.native < tests/fail-for3.mc 2> fail-for3.err >> testall.log
 diff -b fail-for3.err tests/fail-for3.err > fail-for3.diff
-###### SUCCESS
+FAILED fail-for3.err differs from tests/fail-for3.err
+###### FAILED
 
 ###### Testing fail-for4
 ./vowel.native < tests/fail-for4.mc 2> fail-for4.err >> testall.log
 diff -b fail-for4.err tests/fail-for4.err > fail-for4.diff
-###### SUCCESS
+FAILED fail-for4.err differs from tests/fail-for4.err
+###### FAILED
 
 ###### Testing fail-for5
 ./vowel.native < tests/fail-for5.mc 2> fail-for5.err >> testall.log
 diff -b fail-for5.err tests/fail-for5.err > fail-for5.diff
-###### SUCCESS
+FAILED fail-for5.err differs from tests/fail-for5.err
+###### FAILED
 
 ###### Testing fail-func1
 ./vowel.native < tests/fail-func1.mc 2> fail-func1.err >> testall.log
 diff -b fail-func1.err tests/fail-func1.err > fail-func1.diff
-###### SUCCESS
+FAILED fail-func1.err differs from tests/fail-func1.err
+###### FAILED
 
 ###### Testing fail-func2
 ./vowel.native < tests/fail-func2.mc 2> fail-func2.err >> testall.log
 diff -b fail-func2.err tests/fail-func2.err > fail-func2.diff
-###### SUCCESS
+FAILED fail-func2.err differs from tests/fail-func2.err
+###### FAILED
 
 ###### Testing fail-func3
 ./vowel.native < tests/fail-func3.mc 2> fail-func3.err >> testall.log
 diff -b fail-func3.err tests/fail-func3.err > fail-func3.diff
-###### SUCCESS
+FAILED fail-func3.err differs from tests/fail-func3.err
+###### FAILED
 
 ###### Testing fail-func4
 ./vowel.native < tests/fail-func4.mc 2> fail-func4.err >> testall.log
 diff -b fail-func4.err tests/fail-func4.err > fail-func4.diff
-###### SUCCESS
+FAILED fail-func4.err differs from tests/fail-func4.err
+###### FAILED
 
 ###### Testing fail-func5
 ./vowel.native < tests/fail-func5.mc 2> fail-func5.err >> testall.log
 diff -b fail-func5.err tests/fail-func5.err > fail-func5.diff
-###### SUCCESS
+FAILED fail-func5.err differs from tests/fail-func5.err
+###### FAILED
 
 ###### Testing fail-func6
 ./vowel.native < tests/fail-func6.mc 2> fail-func6.err >> testall.log
 diff -b fail-func6.err tests/fail-func6.err > fail-func6.diff
-###### SUCCESS
+FAILED fail-func6.err differs from tests/fail-func6.err
+###### FAILED
 
 ###### Testing fail-func7
 ./vowel.native < tests/fail-func7.mc 2> fail-func7.err >> testall.log
 diff -b fail-func7.err tests/fail-func7.err > fail-func7.diff
-###### SUCCESS
+FAILED fail-func7.err differs from tests/fail-func7.err
+###### FAILED
 
 ###### Testing fail-func8
 ./vowel.native < tests/fail-func8.mc 2> fail-func8.err >> testall.log
 diff -b fail-func8.err tests/fail-func8.err > fail-func8.diff
-###### SUCCESS
+FAILED fail-func8.err differs from tests/fail-func8.err
+###### FAILED
 
 ###### Testing fail-func9
 ./vowel.native < tests/fail-func9.mc 2> fail-func9.err >> testall.log
 diff -b fail-func9.err tests/fail-func9.err > fail-func9.diff
-###### SUCCESS
+FAILED fail-func9.err differs from tests/fail-func9.err
+###### FAILED
 
 ###### Testing fail-global1
 ./vowel.native < tests/fail-global1.mc 2> fail-global1.err >> testall.log
@@ -544,22 +594,43 @@ diff -b fail-global2.err tests/fail-global2.err > fail-global2.diff
 ###### Testing fail-if1
 ./vowel.native < tests/fail-if1.mc 2> fail-if1.err >> testall.log
 diff -b fail-if1.err tests/fail-if1.err > fail-if1.diff
-###### SUCCESS
+FAILED fail-if1.err differs from tests/fail-if1.err
+###### FAILED
 
 ###### Testing fail-if2
 ./vowel.native < tests/fail-if2.mc 2> fail-if2.err >> testall.log
 diff -b fail-if2.err tests/fail-if2.err > fail-if2.diff
-###### SUCCESS
+FAILED fail-if2.err differs from tests/fail-if2.err
+###### FAILED
 
 ###### Testing fail-if3
 ./vowel.native < tests/fail-if3.mc 2> fail-if3.err >> testall.log
 diff -b fail-if3.err tests/fail-if3.err > fail-if3.diff
-###### SUCCESS
+FAILED fail-if3.err differs from tests/fail-if3.err
+###### FAILED
 
 ###### Testing fail-nomain
 ./vowel.native < tests/fail-nomain.mc 2> fail-nomain.err >> testall.log
-diff -b fail-nomain.err tests/fail-nomain.err > fail-nomain.diff
-###### SUCCESS
+; ModuleID = 'MicroC'
+source_filename = "MicroC"
+
+@fmt = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
+@fmt.1 = private unnamed_addr constant [4 x i8] c"%g\0A\00", align 1
+@fmt.2 = private unnamed_addr constant [4 x i8] c"%s\0A\00", align 1
+
+declare i8* @string_concat(i8*, i8*)
+
+declare i32 @string_inequality(i8*, i8*)
+
+declare i32 @printf(i8*, ...)
+
+declare i32 @printbig(i32)
+
+define i32 @main() {
+entry:
+  ret i32 0
+}
+###### FAILED
 
 ###### Testing fail-print
 ./vowel.native < tests/fail-print.mc 2> fail-print.err >> testall.log
@@ -579,19 +650,23 @@ diff -b fail-printbig.err tests/fail-printbig.err > fail-printbig.diff
 ###### Testing fail-return1
 ./vowel.native < tests/fail-return1.mc 2> fail-return1.err >> testall.log
 diff -b fail-return1.err tests/fail-return1.err > fail-return1.diff
-###### SUCCESS
+FAILED fail-return1.err differs from tests/fail-return1.err
+###### FAILED
 
 ###### Testing fail-return2
 ./vowel.native < tests/fail-return2.mc 2> fail-return2.err >> testall.log
 diff -b fail-return2.err tests/fail-return2.err > fail-return2.diff
-###### SUCCESS
+FAILED fail-return2.err differs from tests/fail-return2.err
+###### FAILED
 
 ###### Testing fail-while1
 ./vowel.native < tests/fail-while1.mc 2> fail-while1.err >> testall.log
 diff -b fail-while1.err tests/fail-while1.err > fail-while1.diff
-###### SUCCESS
+FAILED fail-while1.err differs from tests/fail-while1.err
+###### FAILED
 
 ###### Testing fail-while2
 ./vowel.native < tests/fail-while2.mc 2> fail-while2.err >> testall.log
 diff -b fail-while2.err tests/fail-while2.err > fail-while2.diff
-###### SUCCESS
+FAILED fail-while2.err differs from tests/fail-while2.err
+###### FAILED
