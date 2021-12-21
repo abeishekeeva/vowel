@@ -57,7 +57,7 @@ let check (statements, globals, functions) =
 			                         ("printb", Bool);
 			                         ("printf", Float);
 			                         ("printbig", Int);
-                               ("printstr", String) ]
+                               ("printstr", String)]
   in
   let built_in_decls =
       StringMap.add "string_sub" {
@@ -80,17 +80,23 @@ let check (statements, globals, functions) =
   let functions = main_decl :: functions in
 
 let built_in_decls =
- StringMap.add "slice" {
- typ = String;
- fname = "slice";
- formals = [(String, "str"); (Int, "from"); (Int, "to")];
- locals = [];
- body = [] } built_in_decls
- in
+  StringMap.add "slice" {
+  typ = String;
+  fname = "slice";
+  formals = [(String, "str"); (Int, "from"); (Int, "to")];
+  locals = [];
+  body = [] } built_in_decls
+  in
 
-
-
-
+let built_in_decls =
+  StringMap.add "len"{
+    typ = Int;
+    fname = "len";
+    formals = [(String, "str")];
+    locals = [];
+    body = []} built_in_decls 
+  in
+  
 
   (* Add function name to symbol table *)
   let add_func map fd = 

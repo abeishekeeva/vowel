@@ -199,3 +199,10 @@ char *slice(const char *str, size_t s, size_t e) {
 
 	return slicestring;
 }
+int len(const char *str){
+	int l;
+	size_t len = strlen(str);
+	l = (int)(len) -2 ;
+
+
+}

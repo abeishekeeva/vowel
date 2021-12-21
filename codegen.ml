@@ -88,8 +88,10 @@ let slice_t : L.lltype =
   let slice_f : L.llvalue =
     L.declare_function "slice" slice_t the_module in
 
-
-
+  let len_t : L.lltype =
+    L.function_type i32_t [| str_t |] in  
+  let len_f : L.llvalue =
+    L.declare_function "len" len_t the_module in
 
   let printf_t : L.lltype = 
       L.var_arg_function_type i32_t [| L.pointer_type i8_t |] in
@@ -281,7 +283,7 @@ let slice_t : L.lltype =
       | SCall ("printf", [e]) -> L.build_call printf_func [| float_format_str ; (expr builder e) |] "printf" builder
       | SCall ("printstr", [e]) -> L.build_call printf_func [| string_format_str ; (expr builder e) |] "printf" builder
       | SCall ("slice", [v;e1;e2]) -> L.build_call slice_f [| (expr builder v); (expr builder e1); (expr builder e2) |] "slice" builder
-
+      | SCall ("len", [e]) -> L.build_call len_f [| (expr builder e) |] "len" builder
       | SCall (f, args) ->
         let (fdef, fdecl) = StringMap.find f function_decls in
 	 let llargs = List.rev (List.map (expr builder) (List.rev args)) in
