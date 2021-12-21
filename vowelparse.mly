@@ -65,8 +65,6 @@ typ:
   | STRING { String }
   | typ ARRAY { Arr($1, 0) }
 
-
-
 /*
   vdecl_list:
         { [] }
@@ -76,7 +74,6 @@ typ:
 
 vdecl:
     typ ID SEMI { ($1, $2) }
-
 
 
 stmt_list:

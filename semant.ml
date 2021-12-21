@@ -164,10 +164,10 @@ let check (statements, globals, functions) =
       | BoolLit l  -> (Bool, SBoolLit l)
       | STRliteral l -> (String, SSTRliteral l)
       | Noexpr     -> (Void, SNoexpr)
-      | Id s       ->  raise (Failure ("I'm Being Called From Id")) (* (type_of_identifier s, SId s) *)
+      | Id s       ->  (type_of_identifier s, SId s) 
       | Assign(var, e) as ex -> 
-        raise (Failure ("I'm Being Called From Assign"))
-        (*
+        (* raise (Failure ("I'm Being Called From Assign"))  *)
+        
           let lt = type_of_identifier var in
           let (rt, e') = expr e in
           let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^ 
@@ -176,22 +176,22 @@ let check (statements, globals, functions) =
             Arr _ -> StringHash.replace tbl var lt
             | _ -> ignore 1)
           in (check_assign lt rt err, SAssign(var, (rt, e')))
-        *)
+        
 
       | DeclAssn(ty, var, e) as declassn ->
-          raise (Failure ("I'm Being Called From DeclAssn"))
-          (*
-          ignore (check_bind tbl (ty, var));   
+          (* raise (Failure ("I'm Being Called From DeclAssn"));*)
+          ignore (check_bind tbl (ty, var));
+          (* check_bind tbl (ty, var);    *)
           let (rt, e') = expr e in
           let _err = "illegal assignment " ^ string_of_typ ty ^ " = " ^ 
-              string_of_typ rt ^ " in " ^ string_of_expr declassn (* in
-            let (ty, e') = check_assign_null e ty err
-            update array size *)
+              string_of_typ rt ^ " in " ^ string_of_expr declassn 
+          
+          (*  update array size *)
           in let _ = (match ty with 
             Arr _ -> StringHash.replace tbl var ty
           | _ -> ignore 1)
           in (ty, SDeclAssn(ty, var, (ty, e')))
-          *)
+        
       | Incr(var, e) as ex -> 
           let lt = type_of_identifier var
           and (rt, e') = expr e in 
@@ -317,7 +317,9 @@ let check (statements, globals, functions) =
               [Return _ as s] -> [check_stmt s]
             | Return _ :: _   -> raise (Failure "nothing may follow a return")
             | Block sl :: ss  -> check_stmt_list (sl @ ss) (* Flatten blocks *)
-            | s :: ss         -> check_stmt s :: check_stmt_list ss
+            | s :: ss         -> let c = check_stmt s in
+                                  c :: check_stmt_list ss
+                                  (* check_stmt s :: check_stmt_list ss *)
             | []              -> []
           in SBlock(check_stmt_list sl)
 

@@ -4,7 +4,6 @@ _build/
 microc.native
 testall.log
 test-printbig.s
-test-*
 vowel_func.o
 vowel_func.bc 
 printbig.o
