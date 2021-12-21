@@ -78,6 +78,10 @@ let translate (globals, functions) =
       L.function_type (L.pointer_type str_t) [| str_t; str_t |] in
   let string_intersection_f : L.llvalue =
       L.declare_function "string_intersection" string_intersection_t the_module in
+  let string_sub_t : L.lltype = 
+    L.function_type (L.pointer_type str_t) [| str_t; str_t |] in
+  let string_sub_f : L.llvalue =
+    L.declare_function "string_sub" string_sub_t the_module in
 
   let printf_t : L.lltype = 
       L.var_arg_function_type i32_t [| L.pointer_type i8_t |] in
@@ -230,6 +234,7 @@ let translate (globals, functions) =
         and e2' = expr builder e2 in
         (match op with
             A.Add     -> L.build_call string_concat_f [| e1'; e2' |] "string_concat" builder
+          | A.Sub     -> L.build_call string_sub_f [| e1'; e2' |] "string_sub" builder
           | A.Equal ->  (L.build_icmp L.Icmp.Eq) (L.const_int i32_t 0) (L.build_call string_inequality_f [| e1'; e2' |] "string_inequality" builder) "tmp" builder
           | A.Neq     -> (L.build_icmp L.Icmp.Ne) (L.const_int i32_t 0) (L.build_call string_inequality_f [| e1';e2' |] "string_inequality" builder) "tmp" builder
           | A.Intersec -> L.build_call string_intersection_f [| e1'; e2' |] "string_intersection" builder

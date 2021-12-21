@@ -59,6 +59,14 @@ let check (statements, globals, functions) =
 			                         ("printbig", Int);
                                ("printstr", String) ]
   in
+  let built_in_decls =
+      StringMap.add "string_sub" {
+      typ = Arr(String,99);
+      fname = "string_sub";
+      formals = [(String, "str"); (String, "str2")];
+      locals = [];
+      body = [] } built_in_decls
+ in
 
   (* declare main function with all statements *)
   let main_decl = 
@@ -225,7 +233,8 @@ let check (statements, globals, functions) =
           let ty = match op with
             Add | Sub | Mult | Div | Mod when same && t1 = Int   -> Int
           | Add | Sub | Mult | Div | Mod when same && t1 = Float -> Float
-          | Add when same && t1 = String -> String
+          | Add  when same && t1 = String -> String
+          | Sub when same && t1 = String -> Arr(String,99)
           | Equal | Neq            when same               -> Bool
           | Intersec when same && t1 = String -> Arr(String, 99)
           | Less | Leq | Greater | Geq
