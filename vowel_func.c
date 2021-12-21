@@ -90,6 +90,12 @@ bool string_equality(char *s1, char *s2){
         t2 = strtok (NULL, " ");
     }
     
+//        1     0    0  1  0
+ //s1 = "hello this is a string";
+//s2 = "hello a";
+
+
+
 	char *one = "1";
     int counter = 0;
 	for (int j = 0; j < i; j++) {
@@ -102,8 +108,6 @@ bool string_equality(char *s1, char *s2){
 	        }
 	    }
 	}
-    printf("%d", i);
-    printf("%d", i2);
 	char **arr_res = malloc (sizeof (char *) * space_counter1);
 	int l = 0;
 	for (int j = 0; j < i; j++) {
