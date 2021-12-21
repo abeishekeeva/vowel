@@ -4,7 +4,7 @@
 open Ast
 %}
 
-%token SEMI LPAREN RPAREN LBRACE RBRACE LBRACKET RBRACKET COMMA PLUS MINUS TIMES DIVIDE
+%token SEMI LPAREN RPAREN LBRACE RBRACE LBRACKET RBRACKET COMMA PLUS MINUS TIMES DIVIDE INTERSEC
 %token MODULUS ASSIGN
 %token INCREMENT DECREMENT
 %token NOT EQ NEQ LT LEQ GT GEQ AND OR
@@ -21,6 +21,7 @@ open Ast
 %nonassoc NOELSE
 %nonassoc ELSE
 %right INCREMENT DECREMENT ASSIGN 
+%left INTERSEC
 %left OR
 %left AND
 %left EQ NEQ
@@ -118,6 +119,7 @@ expr:
   | expr GEQ    expr { Binop($1, Geq,   $3)   }
   | expr AND    expr { Binop($1, And,   $3)   }
   | expr OR     expr { Binop($1, Or,    $3)   }
+  | expr INTERSEC expr {Binop($1, Intersec, $3)}
   | MINUS expr %prec NOT { Unop(Neg, $2)      }
   | NOT expr         { Unop(Not, $2)          }
   | ID LPAREN args_opt RPAREN { Call($1, $3)  }
@@ -126,9 +128,9 @@ expr:
   | ID INCREMENT expr { Increment($1, $3)    }
   | ID DECREMENT expr { Decrement($1, $3)     } 
   /* Arrays */
-  | ID LBRACKET expr RBRACKET { ArrayAccess($1, $3) }
-  | LBRACKET args_list RBRACKET { ArrayLit($2) }
-  | ID LBRACKET expr RBRACKET ASSIGN expr { ArrAssign($1, $3, $6) }
+  | ID LBRACKET expr RBRACKET { ArrayAccess($1, $3) }    
+  | LBRACKET args_list RBRACKET { ArrayLit($2) }        
+  | ID LBRACKET expr RBRACKET ASSIGN expr { ArrAssign($1, $3, $6) }      
   /* VARIABLE DECLARATION */
   | typ ID ASSIGN expr { DeclAssn($1, $2, $4) }
   

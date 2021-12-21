@@ -167,10 +167,8 @@ let check (statements, globals, functions) =
       | Id s       -> (type_of_identifier s, SId s)
 
       | Assign(var, e) as ex -> 
-        (* raise (Failure ("I'm Being Called From Assign"))  *)
-        
-          let lt = type_of_identifier var in
-          let (rt, e') = expr e in
+          let lt = type_of_identifier var
+          and (rt, e') = expr e in
           let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^ 
             string_of_typ rt ^ " in " ^ string_of_expr ex
           in let _ = (match lt with 
@@ -225,11 +223,12 @@ let check (statements, globals, functions) =
           let same = t1 = t2 in
           (* Determine expression type based on operator and operand types *)
           let ty = match op with
-              Add | Sub | Mult | Div | Mod when same && t1 = Int   -> Int
-            | Add | Sub | Mult | Div | Mod when same && t1 = Float -> Float
-            | Add when same && t1 = String -> String
-            | Equal | Neq            when same               -> Bool
-            | Less | Leq | Greater | Geq
+            Add | Sub | Mult | Div | Mod when same && t1 = Int   -> Int
+          | Add | Sub | Mult | Div | Mod when same && t1 = Float -> Float
+          | Add when same && t1 = String -> String
+          | Equal | Neq            when same               -> Bool
+          | Intersec when same && t1 = String -> Arr(String, 99)
+          | Less | Leq | Greater | Geq
                      when same && (t1 = Int || t1 = Float) -> Bool
             | And | Or when same && t1 = Bool -> Bool
             | _ -> raise (Failure ("illegal binary operator " ^
@@ -279,7 +278,8 @@ let check (statements, globals, functions) =
           (Failure (string_of_expr e ^ " is not of int → type in " ^ string_of_expr arrayacess)) else
             (* check if variable is array type *)
           let v_ty = type_of_identifier v in
-          let e_ty = is_arr_ty (v, v_ty) in (e_ty, SArrayAccess(v, (t, e')))
+          let e_ty = is_arr_ty (v, v_ty) 
+        in (e_ty, SArrayAccess(v, (t, e')))
       | ArrAssign(v, e1, e2) as arrassign ->(* check if type of e is an int *)
           let (t, e1') = expr e1 in
           if t != Int then raise (Failure (string_of_expr e1 ^ " is not of int type → in " ^ string_of_expr arrassign))
@@ -287,9 +287,6 @@ let check (statements, globals, functions) =
           let v_ty = type_of_identifier v in
           let e_ty = is_arr_ty (v, v_ty) in
           let (rt, e2') = expr e2 in
-          let _err = "illegal assignment for array " ^ string_of_typ e_ty ^ " = " ^
-          string_of_typ rt ^ " in " ^ string_of_expr arrassign in
-          (* let (ty, e2') = check_assign_null e2 e_ty err *)
           (e_ty, SArrAssign(v, (t,e1'), (rt,e2')))
           
     in

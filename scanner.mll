@@ -38,6 +38,7 @@ rule token = parse
 | ">"      { GT }
 | ">="     { GEQ }
 | "&&"     { AND }
+| '&'      { INTERSEC }
 | "||"     { OR }
 | "!"      { NOT }
 | "if"     { IF }

@@ -50,6 +50,7 @@ let translate (globals, functions) =
     | A.Float -> float_t
     | A.Void  -> void_t
     | A.String -> str_t
+    (* | A.Arr(ty,_) -> L.pointer_type (ltype_of_typ ty) *)
     | A.Arr(ty,_) -> L.pointer_type (ltype_of_typ ty)
   in
 
@@ -73,7 +74,10 @@ let translate (globals, functions) =
   let string_inequality_f : L.llvalue =
     L.declare_function "string_inequality" string_inequality_t the_module in
 
-  
+  let string_intersection_t : L.lltype = 
+      L.function_type (L.pointer_type str_t) [| str_t; str_t |] in
+  let string_intersection_f : L.llvalue =
+      L.declare_function "string_intersection" string_intersection_t the_module in
 
   let printf_t : L.lltype = 
       L.var_arg_function_type i32_t [| L.pointer_type i8_t |] in
@@ -216,6 +220,7 @@ let translate (globals, functions) =
           | A.Leq     -> L.build_fcmp L.Fcmp.Ole
           | A.Greater -> L.build_fcmp L.Fcmp.Ogt
           | A.Geq     -> L.build_fcmp L.Fcmp.Oge
+          | A.Intersec -> raise (Failure "internal error: semant should have rejected intersection binop with floats")
           | A.And | A.Or ->
 	          raise (Failure "internal error: semant should have rejected and/or on float")
 	      ) e1' e2' "tmp" builder
@@ -227,6 +232,7 @@ let translate (globals, functions) =
             A.Add     -> L.build_call string_concat_f [| e1'; e2' |] "string_concat" builder
           | A.Equal ->  (L.build_icmp L.Icmp.Eq) (L.const_int i32_t 0) (L.build_call string_inequality_f [| e1'; e2' |] "string_inequality" builder) "tmp" builder
           | A.Neq     -> (L.build_icmp L.Icmp.Ne) (L.const_int i32_t 0) (L.build_call string_inequality_f [| e1';e2' |] "string_inequality" builder) "tmp" builder
+          | A.Intersec -> L.build_call string_intersection_f [| e1'; e2' |] "string_intersection" builder
           | _ -> raise (Failure ("operation " ^ (A.string_of_op op) ^ " not implemented")))
 
 
@@ -247,6 +253,7 @@ let translate (globals, functions) =
           | A.Leq     -> L.build_icmp L.Icmp.Sle
           | A.Greater -> L.build_icmp L.Icmp.Sgt
           | A.Geq     -> L.build_icmp L.Icmp.Sge
+          | A.Intersec -> raise (Failure "internal error: intersection operator should have triggered on binop with string")
         ) e1' e2' "tmp" builder
       | SUnop(op, ((t, _) as e)) ->
           let e' = expr builder e in

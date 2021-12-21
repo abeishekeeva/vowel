@@ -1,25 +1,17 @@
-int a = 42;
-int b = 21;
-
 void printa()
 {
+  int a = 42;
   print(a);
 }
 
 void printbb()
 {
+  int b = 21;
   print(b);
 }
 
-void incab()
-{
-  a = a + 1;
-  b = b + 1;
-}
 
 
 printa();
 printbb();
-incab();
-printa();
-printbb();
+

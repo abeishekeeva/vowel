@@ -9,4 +9,4 @@ void foo(int c, float d)
   b + a; /* Error: float + int */
 }
 
-food(3, 4.5);
+foo(3, 4.5);
