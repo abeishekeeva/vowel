@@ -1,6 +1,6 @@
-int main()
+int bar()
 {
-  int i;
+  int i = 0;
 
   while (true) {
     i = i + 1;
@@ -11,3 +11,5 @@ int main()
   }
 
 }
+
+bar();

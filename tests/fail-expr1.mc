@@ -1,10 +1,11 @@
-int a;
-bool b;
+
 
 void foo(int c, bool d)    
 {
-  int dd;
-  bool e;
+  int a = 3; 
+  bool b = true;
+  int dd = 0;
+  bool e = false; 
   a + c;
   c - a;
   a * 3;
@@ -12,7 +13,4 @@ void foo(int c, bool d)
   d + a; /* Error: bool + int */
 }
 
-int main()
-{
-  return 0;
-}
+foo(3, false);

@@ -1,4 +1,4 @@
-int main()
+int foo()
 {
   if (true) {
     42;
@@ -6,3 +6,5 @@ int main()
     bar; /* Error: undeclared variable */
   }
 }
+
+foo();

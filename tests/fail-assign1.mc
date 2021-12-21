@@ -7,4 +7,4 @@ int assign_fail()
 
 }
 
-assign_fail()
+assign_fail();

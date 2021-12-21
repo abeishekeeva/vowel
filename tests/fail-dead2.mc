@@ -1,6 +1,6 @@
-int main()
+int fail_block()
 {
-  int i;  
+  int i = 0;
 
   {
     i = 15;
@@ -8,3 +8,5 @@ int main()
   }
   i = 32; /* Error: code after a return */
 }
+
+fail_block();

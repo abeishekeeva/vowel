@@ -1,14 +1,9 @@
-int foo() {}
-
 int bar() {
-  int a;
+  int a = 0;
   void b; /* Error: illegal void local b */
-  bool c;
+  bool c = true;
 
   return 0;
 }
 
-int main()
-{
-  return 0;
-}
+bar();

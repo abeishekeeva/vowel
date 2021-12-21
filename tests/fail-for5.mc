@@ -1,6 +1,6 @@
-int main()
+int bar()
 {
-  int i;
+  int i = 0;
 
   for (i = 0; i < 10 ; i = i + 1) {
     foo(); /* Error: no function foo */
@@ -8,3 +8,5 @@ int main()
 
   return 0;
 }
+
+bar();

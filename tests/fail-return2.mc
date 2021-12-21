@@ -4,7 +4,4 @@ void foo()
   else return;
 }
 
-int main()
-{
-  return 42;
-}
+foo();

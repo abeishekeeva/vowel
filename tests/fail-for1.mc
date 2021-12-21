@@ -1,6 +1,6 @@
-int main()
+int foo()
 {
-  int i;
+  int i = 0;
   for ( ; true ; ) {} /* OK: Forever */
 
   for (i = 0 ; i < 10 ; i = i + 1) {
@@ -11,3 +11,5 @@ int main()
 
   return 0;
 }
+
+foo();

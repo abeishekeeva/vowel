@@ -1,14 +1,12 @@
-int a;
-bool b;
+
 
 void foo(int c, bool d)    
 {
-  int d;
-  bool e;
+  int a = 0;
+  bool b = false;
+  int d = 1; 
+  bool e = true;
   b + a; /* Error: bool + int */
 }
 
-int main()
-{
-  return 0;
-}
+foo(4, true);

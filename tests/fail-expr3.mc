@@ -1,14 +1,12 @@
-int a;
-float b;
+
 
 void foo(int c, float d)    
 {
-  int d;
-  float e;
+  int a = 5; 
+  float b = 3.0;
+  int d = 4; 
+  float e = 2.0;
   b + a; /* Error: float + int */
 }
 
-int main()
-{
-  return 0;
-}
+food(3, 4.5);
