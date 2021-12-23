@@ -28,7 +28,7 @@ module HashtblString =
 module StringHash = Hashtbl.Make(HashtblString);;
 
 (* translate : Sast.program -> Llvm.module *)
-let translate (functions) =
+let translate (globals, functions) =
   let context    = L.global_context () in
   
   (* Create the LLVM compilation module into which

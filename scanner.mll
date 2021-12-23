@@ -1,4 +1,4 @@
-(* Ocamllex scanner for MicroC *)
+(* MicroC template is used for this scanner *)
 
 { open Vowelparse }
 
@@ -6,7 +6,6 @@ let digit = ['0' - '9']
 let digits = digit+
 let float = (digits) '.' (digits) 
 let alphabet = ['a'-'z' 'A'-'Z']
-(* let str_literal = ("'"['a'-'z' 'A'-'Z']*"'") *)
 let ascii = ([' '-'!' '#'-'[' ']'-'~'])
 let escape = '\\' ['\\' ''' '"' 'n' 'r' 't']
 let str_literal = '"' (ascii | escape)* '"'
